@@ -8,6 +8,6 @@ yarnpkg:
 	cp -r webapp/build/* src/main/webapp
 
 clean:
-	git clean -X
+	git clean -f -X
 
 .PHONY: all mvnpkg yarnpkg clean
