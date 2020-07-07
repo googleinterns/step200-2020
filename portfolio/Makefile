@@ -11,10 +11,12 @@ mvnpkg: yarnpkg
 	mvn package
 
 yarnpkg:
-	cd webapp; yarnpkg build
+	cd webapp; yarn build
 	cp -r webapp/build/* src/main/webapp
 
 clean:
-	git clean -f -X
+	-rm -r src/main/webapp/build src/main/webapp/static src/main/webapp/node_modules
+	-rm -r target
+
 
 .PHONY: all run deploy mvnpkg yarnpkg clean
