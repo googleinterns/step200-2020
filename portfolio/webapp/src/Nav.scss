@@ -1,0 +1,60 @@
+@import 'CenterBlock';
+@import 'all';
+
+$nav-button-height: 1rem;
+$nav-button-pad: 0.5rem;
+$nav-pad: 0.5rem;
+$nav-height: $nav-button-height + $nav-button-pad * 2 + $nav-pad * 2;
+
+.Nav {
+  @extend %CenterBlock-outer;
+
+  background-color: #ffeeff;
+  height: $nav-height;
+
+  > .content-wrap {
+    @extend %CenterBlock-inner;
+
+    overflow: hidden;
+    background-color: #ffffee;
+    height: $nav-height;
+  }
+
+  nav {
+    padding: $nav-pad $leftright-pad;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: inline;
+    margin: 0 0.5rem 0 0;
+  }
+
+  li:last-child {
+    margin: 0;
+  }
+  
+  a {
+    display: inline-block;
+    text-decoration: none;
+    font-size: $nav-button-height;
+    line-height: $nav-button-height;
+    color: #ffffff;
+    background-color: #5555ff;
+    padding: $nav-button-pad;
+    border-radius: 0.5rem;
+    height: $nav-button-height;
+  }
+
+  a.active {
+    background-color: #558855;
+  }
+
+  a:hover {
+    background-color: #885555;
+  }
+}

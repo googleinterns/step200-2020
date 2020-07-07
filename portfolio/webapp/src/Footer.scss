@@ -1,0 +1,30 @@
+@import 'CenterBlock';
+@import 'all';
+
+$footer-pad: 1rem;
+$footer-line-height: 1rem;
+$footer-height: $footer-pad * 2 + $footer-line-height;
+
+.Footer {
+  @extend %CenterBlock-outer;
+
+  height: $footer-height;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #eeffff;
+
+  > .content-wrap {
+    @extend %CenterBlock-inner;
+
+    overflow: hidden;
+    background-color: #ffeeff;
+    height: $footer-height;
+  }
+
+  footer {
+    padding: $footer-pad $leftright-pad;
+    font-size: $footer-line-height;
+    line-height: $footer-line-height;
+  }
+}

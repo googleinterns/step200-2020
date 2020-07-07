@@ -1,5 +1,12 @@
 all: mvnpkg
 
+run: yarnpkg
+	mvn package appengine:run
+
+deploy: yarnpkg
+	mvn package appengine:deploy
+
+
 mvnpkg: yarnpkg
 	mvn package
 
@@ -10,4 +17,4 @@ yarnpkg:
 clean:
 	git clean -f -X
 
-.PHONY: all mvnpkg yarnpkg clean
+.PHONY: all run deploy mvnpkg yarnpkg clean

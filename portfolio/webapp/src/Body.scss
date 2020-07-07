@@ -1,0 +1,29 @@
+@import 'CenterBlock';
+@import 'all';
+
+@import 'Header';
+@import 'Nav';
+@import 'Footer';
+
+$header-footer-height: $head-height + $nav-height + $footer-height;
+
+.Body {
+  @extend %CenterBlock-outer;
+
+  background-color: #ffddee;
+  min-height: calc(100vh - #{$header-footer-height});
+
+  > .content-wrap {
+    @extend %CenterBlock-inner;
+
+    overflow: hidden;
+    background-color: #eeffdd;
+
+    padding: 0 0 $footer-height;
+    min-height: calc(100vh - #{$header-footer-height});
+  }
+
+  .main-content {
+    padding: 1rem $leftright-pad;
+  }
+}
