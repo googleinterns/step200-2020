@@ -11,6 +11,7 @@ export default function Nav() {
           <ul>
             <li><NavLink to="/" exact={true}>Home</NavLink></li>
             <li><NavLink to="/about">About</NavLink></li>
+            <li><NavLink to="/justine">Justine's Portfolio</NavLink></li>
           </ul>
         </nav>
       </div>
