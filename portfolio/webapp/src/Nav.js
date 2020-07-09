@@ -9,8 +9,9 @@ export default function Nav() {
       <div className="content-wrap">
         <nav>
           <ul>
-            <li><NavLink to="/" exact={true}>Home</NavLink></li>
+            <li><NavLink to="/" exact={true}>Home page</NavLink></li>
             <li><NavLink to="/about">About</NavLink></li>
+            <li><NavLink to="/leo">Leo Page</NavLink></li>
           </ul>
         </nav>
       </div>
