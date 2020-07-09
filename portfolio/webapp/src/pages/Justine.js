@@ -3,7 +3,6 @@ import React from 'react';
 import './Justine.scss';
 
 function getComments() {
- 
   fetch('/data')
   .then(response => response.json())
   .then((comments) => {
@@ -13,6 +12,7 @@ function getComments() {
 }
 
 export default function Justine() {
+  
   return (
      <>
      <div class = "Justine">
@@ -32,9 +32,10 @@ export default function Justine() {
            But I can't play the last 3 very well. Other things I'm interested in are
           trivia (I played on my high school's team and I'd love to be on Jeopardy! someday), makeup, and cooking.
       </p>
+      
       </div>
-      {{getComments()}};
-      console.log("lmao gottem");
+      {getComments()}
+      
       <p id="comment-list">
         
       </p>
