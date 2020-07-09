@@ -6,7 +6,6 @@ import {
 
 
 import { Home, About, NotFound, Justine, Leo } from './pages';
-import { Home, About, NotFound, Leo } from './pages';
 
 import './Body.scss';
 
