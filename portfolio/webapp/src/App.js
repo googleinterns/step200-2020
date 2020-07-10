@@ -8,15 +8,22 @@ import Nav from './Nav';
 
 import './App.css';
 
-export default function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Header />
-        <Nav />
-        <Body />
-        <Footer />
-      </div>
-    </Router>
-  );
+// export default function App() {
+// make this a class component
+class App extends React.Component{
+  render(){
+     return (
+      <Router>
+        <div className="App">
+          <Header />
+          <Nav />
+          <Body />
+          <Footer />
+        </div>
+      </Router>
+     );
+  }
+ 
 }
+
+export default App;
