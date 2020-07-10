@@ -24,11 +24,11 @@ export default function Body() {
             <Route exact path="/justine">
               <Justine />
             </Route>
-            <Route path="*">
-              <NotFound />
-            </Route>
             <Route exact path="/leo">
               <Leo />
+            </Route>
+            <Route path="*">
+              <NotFound />
             </Route>
           </Switch>
         </div>
