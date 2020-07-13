@@ -1,30 +1,13 @@
 import React from 'react';
 
 import './Justine.scss';
-/**
-function getComments() {
-  fetch('/data')
-  .then(response => response.json())
-  .then((comments) => {
-    // const commentSection = document.getElementById('comment-list');
-    // commentSection.innerText = comments;
-    this.setState({text:comments});
-    console.log("set the state i think");
-  });
-} */
+import Comment from './Comment';
 
 // export default function Justine() {
 class Justine extends React.Component{
   
-  constructor(props){
-      super(props);
-      this.state = {text: "henlo"}; 
-      
-      
-  }
-  getComment = () => {
-      this.setState({text:"hello"});
-  }
+  
+  
   render(){
   return (
      <>
@@ -45,16 +28,12 @@ class Justine extends React.Component{
            But I can't play the last 3 very well. Other things I'm interested in are
           trivia (I played on my high school's team and I'd love to be on Jeopardy! someday), makeup, and cooking.
       </p>
-      <button
-          type="button"
-          onClick={this.getComment}
-        >Get Comment</button>
+      <Comment />
       </div>
-      <p>This is what moi got from the func: </p>
-      <p>{this.state.text}</p>
+      </div>
       
       
-    </div>
+      
     </>
   );}
 }
