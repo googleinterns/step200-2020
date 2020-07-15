@@ -13,7 +13,27 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+/**
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.Translate.TranslateOption;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
+**/
 import com.google.gson.Gson;
+import com.google.sps.data.Comment;
+// import com.google.sps.data.Nickname;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +45,10 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+
   private final Gson gson = new Gson();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -35,5 +58,21 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(comments));
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String text = request.getParameter("text");
+    long timestamp = System.currentTimeMillis();
+    String email = userService.getCurrentUser().getEmail();
+    
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("text",text);
+    commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("email",email);
+    
+    datastore.put(commentEntity);
+    // response.sendRedirect(request.getRequestURI()); // redirects back to /data 
+    // response.sendRedirect("Justine.js");
   }
 }

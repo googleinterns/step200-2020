@@ -2,6 +2,7 @@ import React from 'react';
 
 import './Justine.scss';
 import Comment from './Comment';
+import CommentForm from './CommentForm'
 
 // export default function Justine() {
 class Justine extends React.Component{
@@ -29,6 +30,7 @@ class Justine extends React.Component{
           trivia (I played on my high school's team and I'd love to be on Jeopardy! someday), makeup, and cooking.
       </p>
       <Comment />
+      <CommentForm />
       </div>
       </div>
       
