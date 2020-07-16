@@ -3,6 +3,9 @@
   <threadsafe>false</threadsafe>
   <sessions-enabled>true</sessions-enabled>
   <runtime>java8</runtime>
+  <resource-files>
+    <include path="/index.html" />
+  </resource-files>
   <static-files>
     <!-- prevent unwanted caching when accessing via the web preview server -->
     <include path="/**" expiration="0s" />
