@@ -16,9 +16,11 @@ class CommentForm extends React.Component{
     event.preventDefault();
     this.setState({messageToUser:"thanks for posting!"});
     alert("submit following comment:" + this.state.comment);
-    var params = document.getElementById("textbox");
-    fetch('/data', {method: 'POST', body: params})
-    .then(this.handleRedirect());
+    
+    // params.append("text",this.state.comment);
+    let params = {text:this.state.comment}
+    fetch('/data', {method: 'POST', body:JSON.stringify(params)})
+    .then(this.handleChange());
   }
 
   render() {
@@ -30,7 +32,7 @@ class CommentForm extends React.Component{
           <p class="center">Leave Justine a comment:</p>
             <input class="center" id="textbox" name="text" value={this.state.comment} type="text" onChange={this.handleChange}/>
             <div class="center">
-              <input class="commentbtn btn btn-sm btn-outline-primary" type="submit"/>
+              <input class="commentbtn btn btn-sm btn-outline-primary" type="submit" />
             </div>
         </form> 
        </div>

@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 
 
-import { Home, About, NotFound, Justine, Leo } from './pages';
+import { Home, About, NotFound, Justine, RoutePage} from './pages';
 
 import './Body.scss';
 
@@ -24,9 +24,10 @@ export default function Body() {
             <Route exact path="/justine">
               <Justine />
             </Route>
-            <Route exact path="/leo">
-              <Leo />
+            <Route exact path="/RoutePage">
+              <RoutePage />
             </Route>
+
             <Route path="*">
               <NotFound />
             </Route>

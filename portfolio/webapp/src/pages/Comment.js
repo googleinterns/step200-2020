@@ -19,9 +19,10 @@ class Comment extends React.Component{
   render() {
       return(
           <div>
+          <p>Comment Section:</p>
             <ul>
               {this.state.comments.map((comment,i) =>
-                <li key={i}>{comment}</li>
+                <li key={i}>{comment.text}</li>
               )}
             </ul>
           </div>

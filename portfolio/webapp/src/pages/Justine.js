@@ -7,8 +7,7 @@ import CommentForm from './CommentForm'
 // export default function Justine() {
 class Justine extends React.Component{
   
-  
-  
+
   render(){
   return (
      <>
@@ -29,6 +28,7 @@ class Justine extends React.Component{
            But I can't play the last 3 very well. Other things I'm interested in are
           trivia (I played on my high school's team and I'd love to be on Jeopardy! someday), makeup, and cooking.
       </p>
+      
       <Comment />
       <CommentForm />
       </div>

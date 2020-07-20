@@ -1,0 +1,19 @@
+.Box{
+  .box-outline {
+    border: solid 2px #fad3a7;
+    border-radius: 10px;
+    height: 500px;
+    width: 350px;
+  }
+  #title{
+    border: solid 2px #ffb766;
+    border-radius: 10px;
+    height: 50px;
+    width: parent;
+    background-color: #ffb766;
+  }
+  h3{
+    text-align: center;
+
+  }
+}
