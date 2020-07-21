@@ -8,10 +8,10 @@ class Rec extends React.Component{
   }
   render() {
       return(
-        <div className = "Stop">
-          <div className = "stop-outline">
+        <div class= "Rec">
+          <button className = "rec-outline" onclick={this.props.toAdd}>
             <h4>{this.props.name}</h4>
-          </div>
+          </button>
         </div>
       )
   }

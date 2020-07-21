@@ -6,8 +6,6 @@ import CommentForm from './CommentForm'
 
 // export default function Justine() {
 class Justine extends React.Component{
-  
-
   render(){
   return (
      <>

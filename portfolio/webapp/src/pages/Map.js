@@ -5,8 +5,8 @@ import Stop from './Stop';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 const containerStyle = {
-  width: '600px',
-  height: '900px'
+  width: '500px',
+  height: '600px'
 };
  
 const center = {

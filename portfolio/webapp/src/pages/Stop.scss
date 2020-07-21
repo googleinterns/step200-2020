@@ -1,0 +1,30 @@
+.Stop{
+  .stop-outline {
+    border: solid 2px #fad3a7;
+    border-radius: 10px;
+    background-color: white;
+    height: 50px;
+    width: 200px;
+    padding: 5px;
+    margin: 0 10px 0 auto;
+    float: left;
+  }
+ 
+  .time-spent
+    h4{
+    text-align: center;
+    color: #ed9b85;
+    }
+
+  .line{
+    border-left: 6px solid #68d388;
+    height: 100px;
+    margin: 0 auto;
+  }
+
+  h4.time-travel{
+    color: #adb8b0;
+    font-size: 12px;
+    padding-top: 10px;
+  }
+}
