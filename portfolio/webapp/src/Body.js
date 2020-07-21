@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 
 
-import { Home, About, NotFound } from './pages';
+import { Home, About, Discussion, NotFound, Paths } from './pages';
 
 import './Body.scss';
 
@@ -15,11 +15,14 @@ export default function Body() {
       <div className="content-wrap">
         <div className="main-content">
           <Switch>
-            <Route exact path="/">
+            <Route exact path={Paths.HOME}>
               <Home />
             </Route>
-            <Route exact path="/about">
+            <Route exact path={Paths.ABOUT}>
               <About />
+            </Route>
+            <Route exact path={Paths.DISCUSSION}>
+              <Discussion />
             </Route>
             <Route path="*">
               <NotFound />

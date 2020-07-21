@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as mobx from 'mobx';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+mobx.configure({enforceActions: 'observed'});
 
 ReactDOM.render(
   <React.StrictMode>
