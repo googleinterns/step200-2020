@@ -3,7 +3,7 @@ import React from 'react';
 
 import './Box.scss';
 class Box extends React.Component{
-  // add state w title field
+  
   render() {
       return(
         <div className = "Box">

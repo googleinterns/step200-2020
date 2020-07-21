@@ -1,7 +1,8 @@
 import Box from './Box';
 import React from 'react';
-import Stop from './Stop';
+import Rec from './Rec';
 import Map from './Map';
+import Stop from './Stop';
 import TravelTime from './TravelTime';
 
 import './RoutePage.scss';
@@ -14,7 +15,7 @@ export default function RoutePage() {
       <div id="map"><Map/></div>
       <div id="schedule-box">
         <Box title="Schedule">
-          <div><Stop name="Stop 1" /></div>
+          <div><Stop name="Stop 1"/></div>
           <div><Stop name="Stop 2" /></div>
           <div><Stop name="Stop 3" /></div>
         </Box>
@@ -22,9 +23,9 @@ export default function RoutePage() {
       </div>
       <div id="rec-box">
         <Box title="Recommendations">
-            <div><Stop name="Central Park" /></div>
-            <div><Stop name="MOMA" /></div>
-            <div><Stop name="Times Square" /></div>
+            <div><Rec name="Central Park" /></div>
+            <div><Rec name="MOMA" /></div>
+            <div><Rec name="Times Square" /></div>
         </Box>
       </div>
     </div>

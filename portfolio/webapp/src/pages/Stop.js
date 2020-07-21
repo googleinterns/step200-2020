@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Stop.scss';
 
-class Stop extends React.Component{
+class Rec extends React.Component{
   constructor(props){
     super(props);
   }
@@ -10,15 +10,11 @@ class Stop extends React.Component{
       return(
         <div className = "Stop">
           <div className = "stop-outline">
-            <div id = "name">
-              <h4>{this.props.name}</h4>
-            </div>
+            <h4>{this.props.name}</h4>
           </div>
         </div>
       )
   }
-  
-
 }
 
-export default Stop;
+export default Rec;
