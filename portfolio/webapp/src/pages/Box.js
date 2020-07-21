@@ -9,8 +9,9 @@ class Box extends React.Component{
         <div className = "Box">
           <div className = "box-outline">
             <div id = "title">
-              <h3>Recommendations</h3>
+              <h3>{this.props.title}</h3>
             </div>
+            <div>{this.props.children}</div>
           </div>
         </div>
       )

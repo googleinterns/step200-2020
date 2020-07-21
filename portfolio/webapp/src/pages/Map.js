@@ -5,16 +5,16 @@ import Stop from './Stop';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 const containerStyle = {
-  width: '450px',
-  height: '450px'
+  width: '600px',
+  height: '500px'
 };
  
 const center = {
-  lat: -3.745,
-  lng: -38.523
+  lat: -34.397,
+  lng: 150.644
 };
  
-function Map() {
+export default function Map() {
   const [map, setMap] = React.useState(null)
  
   const onLoad = React.useCallback(function callback(map) {
@@ -26,14 +26,15 @@ function Map() {
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null)
   }, [])
- 
+  console.log(center.lat);
+  console.log(center.lng);
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM">
+      googleMapsApiKey="AIzaSyAOKxla4a0mvW0OhagpQb4NSRwFndKMNIg">
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={10}
+        zoom={1}
         onLoad={onLoad}
         onUnmount={onUnmount}
       >
@@ -44,4 +45,5 @@ function Map() {
   )
 }
  
-export default React.memo(Map)
+// export default React.memo(Map)
+// export default Map;
