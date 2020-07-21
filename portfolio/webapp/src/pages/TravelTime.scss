@@ -1,0 +1,24 @@
+.TravelTime{
+  .time-outline{
+    border: solid 2px #c2edda;
+    border-radius: 10px;
+    background-color: #c2edda;
+    height: 100px;
+    width: 350px;
+    margin: 10px 0 0 30px;
+  }
+  .time-field{
+    float: right;
+    border: solid 2px #c2edda;
+    border-radius: 10px;
+    height: 50px;
+    width: 100px;
+    background-color: white;
+    margin: 2px 2px 2px 0;
+  }
+
+  .title{
+    float:left;
+  }
+ 
+}
