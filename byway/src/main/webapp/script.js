@@ -57,51 +57,27 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   });
 }
 
-function getStops(){
-  console.log("stoop!");
-  const stopList = document.getElementById('stop-list');
-  
-  fetch('/stop')
-  .then(response => response.json())
-  .then((stops) => {
-    stopList.innerText = ""; // clear list
-    for(let i = 0; i < stops.length; i++) {
-        const btn = document.createElement('button');
-        btn.id = `stopList${i}`;
-        // btn.className = 'list-group-item list-group-item-action';
-        btn.innerHTML = stops[i];
-        btn.addEventListener("click", function() {
-          console.log("delete me!");
-          console.log(stops[i]);
-        });
-        stopList.appendChild(btn);
-    }
-  })
-}
 
-function foo(stop){
+function foo(){
     console.log("moo");
-    const params = new URLSearchParams();
-    params.append("text", stop);
-    fetch('/stop', {method: 'POST', body: params})
-    .then(() => getStops());
 }
 
 function getRecs() {
- const recList = document.getElementById('rec-list');
   fetch('/data')
   .then(response => response.json())
   .then((recs) => {
-    for(let i = 0; i < recs.length; i++) {
-        const btn = document.createElement('button');
-        btn.id = `recList${i}`;
-        btn.innerHTML = recs[i];
-        btn.addEventListener("click", function() {
-          foo(recs[i]);
-        });
-        recList.appendChild(btn);
-    }
-  })
+    const recList = document.getElementById('rec-list');
+    recList.innerText = ""; // clear old comments 
+    recs.forEach((stop) => {
+      const stopElement = document.createElement("li");
+      const btnElement = document.createElement("button");
+      btnElement.innerText = stop;
+      btnElement.value = stop;
+      btnElement.onClick= foo();
+      stopElement.appendChild(btnElement);
+      recList.appendChild(stopElement);
+    });
+  });
 }
 
 /** 

@@ -26,12 +26,11 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  ArrayList<String> recs= new ArrayList<String>();
-  ArrayList<String> stops= new ArrayList<String>();
-  
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("in doGet");
+    ArrayList<String> recs= new ArrayList<String>();
+
     recs.add("Times Square");
     recs.add("MOMA");
     recs.add("Central Park");
