@@ -7,3 +7,25 @@
 #greeting-container {
   margin-top: 20px;
 }
+
+.btn {
+    margin-left: 100px;
+    margin: 10px;
+    align-items: center;
+    background-color: #DDDDDD;
+    border-color: #FFFFFF;
+    border-radius: 10px;
+    border-width: 1px;
+    padding: 10px;
+}
+
+.btnActive {
+    margin-left: 100px;
+    margin: 10px;
+    align-items: center;
+    background-color: #68d388;
+    border-color: #dc00ff;
+    border-radius: 10px;
+    border-width: 1px;
+    padding: 10px;
+}

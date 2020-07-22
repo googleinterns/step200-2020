@@ -26,3 +26,22 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+/** Update the class of the buttons to change their style. */
+function findStatus(elem) {
+    var switchClass = (elem.className === "btn"? "btnActive": "btn");
+    elem.className = switchClass;
+}
+
+/** Display all the buttons onscreen with independent onClick events. */
+function loadButtons() {
+    var buttonSection = document.getElementById("interests");
+    var data = ["leo", "oel", "greg", "larry", "bob"];
+    for(var i = 0; i < 5; i++) {
+        var button = document.createElement("button");
+        button.innerHTML = data[i];
+        button.setAttribute("onClick", "findStatus(this)");
+        button.setAttribute("class", "btn");
+        buttonSection.appendChild(button);
+    }
+}
