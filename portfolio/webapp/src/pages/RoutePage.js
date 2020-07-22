@@ -15,7 +15,7 @@ class RoutePage extends React.Component{
 
   addToSched = () =>{
     console.log("changing state");
-    this.setState({mystate: "ur mom's house"});
+    this.setState({mystate: "new location"});
   };
  // {this.addToSched("Central Park")}
   render(){  
