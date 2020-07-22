@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var selected = [];
+
 /**
  * Adds a random greeting to the page.
  */
@@ -27,10 +29,22 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
+/** Track the selected interests in an array according to their status. */
+function checkStatus(elem) {
+    if(elem.className === "btnActive") {
+        selected.push(elem.innerText);
+    } else {
+        selected = selected.filter(function(interest) {
+            return interest !== elem.innerText;
+        });
+    }
+}
+
 /** Update the class of the buttons to change their style. */
-function findStatus(elem) {
+function switchStatus(elem) {
     var switchClass = (elem.className === "btn"? "btnActive": "btn");
     elem.className = switchClass;
+    checkStatus(elem);
 }
 
 /** Display all the buttons onscreen with independent onClick events. */
@@ -40,7 +54,7 @@ function loadButtons() {
     for(var i = 0; i < 5; i++) {
         var button = document.createElement("button");
         button.innerHTML = data[i];
-        button.setAttribute("onClick", "findStatus(this)");
+        button.setAttribute("onClick", "switchStatus(this)");
         button.setAttribute("class", "btn");
         buttonSection.appendChild(button);
     }
