@@ -24,8 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
-//////////////Fill in////////////
+/** Servlet that returns all PlaceTypes from Places API. */
 @WebServlet("/places")
 public class PlacesServlet extends HttpServlet {
 
@@ -35,11 +34,19 @@ public class PlacesServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ArrayList<String> places = new ArrayList<>();
         
-        for(PlaceType place: PlaceType.values()) {
+        for(PlaceType location: PlaceType.values()) {
+            String place = formatLocation(location.toString());
             places.add(place.toString());
         }
 
         response.setContentType("text/html;");
         response.getWriter().println(gson.toJson(places));
-  }
+    }
+
+    /** Format string by capitalizing and adding spaces in-between words. */
+    private String formatLocation(String place) {
+        place = place.substring(0,1).toUpperCase() + place.substring(1);
+        place = place.replace('_', ' ');
+        return place;
+    }
 }
