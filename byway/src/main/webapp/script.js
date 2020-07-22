@@ -26,3 +26,62 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+function initMap() {
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
+  var start = new google.maps.LatLng(37.7699298, -122.4469157);
+  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  var mapOptions = {
+    zoom: 14,
+    center: start
+  }
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  directionsRenderer.setMap(map);
+     document.getElementById("route").addEventListener("click", function() {
+    calcRoute(directionsService, directionsRenderer, start, end);
+  });
+}
+
+function calcRoute(directionsService, directionsRenderer, start, end) {
+  console.log('getting route');
+  var request = {
+      origin:  start,
+      destination: end,
+      travelMode: 'DRIVING'
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == 'OK') {
+      directionsRenderer.setDirections(response);
+    }
+  });
+}
+function foo(){
+    console.log("moo");
+}
+function getRecs() {
+  fetch('/data')
+  .then(response => response.json())
+  .then((recs) => {
+    const recList = document.getElementById('rec-list');
+    recList.innerText = ""; // clear old comments 
+    recs.forEach((stop) => {
+      const stopElement = document.createElement("li");
+      const btnElement = document.createElement("button");
+      btnElement.innerText = stop;
+      btnElement.value = stop;
+      btnElement.onClick= foo();
+      stopElement.appendChild(btnElement);
+      recList.appendChild(stopElement);
+    });
+  });
+}
+/** 
+function createCommentElement(stop){
+    const commentElement = document.createElement("li");
+    const textElement = document.createElement("span");
+    textElement.innerText = comment.text;
+    commentElement.appendChild(textElement);
+    return commentElement;
+}
+*/
