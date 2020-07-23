@@ -43,7 +43,7 @@ function loadButtons() {
       button.innerText = place;
       button.setAttribute("onClick", "switchStatus(this)");
       button.setAttribute("class", "btn");
-      buttonSection.appendChild(button);            
+      buttonSection.appendChild(button);
     });
   });
 }
