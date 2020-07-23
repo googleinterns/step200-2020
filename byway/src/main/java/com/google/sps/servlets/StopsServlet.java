@@ -24,24 +24,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
-  ArrayList<String> recs= new ArrayList<String>();
+@WebServlet("/stop")
+public class StopsServlet extends HttpServlet {
   ArrayList<String> stops= new ArrayList<String>();
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("in doGet");
-    recs.add("Times Square");
-    recs.add("MOMA");
-    recs.add("Central Park");
     Gson gson = new Gson();
-    String json=gson.toJson(recs);
+    String json=gson.toJson(stops);
     
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
-  /**
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
@@ -51,5 +46,4 @@ public class DataServlet extends HttpServlet {
     }
     response.sendRedirect("/routepage.html"); 
   }
-  **/
 }

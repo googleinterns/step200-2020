@@ -56,26 +56,49 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
     }
   });
 }
+
+function getStops(){
+  console.log("stoop!");
+  const stopList = document.getElementById('stop-list');
+  
+  fetch('/stop')
+  .then(response => response.json())
+  .then((stops) => {
+    stopList.innerText = ""; // clear list
+    for(let i = 0; i < stops.length; i++) {
+        const btn = document.createElement('button');
+        btn.id = `stopList${i}`;
+        // btn.className = 'list-group-item list-group-item-action';
+        btn.innerHTML = stops[i];
+        btn.addEventListener("click", function() {
+          console.log("delete me!");
+          console.log(stops[i]);
+        });
+        stopList.appendChild(btn);
+    }
+  })
+}
+
 function foo(stop){
     console.log("moo");
-    // call post
-    console.log(stop);
+    const params = new URLSearchParams();
+    params.append("text", stop);
+    fetch('/stop', {method: 'POST', body: params})
+    .then(() => getStops());
 }
 
 function getRecs() {
  const recList = document.getElementById('rec-list');
-
-  console.log("here");
   fetch('/data')
   .then(response => response.json())
   .then((recs) => {
     for(let i = 0; i < recs.length; i++) {
         const btn = document.createElement('button');
         btn.id = `recList${i}`;
-        // btn.className = 'list-group-item list-group-item-action';
         btn.innerHTML = recs[i];
         btn.addEventListener("click", function() {
-        console.log(recs[i]);});
+          foo(recs[i]);
+        });
         recList.appendChild(btn);
     }
   })
