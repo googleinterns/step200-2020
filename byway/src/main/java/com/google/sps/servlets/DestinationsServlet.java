@@ -23,8 +23,6 @@ public class DestinationsServlet extends HttpServlet {
         }
     }
 
-    
-
 UserLocations places = new UserLocations();
 Gson gson = new Gson();
 
@@ -36,9 +34,8 @@ Gson gson = new Gson();
   }
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      String current= request.getParameter("start-location");
-      String place = request.getParameter("destinations");
-      //String address= request.getParameter("city").formatter_address;
+    String current= request.getParameter("start-location");
+    String place = request.getParameter("destinations"); 
     places.start = current;
     places.destinations.add(place);
 

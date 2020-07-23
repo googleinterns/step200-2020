@@ -61,7 +61,7 @@ function initAutocomplete() {
   } 
   else {
     window.alert("Geolocation failed");
-    }
+  }
 
   // Create the search boxes and link them to the UI elements.
   const start = document.getElementById("pac-input");
@@ -170,7 +170,7 @@ function initAutocomplete() {
   });
 }
 
-
+/* fetches start location and destinations from DestinationsServlet and adds to DOM*/
 function getLocations(){
   fetch('/destinations').then(response => response.json()).then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
@@ -185,6 +185,7 @@ function getLocations(){
   });
 }
 
+/* fills Start location Searchbox with previously input */
 function getStartDestination(){
   fetch('/destinations').then(response => response.json()).then((userLocations) =>{
     console.log(userLocations.start);
@@ -192,7 +193,7 @@ function getStartDestination(){
   });
 }
   
-
+/* Gets users current location */
 function getCurrentAddress(){
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ 'location': userlatlng}, (results, status) => {
