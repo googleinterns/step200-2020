@@ -106,7 +106,7 @@ function deleteFromStops(stop){
 function getRecs() {
  console.log("get recs!")
  const recList = document.getElementById('rec-list');
-  fetch('/data')
+  fetch('/recs')
   .then(response => response.json())
   .then((recs) => {
     recList.innerHTML = ""; // clear list
@@ -129,7 +129,7 @@ function deleteFromRecs(stop){
     const params = new URLSearchParams();
     params.append("text", stop);
     params.append("action", "remove");
-    fetch('/data', {method: 'POST', body: params})
+    fetch('/recs', {method: 'POST', body: params})
     .then(() => getRecs());
 }
 
@@ -138,7 +138,7 @@ function addToRecs(stop){
     const params = new URLSearchParams();
     params.append("text", stop);
     params.append("action", "add");
-    fetch('/data', {method: 'POST', body: params})
+    fetch('/rec', {method: 'POST', body: params})
     .then(() => getRecs());
 }
 

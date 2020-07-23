@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/data")
+@WebServlet("/recs")
 public class DataServlet extends HttpServlet {
   ArrayList<String> recs=new ArrayList<String>(Arrays.asList("times square" , "moma" , "m&m store"));
 
