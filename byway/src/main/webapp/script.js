@@ -172,39 +172,38 @@ function initAutocomplete() {
 
 
 function getLocations(){
-    fetch('/destinations').then(response => response.json()).then((userLocations) => {
+  fetch('/destinations').then(response => response.json()).then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
     document.getElementById('destinations-container').innerText = "Destinations:";
     const container = document.getElementById('destinations-container');
     let destinationArray= userLocations.destinations;
     destinationArray.forEach((destination) => {
-        let destinationToAdd = document.createElement('p');
-        destinationToAdd.innerText = destination;
-        container.appendChild(destinationToAdd);
-    })
-    
+      let destinationToAdd = document.createElement('p');
+      destinationToAdd.innerText = destination;
+      container.appendChild(destinationToAdd);
+    }) 
   });
 }
 
 function getStartDestination(){
-        fetch('/destinations').then(response => response.json()).then((userLocations) =>{
-        console.log(userLocations.start);
-        document.getElementById('pac-input').value = userLocations.start;
-    });
+  fetch('/destinations').then(response => response.json()).then((userLocations) =>{
+    console.log(userLocations.start);
+    document.getElementById('pac-input').value = userLocations.start;
+  });
 }
   
 
 function getCurrentAddress(){
-     const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ 'location': userlatlng}, (results, status) => {
-        if (status === "OK") {
-            if (results[0]) {
-             document.getElementById('pac-input').value=results[0].formatted_address;
-            } else {
-               window.alert("No results found");
-            }
-        } else {
-            window.alert("Geocoder failed due to: " + status);
+  const geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ 'location': userlatlng}, (results, status) => {
+    if (status === "OK") {
+      if (results[0]) {
+        document.getElementById('pac-input').value=results[0].formatted_address;
+      } else {
+          window.alert("No results found");
         }
-        });
+    } else {
+        window.alert("Geocoder failed due to: " + status);
+      }
+  });
 }
