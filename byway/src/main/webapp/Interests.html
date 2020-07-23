@@ -9,8 +9,10 @@
   <body onload="loadButtons();">
     <div id="content">
       <div id="interests"></div>
-      <input type="hidden" id="data" name="data" />
-      <input type="submit" value="Next page" />
+      <form action="places" method="POST">
+        <input type="hidden" id="data" name="data" />
+        <input type="submit" value="Next page" />
+      </form>
     </div>
   </body>
 </html>

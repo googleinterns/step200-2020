@@ -47,4 +47,13 @@ public class PlacesServlet extends HttpServlet {
     place = place.replace('_', ' ');
     return place;
   }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String interests = request.getParameter("data");
+    ArrayList<String> information = gson.fromJson(interests, ArrayList.class);
+    for(String elem: information) {
+      response.getWriter().println(elem);
+    }
+  }
 }
