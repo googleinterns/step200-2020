@@ -34,14 +34,16 @@ function switchStatus(elem) {
 
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
-    var buttonSection = document.getElementById("interests");
-    fetch('/places').then(response => response.json()).then((places) => {
-        for(var i = 0; i < places.length; i++) {
+    fetch('/places')
+    .then(response => response.json())
+    .then((places) => {
+        var buttonSection = document.getElementById("interests");
+        places.forEach((place) => {
             var button = document.createElement("button");
-            button.innerHTML = places[i];
+            button.innerText = place;
             button.setAttribute("onClick", "switchStatus(this)");
             button.setAttribute("class", "btn");
-            buttonSection.appendChild(button);
-        }
+            buttonSection.appendChild(button);            
+        });
     });
 }
