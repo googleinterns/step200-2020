@@ -26,10 +26,12 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  ArrayList<String> recs= new ArrayList<String>();
+  ArrayList<String> stops= new ArrayList<String>();
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> recs= new ArrayList<String>();
+   
     recs.add("Times Square");
     recs.add("MOMA");
     recs.add("Central Park");
@@ -38,5 +40,11 @@ public class DataServlet extends HttpServlet {
     
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    response.sendRedirect("/routepage.html"); 
   }
 }

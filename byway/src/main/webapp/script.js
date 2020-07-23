@@ -56,26 +56,31 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
     }
   });
 }
-function foo(){
+function foo(stop){
     console.log("moo");
+    // call post
+    console.log(stop);
 }
+
 function getRecs() {
+ const recList = document.getElementById('rec-list');
+
+  console.log("here");
   fetch('/data')
   .then(response => response.json())
   .then((recs) => {
-    const recList = document.getElementById('rec-list');
-    recList.innerText = ""; // clear old comments 
-    recs.forEach((stop) => {
-      const stopElement = document.createElement("li");
-      const btnElement = document.createElement("button");
-      btnElement.innerText = stop;
-      btnElement.value = stop;
-      btnElement.onClick= foo();
-      stopElement.appendChild(btnElement);
-      recList.appendChild(stopElement);
-    });
-  });
+    for(let i = 0; i < recs.length; i++) {
+        const btn = document.createElement('button');
+        btn.id = `recList${i}`;
+        // btn.className = 'list-group-item list-group-item-action';
+        btn.innerHTML = recs[i];
+        btn.addEventListener("click", function() {
+        console.log(recs[i]);});
+        recList.appendChild(btn);
+    }
+  })
 }
+
 /** 
 function createCommentElement(stop){
     const commentElement = document.createElement("li");

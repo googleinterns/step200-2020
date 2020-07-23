@@ -9,8 +9,8 @@
 }
 
 #map{
-  height:500px;
-  width:500px;
+  height:500px; /* 40 vw */
+  width:500px; /* 5 vw padding*/
 }
 
 .route-container{
