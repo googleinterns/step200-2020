@@ -173,19 +173,40 @@ function initAutocomplete() {
 /* fetches start location and destinations from DestinationsServlet and adds to DOM*/
 function getLocations(){
   fetch('/destinations').then(response => response.json()).then((userLocations) => {
-    document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
-    document.getElementById('destinations-container').innerText = "Destinations:";
-    const container = document.getElementById('destinations-container');
+    document.getElementById('start-location-address').innerText = userLocations.start;
+    const container = document.getElementById('destinations-adresses');
     let destinationArray= userLocations.destinations;
     destinationArray.forEach((destination) => {
-      let destinationToAdd = document.createElement('p');
-      destinationToAdd.innerText = destination;
-      container.appendChild(destinationToAdd);
+      const request = {
+        query: destination,
+          fields: ["name", "photos", "formatted_address", "rating", "business_status"]
+  };
+  service = new google.maps.places.PlacesService(map);
+  service.findPlaceFromQuery(request, (results, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+        let destinationToAdd = document.createElement('p');
+        destinationToAdd.className='location';
+        //let destinationPhoto=document.createElement('img');
+       // destinationPhoto.className="destination-photo";
+      //  destinationPhoto.src = results[i].photos[0].getUrl();
+
+
+        let destinationInfo=document.createElement('p');
+        destinationInfo.className = 'destination-info';
+        destinationInfo.innerText= results[0].name;
+        let destinationAddress= document.createElement('p');
+        destinationAddress.innerText = results[0].formatted_address;
+        destinationInfo.appendChild(destinationAddress);
+        container.appendChild(destinationToAdd);
+      //  destinationToAdd.appendChild(destinationPhoto);
+        destinationToAdd.appendChild(destinationInfo);
+    }
+  });  
     }) 
   });
 }
 
-/* fills Start location Searchbox with previously input */
+/* fills Start location Searchbox with previous input */
 function getStartDestination(){
   fetch('/destinations').then(response => response.json()).then((userLocations) =>{
     console.log(userLocations.start);

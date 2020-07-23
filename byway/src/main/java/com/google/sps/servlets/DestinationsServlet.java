@@ -23,8 +23,8 @@ public class DestinationsServlet extends HttpServlet {
         }
     }
 
-UserLocations places = new UserLocations();
-Gson gson = new Gson();
+  UserLocations places = new UserLocations();  
+  Gson gson = new Gson();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
