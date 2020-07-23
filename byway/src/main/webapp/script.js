@@ -73,10 +73,24 @@ function getStops(){
         btn.addEventListener("click", function() {
           console.log("delete me!");
           console.log(stops[i]);
+          // delete from stops array
+          deleteFromStops(stops[i]);
+          // add back to recs array
+          
         });
         stopList.appendChild(btn);
     }
   })
+}
+
+function deleteFromStops(stop){
+    console.log("add to stop");
+    addToRecs(stop); 
+    const params = new URLSearchParams();
+    params.append("text", stop);
+    params.append("action", "remove");
+    fetch('/stop', {method: 'POST', body: params})
+    .then(() => getStops()); // re-render list
 }
 
 function addToStops(stop){
@@ -84,14 +98,25 @@ function addToStops(stop){
     deleteFromRecs(stop);
     const params = new URLSearchParams();
     params.append("text", stop);
+    params.append("action", "add");
     fetch('/stop', {method: 'POST', body: params})
-    .then(() => getStops());
+    .then(() => getStops()); // re-render list
 }
 
 function deleteFromRecs(stop){
     console.log("delete from recs");
     const params = new URLSearchParams();
-    params.append("toDelete", stop);
+    params.append("text", stop);
+    params.append("action", "remove");
+    fetch('/data', {method: 'POST', body: params})
+    .then(() => getRecs());
+}
+
+function addToRecs(stop){
+    console.log("add to recs");
+    const params = new URLSearchParams();
+    params.append("text", stop);
+    params.append("action", "add");
     fetch('/data', {method: 'POST', body: params})
     .then(() => getRecs());
 }
@@ -116,13 +141,3 @@ function getRecs() {
     }
   })
 }
-
-/** 
-function createCommentElement(stop){
-    const commentElement = document.createElement("li");
-    const textElement = document.createElement("span");
-    textElement.innerText = comment.text;
-    commentElement.appendChild(textElement);
-    return commentElement;
-}
-*/

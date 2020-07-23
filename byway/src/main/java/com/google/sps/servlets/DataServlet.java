@@ -26,14 +26,11 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  ArrayList<String> recs=new ArrayList<String>(Arrays.asList( "times square" , "moma" , "m&m store" ));
+  ArrayList<String> recs=new ArrayList<String>(Arrays.asList("times square" , "moma" , "m&m store"));
   ArrayList<String> stops= new ArrayList<String>();
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    for(int i = 0; i < recs.size(); i++){
-        System.out.println(recs.get(i));
-    }
     Gson gson = new Gson();
     String json=gson.toJson(recs);
     
@@ -43,15 +40,14 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("deleting in java");
-    String stop = request.getParameter("toDelete");
-    recs.remove(stop); 
-    
-    for(int i = 0; i < recs.size(); i++){
-        System.out.println(recs.get(i));
+    String stop = request.getParameter("text");
+    String action = request.getParameter("action");
+    if(action.equals("remove")){
+      recs.remove(stop);
     }
-    
-
+    else if(action.equals("add")){
+      recs.add(stop);
+    }
     response.sendRedirect("/routepage.html"); 
   }
   

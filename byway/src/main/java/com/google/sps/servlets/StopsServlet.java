@@ -40,7 +40,14 @@ public class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
-    stops.add(stop);
+    String action = request.getParameter("action");
+    if(action.equals("add")){
+       stops.add(stop);
+    }
+    else if(action.equals("remove")){
+        stops.remove(stop);
+    }
+   
     response.sendRedirect("/routepage.html"); 
   }
 }
