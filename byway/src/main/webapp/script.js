@@ -94,8 +94,6 @@ function deleteFromRecs(stop){
     params.append("toDelete", stop);
     fetch('/data', {method: 'POST', body: params})
     .then(() => getRecs());
-     const recList = document.getElementById('rec-list');
-    recList.innerHTML = ""; // clear list
 }
 
 function getRecs() {
@@ -104,7 +102,6 @@ function getRecs() {
   fetch('/data')
   .then(response => response.json())
   .then((recs) => {
-    // 
     recList.innerHTML = ""; // clear list
     for(let i = 0; i < recs.length; i++) {
         const btn = document.createElement('button');

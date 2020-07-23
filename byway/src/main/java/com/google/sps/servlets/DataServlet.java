@@ -14,10 +14,10 @@
 
 package com.google.sps.servlets;
 
-import java.io.IOException;
 import com.google.gson.Gson;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,15 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  ArrayList<String> recs= new ArrayList<String>();
+  ArrayList<String> recs=new ArrayList<String>(Arrays.asList( "times square" , "moma" , "m&m store" ));
   ArrayList<String> stops= new ArrayList<String>();
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    recs.add("Times Square");
-    recs.add("MOMA");
-    recs.add("Central Park");
+    for(int i = 0; i < recs.size(); i++){
+        System.out.println(recs.get(i));
+    }
     Gson gson = new Gson();
     String json=gson.toJson(recs);
     
@@ -44,13 +43,14 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("deleting in java");
     String stop = request.getParameter("toDelete");
-    stops.remove(stop); 
-    /*
-    for(int i = 0; i < stops.size(); i++){
-        System.out.println(stops.get(i));
+    recs.remove(stop); 
+    
+    for(int i = 0; i < recs.size(); i++){
+        System.out.println(recs.get(i));
     }
-    */
+    
 
     response.sendRedirect("/routepage.html"); 
   }
