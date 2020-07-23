@@ -50,7 +50,7 @@ function foo(){
 }
 
 function getRecs() {
-  fetch('/data')
+  fetch('/recs')
   .then(response => response.json())
   .then((recs) => {
     const recList = document.getElementById('rec-list');
@@ -59,8 +59,8 @@ function getRecs() {
       const stopElement = document.createElement("li");
       const btnElement = document.createElement("button");
       btnElement.innerText = stop;
-      button.setAttribute("onClick", "foo()");
-      button.setAttribute("class", "btn");
+      btnElement.setAttribute("onClick", "foo()");
+      btnElement.setAttribute("class", "btn");
       stopElement.appendChild(btnElement);
       recList.appendChild(stopElement);
     });
