@@ -28,23 +28,23 @@ import java.util.ArrayList;
 @WebServlet("/places")
 public class PlacesServlet extends HttpServlet {
 
-    private final Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<String> places = new ArrayList<>();
-        for(PlaceType location: PlaceType.values()) {
-            String place = formatLocation(location.toString());
-            places.add(place.toString());
-        }
-        response.setContentType("text/html;");
-        response.getWriter().println(gson.toJson(places));
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    ArrayList<String> places = new ArrayList<>();
+    for(PlaceType location: PlaceType.values()) {
+      String place = formatLocation(location.toString());
+      places.add(place.toString());
     }
+    response.setContentType("text/html;");
+    response.getWriter().println(gson.toJson(places));
+  }
 
     /** Format string by capitalizing and adding spaces in-between words. */
-    private String formatLocation(String place) {
-        place = place.substring(0,1).toUpperCase() + place.substring(1);
-        place = place.replace('_', ' ');
-        return place;
-    }
+  private String formatLocation(String place) {
+    place = place.substring(0,1).toUpperCase() + place.substring(1);
+    place = place.replace('_', ' ');
+    return place;
+  }
 }

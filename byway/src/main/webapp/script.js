@@ -16,34 +16,34 @@ var selected = [];
 
 /** Track the selected interests in an array according to their status. */
 function checkStatus(elem) {
-    if(elem.className === "btnActive") {
-        selected.push(elem.innerText);
-    } else {
-        selected = selected.filter(function(interest) {
-            return interest !== elem.innerText;
-        });
-    }
+  if(elem.className === "btnActive") {
+    selected.push(elem.innerText);
+  } else {
+    selected = selected.filter(function(interest) {
+      return interest !== elem.innerText;
+    });
+  }
 }
 
 /** Update the class of the buttons to change their style. */
 function switchStatus(elem) {
-    var switchClass = (elem.className === "btn"? "btnActive": "btn");
-    elem.className = switchClass;
-    checkStatus(elem);
+  var switchClass = (elem.className === "btn"? "btnActive": "btn");
+  elem.className = switchClass;
+  checkStatus(elem);
 }
 
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
-    fetch('/places')
-    .then(response => response.json())
-    .then((places) => {
-        var buttonSection = document.getElementById("interests");
-        places.forEach((place) => {
-            var button = document.createElement("button");
-            button.innerText = place;
-            button.setAttribute("onClick", "switchStatus(this)");
-            button.setAttribute("class", "btn");
-            buttonSection.appendChild(button);            
-        });
+  fetch('/places')
+  .then(response => response.json())
+  .then((places) => {
+    var buttonSection = document.getElementById("interests");
+    places.forEach((place) => {
+      var button = document.createElement("button");
+      button.innerText = place;
+      button.setAttribute("onClick", "switchStatus(this)");
+      button.setAttribute("class", "btn");
+      buttonSection.appendChild(button);            
     });
+  });
 }
