@@ -57,7 +57,6 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   });
 }
 
-
 function foo(){
     console.log("moo");
 }
@@ -80,12 +79,3 @@ function getRecs() {
   });
 }
 
-/** 
-function createCommentElement(stop){
-    const commentElement = document.createElement("li");
-    const textElement = document.createElement("span");
-    textElement.innerText = comment.text;
-    commentElement.appendChild(textElement);
-    return commentElement;
-}
-*/
