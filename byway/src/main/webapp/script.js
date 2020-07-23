@@ -12,20 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
 
 function initMap() {
   var directionsService = new google.maps.DirectionsService();
@@ -53,6 +39,8 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
+    } else {
+      window.alert("Could not calculate route due to: " + status);
     }
   });
 }
@@ -71,8 +59,8 @@ function getRecs() {
       const stopElement = document.createElement("li");
       const btnElement = document.createElement("button");
       btnElement.innerText = stop;
-      btnElement.value = stop;
-      btnElement.onClick= foo();
+      button.setAttribute("onClick", "foo()");
+      button.setAttribute("class", "btn");
       stopElement.appendChild(btnElement);
       recList.appendChild(stopElement);
     });

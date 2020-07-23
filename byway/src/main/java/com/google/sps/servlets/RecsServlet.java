@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
-public class DataServlet extends HttpServlet {
+public class RecsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,15 +40,5 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
-  /**
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String stop = request.getParameter("text");
-    stops.add(stop);
-    for(int i = 0; i < stops.size(); i++){
-        System.out.println(stops.get(i));
-    }
-    response.sendRedirect("/routepage.html"); 
-  }
-  **/
+  
 }
