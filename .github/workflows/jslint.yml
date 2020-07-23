@@ -12,6 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install eslint
-      run: npm install eslint
+      run: yarn global add eslint
     - name: Run ESLint
       run: eslint . --ext .js
