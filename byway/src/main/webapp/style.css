@@ -9,7 +9,6 @@
 }
 
 .btn {
-  margin-left: 100px;
   margin: 10px;
   align-items: center;
   background-color: #DDDDDD;
@@ -21,7 +20,6 @@
 }
 
 .btnActive {
-  margin-left: 100px;
   margin: 10px;
   align-items: center;
   background-color: #68d388;
