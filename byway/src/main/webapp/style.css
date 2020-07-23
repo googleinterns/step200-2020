@@ -9,40 +9,34 @@
 }
 
 #map{
-<<<<<<< HEAD
-  height:500px; /* 40 vw */
+  height:500px; /* change to 40 vw */
   width:500px; /* 5 vw padding*/
-=======
-  height:500px;
-  width:500px;
->>>>>>> 18db0e6... basic UI template
 }
 
 .route-container{
-    width: 1500px;
-    padding-right:15px;
-    padding-left:15px;
-    margin-right:auto;
-    margin-left:auto;
-    margin-top: 20px;
-    display:flex;
+  width: 1500px;
+  padding: 0 15px 0 15px;
+  margin: 20px auto 0 auto;
+  margin-right:auto;
+  margin-left:auto;
+  display:flex;
 }
 
 .box-outline {
-    border: solid 2px #fad3a7;
-    border-radius: 10px;
-    background-color: white;
-    height: 500px;
-    width: 350px;
-    margin: 0 0 0 30px;
+  border: solid 2px #fad3a7;
+  border-radius: 10px;
+  background-color: white;
+  height: 500px;
+  width: 350px;
+  margin: 0 0 0 30px;
 }
 
 .title{
   border-radius: 10px;
   height: 50px;
   width: parent;
-    
 }
+
 #box-outline-stops{
   border: solid 2px #c2edda;
 }
@@ -58,20 +52,21 @@
 }
 
 h3{
-    text-align: center;
+  text-align: center;
 }
 
 .time-title{
     float:left;
 }
+
 .time-outline{
-    border: solid 2px #c2edda;
-    border-radius: 10px;
-    background-color: #c2edda;
-    height: 80px;
-    width: 350px;
-    margin: 10px 0 0 30px;
-  }
+  border: solid 2px #c2edda;
+  border-radius: 10px;
+  background-color: #c2edda;
+  height: 80px;
+  width: 350px;
+  margin: 10px 0 0 30px;
+}
   
 .time-field{
   float: right;
