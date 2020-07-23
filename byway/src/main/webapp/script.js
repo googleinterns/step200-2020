@@ -83,16 +83,6 @@ function getStops(){
   })
 }
 
-function deleteFromStops(stop){
-    console.log("add to stop");
-    addToRecs(stop); 
-    const params = new URLSearchParams();
-    params.append("text", stop);
-    params.append("action", "remove");
-    fetch('/stop', {method: 'POST', body: params})
-    .then(() => getStops()); // re-render list
-}
-
 function addToStops(stop){
     console.log("add to stop");
     deleteFromRecs(stop);
@@ -103,22 +93,14 @@ function addToStops(stop){
     .then(() => getStops()); // re-render list
 }
 
-function deleteFromRecs(stop){
-    console.log("delete from recs");
+function deleteFromStops(stop){
+    console.log("add to stop");
+    addToRecs(stop); 
     const params = new URLSearchParams();
     params.append("text", stop);
     params.append("action", "remove");
-    fetch('/data', {method: 'POST', body: params})
-    .then(() => getRecs());
-}
-
-function addToRecs(stop){
-    console.log("add to recs");
-    const params = new URLSearchParams();
-    params.append("text", stop);
-    params.append("action", "add");
-    fetch('/data', {method: 'POST', body: params})
-    .then(() => getRecs());
+    fetch('/stop', {method: 'POST', body: params})
+    .then(() => getStops()); // re-render list
 }
 
 function getRecs() {
@@ -141,3 +123,22 @@ function getRecs() {
     }
   })
 }
+
+function deleteFromRecs(stop){
+    console.log("delete from recs");
+    const params = new URLSearchParams();
+    params.append("text", stop);
+    params.append("action", "remove");
+    fetch('/data', {method: 'POST', body: params})
+    .then(() => getRecs());
+}
+
+function addToRecs(stop){
+    console.log("add to recs");
+    const params = new URLSearchParams();
+    params.append("text", stop);
+    params.append("action", "add");
+    fetch('/data', {method: 'POST', body: params})
+    .then(() => getRecs());
+}
+
