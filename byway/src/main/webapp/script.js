@@ -14,6 +14,12 @@
 
 var selected = [];
 
+/** Convert selected array into JSON to send to server. */
+function passData() {
+  var data = document.getElementById("data");
+  data.value = JSON.stringify(selected);
+}
+
 /** Track the selected interests in an array according to their status. */
 function checkStatus(elem) {
   if(elem.className === "btnActive") {
@@ -23,6 +29,7 @@ function checkStatus(elem) {
       return interest !== elem.innerText;
     });
   }
+  passData();
 }
 
 /** Update the class of the buttons to change their style. */
