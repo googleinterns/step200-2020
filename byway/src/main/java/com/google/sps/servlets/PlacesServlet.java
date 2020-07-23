@@ -28,17 +28,15 @@ import java.util.ArrayList;
 @WebServlet("/places")
 public class PlacesServlet extends HttpServlet {
 
-    Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ArrayList<String> places = new ArrayList<>();
-        
         for(PlaceType location: PlaceType.values()) {
             String place = formatLocation(location.toString());
             places.add(place.toString());
         }
-
         response.setContentType("text/html;");
         response.getWriter().println(gson.toJson(places));
     }
