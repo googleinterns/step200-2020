@@ -41,9 +41,6 @@ public class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     stops.add(stop);
-    for(int i = 0; i < stops.size(); i++){
-        System.out.println(stops.get(i));
-    }
     response.sendRedirect("/routepage.html"); 
   }
 }

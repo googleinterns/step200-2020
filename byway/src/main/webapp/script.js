@@ -58,13 +58,13 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 }
 
 function getStops(){
-  console.log("stoop!");
+  console.log("get stops!");
   const stopList = document.getElementById('stop-list');
   
   fetch('/stop')
   .then(response => response.json())
   .then((stops) => {
-    stopList.innerText = ""; // clear list
+    stopList.innerHTML = ""; // clear list
     for(let i = 0; i < stops.length; i++) {
         const btn = document.createElement('button');
         btn.id = `stopList${i}`;
@@ -79,25 +79,41 @@ function getStops(){
   })
 }
 
-function foo(stop){
-    console.log("moo");
+function addToStops(stop){
+    console.log("add to stop");
+    deleteFromRecs(stop);
     const params = new URLSearchParams();
     params.append("text", stop);
     fetch('/stop', {method: 'POST', body: params})
     .then(() => getStops());
 }
 
+function deleteFromRecs(stop){
+    console.log("delete from recs");
+    const params = new URLSearchParams();
+    params.append("toDelete", stop);
+    fetch('/data', {method: 'POST', body: params})
+    .then(() => getRecs());
+     const recList = document.getElementById('rec-list');
+    recList.innerHTML = ""; // clear list
+}
+
 function getRecs() {
+ console.log("get recs!")
  const recList = document.getElementById('rec-list');
   fetch('/data')
   .then(response => response.json())
   .then((recs) => {
+    // 
+    recList.innerHTML = ""; // clear list
     for(let i = 0; i < recs.length; i++) {
         const btn = document.createElement('button');
         btn.id = `recList${i}`;
         btn.innerHTML = recs[i];
         btn.addEventListener("click", function() {
-          foo(recs[i]);
+          addToStops(recs[i]);
+          
+
         });
         recList.appendChild(btn);
     }

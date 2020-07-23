@@ -31,7 +31,7 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("in doGet");
+
     recs.add("Times Square");
     recs.add("MOMA");
     recs.add("Central Park");
@@ -41,15 +41,18 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
-  /**
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String stop = request.getParameter("text");
-    stops.add(stop);
+    String stop = request.getParameter("toDelete");
+    stops.remove(stop); 
+    /*
     for(int i = 0; i < stops.size(); i++){
         System.out.println(stops.get(i));
     }
+    */
+
     response.sendRedirect("/routepage.html"); 
   }
-  **/
+  
 }
