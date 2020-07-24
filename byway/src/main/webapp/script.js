@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
 
 window.onload = function() {
   setProgressBar(1);
@@ -22,17 +19,18 @@ window.onload = function() {
   getLocations();
 };
 
+/* @param {int} pageNumber*/
 function setProgressBar(pageNumber){
   var ul = document.getElementById("progressbar");
   var items = ul.getElementsByTagName("li");
   items[pageNumber-1].className = 'active';
 }
 
-var defaultCenter = {
+let defaultCenter = {
   lat: 40.712776,
   lng:-74.005974
 };
-var userlatlng = {lat:null , lng: null}
+let userlatlng = {lat:null , lng: null};
 
 function initAutocomplete() {   
   const map = new google.maps.Map(document.getElementById("map"), {
@@ -61,7 +59,8 @@ function initAutocomplete() {
   createSearchBox(map,'pac-input-2');
   
 }
-
+/* @param {string} container */
+/* @param {google.maps.map} map */
 function createSearchBox(map,container){
   const start = document.getElementById(container);
   const searchBox = new google.maps.places.SearchBox(start);
