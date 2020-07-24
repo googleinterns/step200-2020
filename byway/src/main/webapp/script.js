@@ -23,10 +23,9 @@ window.onload = function() {
 };
 
 function setProgressBar(pageNumber){
-    var ul = document.getElementById("progressbar");
-    var items = ul.getElementsByTagName("li");
-    console.log(items);
-    items[pageNumber-1].className = 'active';
+  var ul = document.getElementById("progressbar");
+  var items = ul.getElementsByTagName("li");
+  items[pageNumber-1].className = 'active';
 }
 
 var defaultCenter = {
