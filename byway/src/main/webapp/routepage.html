@@ -10,8 +10,9 @@
   <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=&v=weekly"
       defer></script>
-  <script src="script.js"></script>
-  <link rel="stylesheet" href="style.css">
+  <script src="map.js"></script>
+  <script src="routepage.js"></script>
+  <link rel="stylesheet" href="routepage.css">
 </head>
 <body onLoad="getRecs()">
   <p>Place holder button to draw route</p>
@@ -38,7 +39,7 @@
     </div>
     
     <div class="box-outline" id="box-outline-stops">
-      <div class= "title" id="stops">
+      <div class= "panel-title" id="stops">
         <h3>Recommended Stops</h3>
       </div>
       <div class="center" id="rec-list"></div>

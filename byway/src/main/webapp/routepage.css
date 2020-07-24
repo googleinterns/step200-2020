@@ -4,10 +4,6 @@
   width: 650px;
 }
 
-#greeting-container {
-  margin-top: 20px;
-}
-
 #map{
   height:500px; /* change to 40 vw */
   width:500px; /* 5 vw padding*/
@@ -31,10 +27,11 @@
   margin: 0 0 0 30px;
 }
 
-.title{
+.panel-title{
   border-radius: 10px;
   height: 50px;
   width: parent;
+  margin-bottom: 10px;
 }
 
 #box-outline-stops{
@@ -76,4 +73,15 @@ h3.box-outline{
   width: 100px;
   background-color: white;
   margin: 2px 2px 2px 0;
+}
+
+.rec-btn{
+  display:block;
+  border: solid 2px #fad3a7;
+  border-radius: 10px;
+  background-color: white;
+  height: 75px;
+  width: 300px;
+  padding: 5px;
+  margin: 0 auto 10px auto;
 }

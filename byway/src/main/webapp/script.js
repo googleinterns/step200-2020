@@ -55,13 +55,11 @@ function getRecs() {
     const recList = document.getElementById('rec-list');
     recList.innerText = ""; // clear old comments 
     recs.forEach((stop) => {
-      const stopElement = document.createElement("li");
-      const btnElement = document.createElement("button");
-      btnElement.innerText = stop;
-      btnElement.setAttribute("onClick", "foo()");
-      btnElement.setAttribute("class", "btn");
-      stopElement.appendChild(btnElement);
-      recList.appendChild(stopElement);
+      let btn = document.createElement("button");
+      btn.innerText = stop;
+      btn.setAttribute("onClick", "foo()");
+      btn.setAttribute("class", "btn rec-btn");
+      recList.appendChild(btn);
     });
   });
 }
