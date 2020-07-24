@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 public class DestinationsServlet extends HttpServlet {
 
     private final static class UserLocations{ 
-      private final String start = "";
-      private final ArrayList<String> destinations =  new ArrayList<String>();
+      private String start = "";
+      private ArrayList<String> destinations =  new ArrayList<String>();
     }
 
   private final UserLocations places = new UserLocations();
