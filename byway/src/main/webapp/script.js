@@ -28,7 +28,8 @@ function initMap() {
   end = "Yonkers, NY"
   var mapOptions = {
     zoom: 14,
-    center: "New York, NY"
+    // NYC coords
+    center:  new google.maps.LatLng(40.730610, -73.935242)
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
@@ -81,9 +82,21 @@ function getStops(){
   })
 }
 
+function remove(stop){
+  let obj = waypts.find(x => x.location === stop);
+  let index = waypts.indexOf(obj);
+  if (index > -1) {
+    waypts.splice(index, 1);
+  }
+  console.log(index);
+  console.log(waypts);
+}
+
 /* Add stop to the ArrayList in the servlet */
 function addToStops(stop){
-  modifyMap(stop);
+  // add a new waypoint to the request when a new stop is added to the schedule
+  waypts.push({location:stop});
+  calcRoute();
   deleteFromRecs(stop);
   const params = new URLSearchParams();
   params.append("text", stop);
@@ -94,6 +107,9 @@ function addToStops(stop){
 
 /* Delete stop from the ArrayList in the servlet */
 function deleteFromStops(stop){
+  // remove waypoint from the request when a new stop is removed from the schedule
+  remove(stop);
+  calcRoute();
   addToRecs(stop); 
   const params = new URLSearchParams();
   params.append("text", stop);

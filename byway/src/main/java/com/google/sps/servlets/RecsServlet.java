@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/recs")
 public class RecsServlet extends HttpServlet {
   // initial list of fake data
-  ArrayList<String> recs=new ArrayList<String>(Arrays.asList("times square" , "moma" , "m&m world"));
+  ArrayList<String> recs=new ArrayList<String>(Arrays.asList("Times Square", "MOMA", "Central Park"));
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
