@@ -13,10 +13,13 @@
 // limitations under the License.
 
 
-/* @param {int} pageNumber*/
+/*
+* Sets Progress Bar to correct location based on the page number
+* @param {int} pageNumber
+*/
 function setProgressBar(pageNumber){
-  var ul = document.getElementById("progressbar");
-  var items = ul.getElementsByTagName("li");
+  let ul = document.getElementById("progressbar");
+  let items = ul.getElementsByTagName("li");
   items[pageNumber-1].className = 'active';
 }
 
@@ -27,6 +30,9 @@ const defaultCenter = {
 Object.freeze(defaultCenter);
 let userlatlng = {lat:null , lng: null};
 
+/*
+* Creates map and search boxes with autocomplete
+*/
 function initAutocomplete() {   
   const map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: defaultCenter.lat, lng: defaultCenter.lng },
@@ -50,12 +56,18 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  createSearchBox(map,'start-search-box');
-  createSearchBox(map,'destinations-search-box');
+  const START_SEARCH_BOX = 'start-search-box';
+  const DESTINATIONS_SEARCH_BOX= 'destinations-search-box';
+  createSearchBox(map,START_SEARCH_BOX);
+  createSearchBox(map,DESTINATIONS_SEARCH_BOX);
   
 }
-/* @param {string} container */
-/* @param {google.maps.map} map */
+
+/*
+ * Creates a search box
+ * @param {google.maps.Map} map
+ * @param {string} container
+ */
 function createSearchBox(map,container){
   const start = document.getElementById(container);
   const searchBox = new google.maps.places.SearchBox(start);
@@ -112,7 +124,10 @@ function createSearchBox(map,container){
 
 }
 
-/* fetches start location and destinations from DestinationsServlet and adds to DOM*/
+/*
+* fetches start location and destinations from DestinationsServlet and adds to DOM
+*/
+
 function getLocations(){
   getDestinations().then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
@@ -127,7 +142,9 @@ function getLocations(){
   });
 }
 
-/* fills Start location Searchbox with previously input */
+/* 
+*fills Start location Searchbox with previously input
+ */
 function getStartDestination(){
   getDestinations().then((userLocations) =>{
     console.log(userLocations.start);
@@ -135,13 +152,18 @@ function getStartDestination(){
   });
 }
 
+/* 
+* fetches data from servelt
+*/
 function getDestinations(){
     fetch('/api/destinations').then(response => response.json()).then((destinations)=>{
         return destinations;
     })
 }
   
-/* Gets users current location */
+/* 
+* Gets users current location 
+*/
 function getCurrentAddress(){
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ 'location': userlatlng}, (results, status) => {
