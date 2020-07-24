@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns all PlaceTypes from Places API. */
 @WebServlet("/places")
-public class PlacesServlet extends HttpServlet {
+public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
 
@@ -34,19 +34,19 @@ public class PlacesServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> places = new ArrayList<>();
     for(PlaceType location: PlaceType.values()) {
-      String place = formatLocation(location.toString());
-      places.add(place.toString());
+      String place = formatLocation(location);
+      places.add(place);
     }
-    response.setContentType("text/html;");
+    response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(places));
   }
 
   /** 
    * Format string by capitalizing and adding spaces in-between words.
-   * @param place is the original location name.
+   * @param location is a PlaceType that indicates a type of location/interest.
    * @return is the modified location name.
    */
-  private String formatLocation(String place) {
+  private String formatLocation(PlaceType location) {
     place = place.substring(0,1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
