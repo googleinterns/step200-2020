@@ -43,7 +43,8 @@ public class PlacesServlet extends HttpServlet {
 
   /** 
    * Format string by capitalizing and adding spaces in-between words.
-   * @param place is the location name.
+   * @param place is the original location name.
+   * @return is the modified location name.
    */
   private String formatLocation(String place) {
     place = place.substring(0,1).toUpperCase() + place.substring(1);
