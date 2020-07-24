@@ -45,6 +45,6 @@ public class GeneratorServlet extends HttpServlet {
     for(String elem: interestsSelected) {
       response.getWriter().println(elem);
     }
-    //response.sendRedirect("/generator.html");
+    response.sendRedirect("/generator.html");
   }
 }
