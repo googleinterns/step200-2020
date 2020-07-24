@@ -12,28 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var map;
+var directionsRenderer;
+var directionsService;
+var start;
+var end;
+var waypts=[];
+
 function initMap() {
-  var directionsService = new google.maps.DirectionsService();
-  var directionsRenderer = new google.maps.DirectionsRenderer();
-  var start = new google.maps.LatLng(37.7699298, -122.4469157);
-  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
+  // start = new google.maps.LatLng(37.7699298, -122.4469157);
+  // end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  start = "111 8th Ave, New York, NY";
+  end = "Yonkers, NY"
   var mapOptions = {
     zoom: 14,
-    center: start
+    center: "New York, NY"
   }
-  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   document.getElementById("stop-list").addEventListener("focus", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
 }
 
-function calcRoute(directionsService, directionsRenderer, start, end) {
+function calcRoute() {
   console.log('getting route');
   var request = {
     origin:  start,
     destination: end,
-    travelMode: 'DRIVING'
+    travelMode: 'DRIVING',
+    waypoints: waypts
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
@@ -45,9 +55,9 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 }
 
 /* Add a new waypoint to the request when a new stop is added to the schedule.*/
-function modifyMap(){
-  console.log('foo');
-  // calcRoute(directionsService, directionsRenderer, start, end);
+function modifyMap(stop){
+  waypts.push({location:stop});
+  calcRoute();
 }
 
 /* Get the new list of stops upon user selection */
@@ -73,7 +83,7 @@ function getStops(){
 
 /* Add stop to the ArrayList in the servlet */
 function addToStops(stop){
-  modifyMap();
+  modifyMap(stop);
   deleteFromRecs(stop);
   const params = new URLSearchParams();
   params.append("text", stop);
