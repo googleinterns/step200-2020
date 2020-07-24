@@ -15,17 +15,12 @@
 /**
  * Adds a random greeting to the page.
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
+window.onload = function() {
+  setProgressBar(1);
+  getStartDestination();
+  getLocations();
+};
 
 function setProgressBar(pageNumber){
     var ul = document.getElementById("progressbar");
@@ -34,15 +29,15 @@ function setProgressBar(pageNumber){
     items[pageNumber-1].className = 'active';
 }
 
-var center = {
+var defaultCenter = {
   lat: 40.712776,
   lng:-74.005974
 };
-userlatlng = {lat:null , lng: null}
+var userlatlng = {lat:null , lng: null}
 
 function initAutocomplete() {   
   const map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: center.lat, lng: center.lng },
+    center: { lat: defaultCenter.lat, lng: defaultCenter.lng },
     zoom: 13,
     mapTypeId: "roadmap"
   });
@@ -56,7 +51,7 @@ function initAutocomplete() {
       };
       map.setCenter(userlatlng);
     }, function() {
-         handleLocationError(true, map.getCenter());
+         map.setCenter(defaultCenter);
         });
   } 
   else {
