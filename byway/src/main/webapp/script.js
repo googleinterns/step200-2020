@@ -1,5 +1,8 @@
 function setProgressBar(pageNumber){
   let ul = document.getElementById("progressbar");
   let items = ul.getElementsByTagName("li");
-  items[pageNumber-1].className = 'active';
+  for(i=0; i<pageNumber;i++){
+    items[i].className = 'active';
+  }
+  
 }

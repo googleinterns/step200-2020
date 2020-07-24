@@ -17,6 +17,11 @@
 * Sets Progress Bar to correct location based on the page number
 * @param {int} pageNumber
 */
+window.onload = function() {
+  setProgressBar(1);
+  getStartDestination();
+  getLocations();
+};
 
 const defaultCenter = {
   lat: 40.712776,
