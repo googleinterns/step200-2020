@@ -14,7 +14,6 @@
 
 package com.google.maps;
 
-import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -24,27 +23,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
-/** Servlet that returns all PlaceTypes from Places API. */
-@WebServlet("/places")
-public class PlacesServlet extends HttpServlet {
+/** Servlet that loads places of interest and generates 
+ *  recommended places based on interests selected.
+ */
+@WebServlet("/generator")
+public class GeneratorServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
+  private ArrayList<String> interestsSelected = new ArrayList<>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> places = new ArrayList<>();
-    for(PlaceType location: PlaceType.values()) {
-      String place = formatLocation(location.toString());
-      places.add(place.toString());
-    }
     response.setContentType("text/html;");
-    response.getWriter().println(gson.toJson(places));
+    response.getWriter().println(gson.toJson(interestsSelected));
   }
 
-  /** Format string by capitalizing and adding spaces in-between words. */
-  private String formatLocation(String place) {
-    place = place.substring(0,1).toUpperCase() + place.substring(1);
-    place = place.replace('_', ' ');
-    return place;
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String interests = request.getParameter("data");
+    interestsSelected = gson.fromJson(interests, ArrayList.class);
+    for(String elem: interestsSelected) {
+      response.getWriter().println(elem);
+    }
+    //response.sendRedirect("/generator.html");
   }
 }
