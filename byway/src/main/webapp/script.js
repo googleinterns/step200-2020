@@ -168,10 +168,12 @@ function initAutocomplete() {
     });
     map.fitBounds(bounds);
   });
+
+  getLocations(map);
 }
 
 /* fetches start location and destinations from DestinationsServlet and adds to DOM*/
-function getLocations(){
+function getLocations(map){
   fetch('/destinations').then(response => response.json()).then((userLocations) => {
     document.getElementById('start-location-address').innerText = userLocations.start;
     const container = document.getElementById('destinations-adresses');
@@ -186,9 +188,9 @@ function getLocations(){
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         let destinationToAdd = document.createElement('p');
         destinationToAdd.className='location';
-        //let destinationPhoto=document.createElement('img');
-       // destinationPhoto.className="destination-photo";
-      //  destinationPhoto.src = results[i].photos[0].getUrl();
+        let destinationPhoto=document.createElement('img');
+        destinationPhoto.className="destination-photo";
+        destinationPhoto.src = results[0].photos[0].getUrl();
 
 
         let destinationInfo=document.createElement('p');
@@ -198,7 +200,7 @@ function getLocations(){
         destinationAddress.innerText = results[0].formatted_address;
         destinationInfo.appendChild(destinationAddress);
         container.appendChild(destinationToAdd);
-      //  destinationToAdd.appendChild(destinationPhoto);
+        destinationToAdd.appendChild(destinationPhoto);
         destinationToAdd.appendChild(destinationInfo);
     }
   });  

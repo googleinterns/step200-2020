@@ -72,8 +72,8 @@
 }
 
 #destinations-page #map {
-  height: 30vw;
-  width:30vw;
+  height: 40vw;
+  width:40vw;
   position:relative;
   grid-column: 1/span 1;
   grid-row: 1/span 2;
@@ -95,6 +95,7 @@ position:relative;
   grid-column: 2/span 2;
   grid-row: 2/span 2;
   position:relative;
+  top:-30px;
   border:2px solid #ff826c;
   border-radius:10%;
   width:40vw;
@@ -114,13 +115,17 @@ position:relative;
 
 #destinations-page .location{
     border:1px solid black;
-    margin:50px;
-    border-radius: 15%;
+    margin:20px;
+    height:6vw;
+    width:35vw;
     
 }
 #destinations-page #destinations-container .destination-photo{
     display:inline-block;
-    height:6vw;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
 }
 
 #destinations-page #destinations-container .destination-info{
