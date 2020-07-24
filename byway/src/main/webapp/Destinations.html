@@ -1,5 +1,6 @@
-{% extends "base.html" %}
-{% block head %}
+<!DOCTYPE html>
+<html>
+  <head>
     <meta charset="UTF-8">
     <title>Select Destinations</title>
     <link rel="stylesheet" href="style.css">
@@ -9,11 +10,25 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&callback=initAutocomplete&libraries=places&directions&v=weekly"
       defer
     ></script>
-    <link href="https://fonts.googleapis.com/css2?family=Karla&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
-{% endblock %}
-  
-{% block content %}
- <div id="destinations-page">
+   
+  </head>
+  <body id="destinations-page" onload="setProgressBar(1); getStartDestination();"  >
+
+    <div class="header">
+      <img src="/images/logo.png" alt="logo" class="logo">
+      <div class="header-right">
+        <a>byway.</a>
+      </div>
+    </div>
+    
+    <div id="progressbar-container">
+      <ul id="progressbar">
+        <li>Choose Destinations</li>
+        <li>choose interests</li>
+        <li>View route</li>
+      </ul>
+    </div>
+    
     <div id="map-search-container">
       <div id="map"></div>
       <div id= "destination-input-form">
@@ -46,13 +61,9 @@
           </div>
         </form>
         
-            <div id="destinations-container"> 
-               
-            </div>
-
+        <div id="destinations-container"> </div>
       </div>
       <button id='next-button'>NEXT</button>
     </div>
-   </div>
-{% endblock %}
- 
+  </body>
+</html>

@@ -12,16 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-window.onload = function() {
-  setProgressBar(1);
-  getStartDestination();
-};
-
 function setProgressBar(pageNumber){
-    var ul = document.getElementById("progressbar");
-    var items = ul.getElementsByTagName("li");
-    console.log(items);
-    items[pageNumber-1].className = 'active';
+  var ul = document.getElementById("progressbar");
+  var items = ul.getElementsByTagName("li");
+  items[pageNumber-1].className = 'active';
 }
 
 var defaultCenter = {
@@ -117,36 +111,35 @@ function createSearchBox(map,container){
 
 /* fetches start location and destinations from DestinationsServlet and adds to DOM*/
 function getLocations(map){
-    console.log("called");
   fetch('/destinations').then(response => response.json()).then((userLocations) => {
     const container = document.getElementById('destinations-container');
     let destinationArray= userLocations.destinations;
-    
+
     destinationArray.forEach((destination) => {
       const request = {
         query: destination,
         fields: ["name", "photos", "formatted_address", "rating", "business_status"]
-  };
-  service = new google.maps.places.PlacesService(map);
-  service.findPlaceFromQuery(request, (results, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-        let destinationToAdd = document.createElement('p');
-        destinationToAdd.className='location';
-        let destinationPhoto=document.createElement('img');
-        destinationPhoto.className="destination-photo";
-        destinationPhoto.src = results[0].photos[0].getUrl();
+      };
+      service = new google.maps.places.PlacesService(map);
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          let destinationToAdd = document.createElement('p');
+          destinationToAdd.className='location';
+          let destinationPhoto=document.createElement('img');
+          destinationPhoto.className="destination-photo";
+          destinationPhoto.src = results[0].photos[0].getUrl();
         
-        let destinationInfo=document.createElement('p');
-        destinationInfo.className = 'destination-info';
-        destinationInfo.innerText= results[0].name;
-        let destinationAddress= document.createElement('p');
-        destinationAddress.innerText = results[0].formatted_address;
-        destinationInfo.appendChild(destinationAddress);
-        container.appendChild(destinationToAdd);
-        destinationToAdd.appendChild(destinationPhoto);
-        destinationToAdd.appendChild(destinationInfo);
-    }
-  });  
+          let destinationInfo=document.createElement('p');
+          destinationInfo.className = 'destination-info';
+          destinationInfo.innerText= results[0].name;
+          let destinationAddress= document.createElement('p');
+          destinationAddress.innerText = results[0].formatted_address;
+          destinationInfo.appendChild(destinationAddress);
+          container.appendChild(destinationToAdd);
+          destinationToAdd.appendChild(destinationPhoto);
+          destinationToAdd.appendChild(destinationInfo);
+        }
+      });  
     }) 
   });
 }
