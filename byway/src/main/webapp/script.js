@@ -13,12 +13,6 @@
 // limitations under the License.
 
 
-window.onload = function() {
-  setProgressBar(1);
-  getStartDestination();
-  getLocations();
-};
-
 /* @param {int} pageNumber*/
 function setProgressBar(pageNumber){
   var ul = document.getElementById("progressbar");
@@ -26,10 +20,11 @@ function setProgressBar(pageNumber){
   items[pageNumber-1].className = 'active';
 }
 
-let defaultCenter = {
+const defaultCenter = {
   lat: 40.712776,
   lng:-74.005974
 };
+Object.freeze(defaultCenter);
 let userlatlng = {lat:null , lng: null};
 
 function initAutocomplete() {   
@@ -55,8 +50,8 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  createSearchBox(map,'pac-input');
-  createSearchBox(map,'pac-input-2');
+  createSearchBox(map,'start-search-box');
+  createSearchBox(map,'destinations-search-box');
   
 }
 /* @param {string} container */
@@ -119,7 +114,7 @@ function createSearchBox(map,container){
 
 /* fetches start location and destinations from DestinationsServlet and adds to DOM*/
 function getLocations(){
-  fetch('/destinations').then(response => response.json()).then((userLocations) => {
+  getDestinations().then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
     const container = document.getElementById('destinations-container');
     container.innerText = "Destinations:";
@@ -134,10 +129,16 @@ function getLocations(){
 
 /* fills Start location Searchbox with previously input */
 function getStartDestination(){
-  fetch('/destinations').then(response => response.json()).then((userLocations) =>{
+  getDestinations().then((userLocations) =>{
     console.log(userLocations.start);
-    document.getElementById('pac-input').value = userLocations.start;
+    document.getElementById('start-search-box').value = userLocations.start;
   });
+}
+
+function getDestinations(){
+    fetch('/api/destinations').then(response => response.json()).then((destinations)=>{
+        return destinations;
+    })
 }
   
 /* Gets users current location */
@@ -146,7 +147,7 @@ function getCurrentAddress(){
   geocoder.geocode({ 'location': userlatlng}, (results, status) => {
     if (status === "OK") {
       if (results[0]) {
-        document.getElementById('pac-input').value=results[0].formatted_address;
+        document.getElementById('start-search-box').value=results[0].formatted_address;
       } else {
           window.alert("No results found");
         }

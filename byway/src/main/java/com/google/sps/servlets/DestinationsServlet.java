@@ -10,17 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/destinations")
+@WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
 
-    public static class UserLocations{ 
-        String start;
-        ArrayList<String> destinations;
-
-        public UserLocations(){
-            this.start = "";
-            this.destinations= new ArrayList<String>();
-        }
+    private final static class UserLocations{ 
+      private final String start = "";
+      private final ArrayList<String> destinations =  new ArrayList<String>();
     }
 
   private final UserLocations places = new UserLocations();
@@ -33,6 +28,7 @@ public class DestinationsServlet extends HttpServlet {
     response.getWriter().println(userCurrentandDestinations);
   }
 
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String current= request.getParameter("start-location");
     String place = request.getParameter("destinations"); 
@@ -42,8 +38,6 @@ public class DestinationsServlet extends HttpServlet {
     String userCurrentandDestinations = gson.toJson(places);
     response.setContentType("application/json;");
     response.getWriter().println(userCurrentandDestinations);
-    response.sendRedirect("/Destinations.html");
-      
   }
 
 }
