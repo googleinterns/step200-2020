@@ -7,24 +7,23 @@
 .header {
   overflow: hidden;
   background-color: #ffc05f;
-  padding: 20px 40px;
+  padding: 0px 40px;
 }
-.header a {
-  float: left;
+.header #name {
+  float: right;
   color: white;
   text-align: center;
-  padding:14px;
-  text-decoration: none;
+  margin-top:20px;
   font-size: 7vw;
   font-weight: bold;
-  line-height: 25px;
-  border-radius: 4px;
 }
 
 .header img.logo {
-  width:5vw;
-  height:5vw;
+  width:8vw;
+  height:8vw;
+  margin-top:40px;
   animation: move 4s linear infinite;
+ 
 }
 
 @keyframes move{
@@ -42,10 +41,6 @@
   100%{
     opacity:0;
   }
-}
-
-.header-right {
-  float: right;
 }
 
 #destinations-page #map img
