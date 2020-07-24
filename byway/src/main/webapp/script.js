@@ -57,7 +57,7 @@ function initAutocomplete() {
   }
   // Create the search boxes and link them to the UI elements.
   const START_SEARCH_BOX = 'pac-input';
-  const DESTINATIONS_SEARCH_BOX= 'destinations-search-box';
+  const DESTINATIONS_SEARCH_BOX= 'pac-input-2';
   createSearchBox(map,START_SEARCH_BOX);
   createSearchBox(map,DESTINATIONS_SEARCH_BOX);
   
@@ -156,7 +156,7 @@ function getStartDestination(){
 * fetches data from servelt
 */
 function getDestinations(){
-    fetch('/api/destinations').then(response => response.json()).then((destinations)=>{
+    fetch('/apidestinations').then(response => response.json()).then((destinations)=>{
         return destinations;
     })
 }

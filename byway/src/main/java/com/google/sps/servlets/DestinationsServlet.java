@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/api/destinations")
+@WebServlet("/apidestinations")
 public class DestinationsServlet extends HttpServlet {
 
     private final static class UserLocations{ 
