@@ -41,7 +41,10 @@ public class PlacesServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(places));
   }
 
-    /** Format string by capitalizing and adding spaces in-between words. */
+  /** 
+   * Format string by capitalizing and adding spaces in-between words.
+   * @param place is the location name.
+   */
   private String formatLocation(String place) {
     place = place.substring(0,1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');

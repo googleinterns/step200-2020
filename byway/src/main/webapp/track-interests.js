@@ -14,7 +14,10 @@
 
 let selected = [];
 
-/** Track the selected interests in an array according to their status. */
+/** 
+ * Track the selected interests in an array according to their status. 
+ * @param elem tracks the current button element chosen.
+ */
 function checkStatus(elem) {
   if(elem.className === "btnActive") {
     selected.push(elem.innerText);
@@ -25,7 +28,10 @@ function checkStatus(elem) {
   }
 }
 
-/** Update the class of the buttons to change their style. */
+/** 
+ * Update the class of the buttons to change their style.
+ * @param elem tracks the current button element chosen.
+ */
 function switchStatus(elem) {
   let switchClass = (elem.className === "btn"? "btnActive": "btn");
   elem.className = switchClass;
