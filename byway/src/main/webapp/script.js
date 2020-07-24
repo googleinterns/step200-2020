@@ -128,8 +128,8 @@ function createSearchBox(map,container){
 function getLocations(){
   fetch('/destinations').then(response => response.json()).then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
-    document.getElementById('destinations-container').innerText = "Destinations:";
     const container = document.getElementById('destinations-container');
+    container.innerText = "Destinations:";
     let destinationArray= userLocations.destinations;
     destinationArray.forEach((destination) => {
       let destinationToAdd = document.createElement('p');
