@@ -20,10 +20,20 @@ function initialize() {
 
 function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    for (var i = 0; i < results.length; i++) {
-      console.log(results[i]);
+    for (let i = 0; i < results.length; i++) {
+      createMarker(results[i]);
     }
+  } else {
+    alert("Our services are currently down. Oops!");
   }
+}
+
+function createMarker(place) {
+  var marker = new google.maps.Marker({
+    position: place.geometry.location,
+    map: map,
+    title: place.name
+  });
 }
 
 function loadMap() {
