@@ -23,9 +23,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /** Servlet that handles data for recommended places */
 @WebServlet("/recs")
 public class RecsServlet extends HttpServlet {
+  // initial list of fake data
   ArrayList<String> recs=new ArrayList<String>(Arrays.asList("times square" , "moma" , "m&m store"));
 
   @Override
@@ -36,7 +38,8 @@ public class RecsServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
-  
+
+  /* Method which modifies the recs ArrayList */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");

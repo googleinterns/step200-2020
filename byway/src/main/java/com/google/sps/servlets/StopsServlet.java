@@ -14,10 +14,9 @@
 
 package com.google.sps.servlets;
 
-import java.io.IOException;
 import com.google.gson.Gson;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +36,7 @@ public class StopsServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
+  /* Method which modifies the stops ArrayList */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
@@ -47,7 +47,6 @@ public class StopsServlet extends HttpServlet {
     else if(action.equals("remove")){
         stops.remove(stop);
     }
-   
     response.sendRedirect("/routepage.html"); 
   }
 }
