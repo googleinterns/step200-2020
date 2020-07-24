@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+
+    {% endblock %}
+  </head>
+  <body>
+      <div class="header">
+        <img src="/images/logo.png" alt="logo" class="logo">
+        <div class="header-right">
+          <a>byway.</a>
+        </div>
+      </div>
+    
+      
+      <div id="progressbar-container">
+        <ul id="progressbar">
+          <li>Choose Destinations</li>
+          <li>choose interests</li>
+          <li>View route</li>
+        </ul>
+      </div>
+    <div id="content">{% block content %}{% endblock %}</div>
+  </body>
+</html>
