@@ -38,6 +38,7 @@ public class DestinationsServlet extends HttpServlet {
     String userCurrentandDestinations = gson.toJson(places);
     response.setContentType("application/json;");
     response.getWriter().println(userCurrentandDestinations);
+    response.sendRedirect("/destinations.html");
   }
 
 }
