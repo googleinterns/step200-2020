@@ -56,7 +56,7 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  const START_SEARCH_BOX = 'start-search-box';
+  const START_SEARCH_BOX = 'pac-input';
   const DESTINATIONS_SEARCH_BOX= 'destinations-search-box';
   createSearchBox(map,START_SEARCH_BOX);
   createSearchBox(map,DESTINATIONS_SEARCH_BOX);
@@ -148,7 +148,7 @@ function getLocations(){
 function getStartDestination(){
   getDestinations().then((userLocations) =>{
     console.log(userLocations.start);
-    document.getElementById('start-search-box').value = userLocations.start;
+    document.getElementById('pac-input').value = userLocations.start;
   });
 }
 
@@ -169,7 +169,8 @@ function getCurrentAddress(){
   geocoder.geocode({ 'location': userlatlng}, (results, status) => {
     if (status === "OK") {
       if (results[0]) {
-        document.getElementById('start-search-box').value=results[0].formatted_address;
+          console.log(results[0].formatted_address);
+        document.getElementById("pac-input").value=results[0].formatted_address;
       } else {
           window.alert("No results found");
         }
