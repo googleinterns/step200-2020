@@ -12,20 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
 
 function initMap() {
   var directionsService = new google.maps.DirectionsService();
@@ -38,10 +24,11 @@ function initMap() {
   }
   var map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-     document.getElementById("route").addEventListener("click", function() {
+  document.getElementById("stop-list").addEventListener("focus", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
 }
+
 
 function calcRoute(directionsService, directionsRenderer, start, end) {
   console.log('getting route');
@@ -56,8 +43,16 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
     }
   });
 }
+function foo(){
+  console.log('foo');
+  // calcRoute(directionsService, directionsRenderer, start, end);
+}
 
 function getStops(){
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
+  var start = new google.maps.LatLng(37.7699298, -122.4469157);
+  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
   console.log("get stops!");
   const stopList = document.getElementById('stop-list');
   
@@ -66,24 +61,21 @@ function getStops(){
   .then((stops) => {
     stopList.innerHTML = ""; // clear list
     for(let i = 0; i < stops.length; i++) {
-        const btn = document.createElement('button');
-        btn.id = `stopList${i}`;
-        // btn.className = 'list-group-item list-group-item-action';
-        btn.innerHTML = stops[i];
-        btn.addEventListener("click", function() {
-          console.log("delete me!");
-          console.log(stops[i]);
-          // delete from stops array
-          deleteFromStops(stops[i]);
-          // add back to recs array
-          
-        });
+      var btn = document.createElement('button');
+      btn.id = `stopList${i}`;
+      btn.innerHTML = stops[i];
+      btn.addEventListener("click", function() {
+        
+        deleteFromStops(stops[i]);
+       
+      });
         stopList.appendChild(btn);
     }
   })
 }
 
 function addToStops(stop){
+    foo();
     console.log("add to stop");
     deleteFromRecs(stop);
     const params = new URLSearchParams();
@@ -93,7 +85,10 @@ function addToStops(stop){
     .then(() => getStops()); // re-render list
 }
 
+
+
 function deleteFromStops(stop){
+    
     console.log("add to stop");
     addToRecs(stop); 
     const params = new URLSearchParams();
@@ -111,14 +106,12 @@ function getRecs() {
   .then((recs) => {
     recList.innerHTML = ""; // clear list
     for(let i = 0; i < recs.length; i++) {
-        const btn = document.createElement('button');
-        btn.id = `recList${i}`;
-        btn.innerHTML = recs[i];
-        btn.addEventListener("click", function() {
-          addToStops(recs[i]);
-          
-
-        });
+      var btn = document.createElement('button');
+      btn.id = `recList${i}`;
+      btn.innerHTML = recs[i];
+      btn.addEventListener("click", function() {
+        addToStops(recs[i]);
+      });
         recList.appendChild(btn);
     }
   })
@@ -138,7 +131,7 @@ function addToRecs(stop){
     const params = new URLSearchParams();
     params.append("text", stop);
     params.append("action", "add");
-    fetch('/rec', {method: 'POST', body: params})
+    fetch('/recs', {method: 'POST', body: params})
     .then(() => getRecs());
 }
 

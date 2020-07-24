@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that handles data for stops */
 @WebServlet("/stop")
 public class StopsServlet extends HttpServlet {
   ArrayList<String> stops= new ArrayList<String>();
