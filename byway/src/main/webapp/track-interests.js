@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var selected = [];
+let selected = [];
 
 /** Track the selected interests in an array according to their status. */
 function checkStatus(elem) {
@@ -27,7 +27,7 @@ function checkStatus(elem) {
 
 /** Update the class of the buttons to change their style. */
 function switchStatus(elem) {
-  var switchClass = (elem.className === "btn"? "btnActive": "btn");
+  let switchClass = (elem.className === "btn"? "btnActive": "btn");
   elem.className = switchClass;
   checkStatus(elem);
 }
@@ -37,9 +37,9 @@ function loadButtons() {
   fetch('/places')
   .then(response => response.json())
   .then((places) => {
-    var buttonSection = document.getElementById("interests");
+    let buttonSection = document.getElementById("interests");
     places.forEach((place) => {
-      var button = document.createElement("button");
+      let button = document.createElement("button");
       button.innerText = place;
       button.setAttribute("onClick", "switchStatus(this)");
       button.setAttribute("class", "btn");
