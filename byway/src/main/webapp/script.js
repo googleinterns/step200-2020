@@ -12,20 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
-
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
+window.onload = function() {
+  setProgressBar(1);
+  getStartDestination();
+};
 
 function setProgressBar(pageNumber){
     var ul = document.getElementById("progressbar");
@@ -34,15 +24,15 @@ function setProgressBar(pageNumber){
     items[pageNumber-1].className = 'active';
 }
 
-var center = {
+var defaultCenter = {
   lat: 40.712776,
   lng:-74.005974
 };
-userlatlng = {lat:null , lng: null}
+var userlatlng = {lat:null , lng: null}
 
 function initAutocomplete() {   
   const map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: center.lat, lng: center.lng },
+    center: { lat: defaultCenter.lat, lng: defaultCenter.lng },
     zoom: 13,
     mapTypeId: "roadmap"
   });
@@ -56,27 +46,28 @@ function initAutocomplete() {
       };
       map.setCenter(userlatlng);
     }, function() {
-         handleLocationError(true, map.getCenter());
+         map.setCenter(defaultCenter);
         });
   } 
   else {
     window.alert("Geolocation failed");
   }
-
   // Create the search boxes and link them to the UI elements.
-  const start = document.getElementById("pac-input");
-  const searchBox = new google.maps.places.SearchBox(start);
-  const destinations = document.getElementById("pac-input-2");
-  const searchBox2 = new google.maps.places.SearchBox(destinations);
+  createSearchBox(map,'pac-input');
+  createSearchBox(map,'pac-input-2');
+  getLocations(map);
+  
+}
 
-  // Bias the SearchBox results towards current map's viewport.
-  map.addListener("bounds_changed", () => {
+function createSearchBox(map,container){
+  const start = document.getElementById(container);
+  const searchBox = new google.maps.places.SearchBox(start);
+
+   map.addListener("bounds_changed", () => {
     searchBox.setBounds(map.getBounds());
-    searchBox2.setBounds(map.getBounds());
   });
   let markers = [];
-  // Listen for the event fired when the user selects a prediction and retrieve
-  // more details for that place for first search box.
+
   searchBox.addListener("places_changed", () => {
     const places = searchBox.getPlaces();
 
@@ -121,67 +112,20 @@ function initAutocomplete() {
     });
     map.fitBounds(bounds);
   });
-
-  // Listen for the event fired when the user selects a prediction and retrieve
-  // more details for that place for second search box.
-  searchBox2.addListener("places_changed", () => {
-    const places = searchBox2.getPlaces();
-
-    if (places.length == 0) {
-      return;
-    }
-    // Clear out the old markers.
-    markers.forEach(marker => {
-      marker.setMap(null);
-    });
-    markers = [];
-    // For each place, get the icon, name and location.
-    const bounds = new google.maps.LatLngBounds();
-    places.forEach(place => {
-      if (!place.geometry) {
-        console.log("Returned place contains no geometry");
-        return;
-      }
-      const icon = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-      // Create a marker for each place.
-      markers.push(
-        new google.maps.Marker({
-          map,
-          icon,
-          title: place.name,
-          position: place.geometry.location
-        })
-      );
-
-      if (place.geometry.viewport) {
-        // Only geocodes have viewport.
-        bounds.union(place.geometry.viewport);
-      } else {
-        bounds.extend(place.geometry.location);
-      }
-    });
-    map.fitBounds(bounds);
-  });
-
-  getLocations(map);
 }
+
 
 /* fetches start location and destinations from DestinationsServlet and adds to DOM*/
 function getLocations(map){
+    console.log("called");
   fetch('/destinations').then(response => response.json()).then((userLocations) => {
-    document.getElementById('start-location-address').innerText = userLocations.start;
-    const container = document.getElementById('destinations-adresses');
+    const container = document.getElementById('destinations-container');
     let destinationArray= userLocations.destinations;
+    
     destinationArray.forEach((destination) => {
       const request = {
         query: destination,
-          fields: ["name", "photos", "formatted_address", "rating", "business_status"]
+        fields: ["name", "photos", "formatted_address", "rating", "business_status"]
   };
   service = new google.maps.places.PlacesService(map);
   service.findPlaceFromQuery(request, (results, status) => {
@@ -191,8 +135,7 @@ function getLocations(map){
         let destinationPhoto=document.createElement('img');
         destinationPhoto.className="destination-photo";
         destinationPhoto.src = results[0].photos[0].getUrl();
-
-
+        
         let destinationInfo=document.createElement('p');
         destinationInfo.className = 'destination-info';
         destinationInfo.innerText= results[0].name;
