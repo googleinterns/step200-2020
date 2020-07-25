@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns all PlaceTypes from Places API. */
-@WebServlet("/places")
+@WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();

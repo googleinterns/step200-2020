@@ -40,7 +40,7 @@ function switchStatus(elem) {
 
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
-  fetch('/places')
+  fetch('/api/places')
   .then(response => response.json())
   .then((places) => {
     let buttonSection = document.getElementById("interests");
