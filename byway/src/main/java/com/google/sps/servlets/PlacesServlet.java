@@ -47,6 +47,7 @@ public final class PlacesServlet extends HttpServlet {
    * @return is the modified location name.
    */
   private String formatLocation(PlaceType location) {
+    String place = location.toString();
     place = place.substring(0,1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
