@@ -33,7 +33,7 @@ function checkStatus(elem) {
  * @param {Element elem} tracks the current button element chosen.
  */
 function switchStatus(elem) {
-  let switchClass = (elem.className === "btn"? "btnActive": "btn");
+  let switchClass = (elem.className === "btn"? "btn active": "btn");
   elem.className = switchClass;
   checkStatus(elem);
 }
