@@ -19,7 +19,7 @@ window.onload = function() {
   getLocations();
 };*/
 
-/* export initAutocomplete, getLocations, getStartDestination, getCurrentAddress */
+/* exported initAutocomplete, getLocations, getStartDestination, getCurrentAddress */
 
 
 const defaultCenter = {
