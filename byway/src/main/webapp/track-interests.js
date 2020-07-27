@@ -19,7 +19,7 @@ let selected = [];
  * @param {Element elem} tracks the current button element chosen.
  */
 function checkStatus(elem) {
-  if(elem.className === "btnActive") {
+  if(elem.className.includes("active")) {
     selected.push(elem.innerText);
   } else {
     selected = selected.filter(function(interest) {
@@ -33,7 +33,7 @@ function checkStatus(elem) {
  * @param {Element elem} tracks the current button element chosen.
  */
 function switchStatus(elem) {
-  let switchClass = (elem.className === "btn"? "btn active": "btn");
+  let switchClass = (elem.className.includes("active")? "btn": "btn active");
   elem.className = switchClass;
   checkStatus(elem);
 }
