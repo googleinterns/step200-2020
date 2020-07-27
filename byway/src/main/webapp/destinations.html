@@ -32,8 +32,7 @@
     <div id="map-search-container">
         <div id="map"></div>
         <div id= "destination-input-form">
-        <form action="/api/destinations" method="POST">
-
+        <form action="/api/destinations" method = "post" id="user-input-form" >
             <input
                 id="start-search-box"
                 name="start-location"
@@ -51,7 +50,7 @@
                 placeholder="Enter roadtrip destinations"
                 required
             />
-            <input onclick="window.location.href = '/destinations.html';" type="submit" value="add city"/>
+            <input type="submit" value="add city" />
         </form>
         <button id="user-current-address-button" onclick= "getCurrentAddress()">Use current location</button>
         </div>
@@ -63,6 +62,6 @@
 
     </div>
 
-    <script> initAutocomplete(); setProgressBar(1); getStartDestination(); getLocations();</script>
+    <script> initAutocomplete(); setProgressBar(1); getLocations(); getStartDestination(); </script>
   </body>
 </html>

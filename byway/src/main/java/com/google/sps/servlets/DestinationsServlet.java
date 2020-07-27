@@ -45,7 +45,6 @@ public void init() {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //Entity entity = datastore.get(entityKey);
     String start = (String) destinationsEntity.getProperty("start");
     ArrayList<String> destinations = (ArrayList) destinationsEntity.getProperty("destinations");
     UserLocations userLocations = new UserLocations(start, destinations);    
@@ -67,7 +66,7 @@ public void init() {
     destinationsEntity.setProperty("destinations", places.destinations);
     datastore.put(destinationsEntity);
 
-    response.sendRedirect("/destinations.html");
+    //response.sendRedirect("/destinations.html");
   }
 
 }
