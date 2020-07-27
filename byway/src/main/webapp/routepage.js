@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-import {Test} from './map.js';
-let obj = new Test();
-obj.test(); 
-*/
+if (document.readyState === 'loading') {  // Loading hasn't finished yet
+  document.addEventListener('DOMContentLoaded', getRecs());
+} else {  // `DOMContentLoaded` has already fired
+  getRecs();
+}
 
 function initMap() {
   var directionsService = new google.maps.DirectionsService();
@@ -35,7 +35,6 @@ function initMap() {
 }
 
 function calcRoute(directionsService, directionsRenderer, start, end) {
-  console.log('getting route');
   var request = {
       origin:  start,
       destination: end,
@@ -61,6 +60,7 @@ function getRecs() {
     const recList = document.getElementById('rec-list');
     recList.innerText = ""; // clear old comments 
     recs.forEach((stop) => {
+      console.log(stop.placename);
       let btn = document.createElement("button");
       btn.innerText = stop.placename;
       btn.setAttribute("class", "btn rec-btn");

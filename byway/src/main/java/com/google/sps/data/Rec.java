@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-/** An item on the comment section. */
+/** A sample class to mock data received from another datastore table*/
 // TODO: Make a parent class that Rec and Stop can extend 
 public final class Rec{
   /** We may need to add more fields later, so making a class seemed reasonable. */
