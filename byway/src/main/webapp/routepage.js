@@ -50,7 +50,7 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 }
 
 function addToStops(stop){
-  console.log("add stop to the ArrayList in the servlet");
+  console.log("add" + stop + "to the ArrayList in the servlet");
 }
 
 function getRecs() {
@@ -60,7 +60,6 @@ function getRecs() {
     const recList = document.getElementById('rec-list');
     recList.innerText = ""; // clear old comments 
     recs.forEach((stop) => {
-      console.log(stop.placename);
       let btn = document.createElement("button");
       btn.innerText = stop.placename;
       btn.setAttribute("class", "btn rec-btn");
