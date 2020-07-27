@@ -23,7 +23,7 @@ window.onload = function() {
 /* export getLocations, a */
 /* export getStartDestination, a */
 /* export getCurrentAddress, a */
-/* global getProgressBar(1), a */
+/* global getProgressBar(), a */
 
 const defaultCenter = {
   lat: 40.712776,
