@@ -62,7 +62,7 @@ function getRecs() {
     recList.innerText = ""; // clear old comments 
     recs.forEach((stop) => {
       let btn = document.createElement("button");
-      btn.innerText = stop;
+      btn.innerText = stop.placename;
       btn.setAttribute("class", "btn rec-btn");
       btn.addEventListener("click", function() {
         addToStops(stop);

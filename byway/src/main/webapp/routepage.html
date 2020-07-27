@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
   <meta charset="UTF-8">
   <title>Route Generator</title>
   <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
@@ -11,7 +11,7 @@
   <script src="routepage.js"></script>
   <link rel="stylesheet" href="routepage.css">
 </head>
-<body onLoad="getRecs()">
+<body>
   <p>Place holder button to draw route</p>
   <button id = "route">Generate Route</button>
   <div class = "route-container">
@@ -42,12 +42,13 @@
       <div class="center" id="rec-list"></div>
     </div>
   </div>
-  
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-  <script src="https://pingendo.com/assets/bootstrap/bootstrap-4.0.0-alpha.6.min.js"></script>
- 
-  
- </body>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed');
+    getRecs();
+  });
+
+  </script>
+</body>
 
 </html>

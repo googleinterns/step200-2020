@@ -22,11 +22,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that handles data for stops */
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
   ArrayList<String> stops= new ArrayList<String>();
-  
+  private final Gson gson = new Gson(); 
+  // Implement datastore in routepage branch
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
@@ -40,6 +42,6 @@ public final class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     stops.add(stop);
-    response.sendRedirect("/routepage.html"); 
+    
   }
 }
