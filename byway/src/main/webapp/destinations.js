@@ -19,10 +19,10 @@ window.onload = function() {
   getLocations();
 };*/
 
-/* export initAutocomplete, a */
-/* export getLocations, a */
-/* export getStartDestination, a */
-/* export getCurrentAddress, a */
+/* export initAutocomplete(), a */
+/* export getLocations(), a */
+/* export getStartDestination(), a */
+/* export getCurrentAddress(), a */
 /* global getProgressBar(), a */
 
 const defaultCenter = {
