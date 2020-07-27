@@ -13,11 +13,7 @@
 // limitations under the License.
 //import {ProgressBar} from  './script'
 /*
-window.onload = function() {
-  setProgressBar(1);
-  getStartDestination();
-  getLocations();
-};*/
+
 
 /* exported initAutocomplete, getLocations, getStartDestination, getCurrentAddress */
 /* global google */
@@ -177,23 +173,25 @@ function getCurrentAddress(){
   });
 }
 
+/* 
+* add event listener for submit button
+*/
 window.onload = function(){
-document.getElementById('user-input-form').addEventListener('submit', (event) => {
+  document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const params = new URLSearchParams();
     params.append('start-location', document.getElementById('start-search-box').value); 
-    params.append('destinations', document.getElementById('destinations-search-box').value);
-
-  fetch('/api/destinations', {method: 'POST', body:params}).then(function(response){
-    return response.text();
-  }).then(function(text){
+    params.append('destinations', document.getElementById('destinations-search-box').value);  
+    fetch('/api/destinations', {method: 'POST', body:params}).then(function(response){
+      return response.text();
+    }).then(function(text){
       console.log(text)
-  }).then(() => {
-        getLocations()
-  }).then(() => {
+    }).then(() => {
+      getLocations()
+    }).then(() => {
       getStartDestination();
+    });
   });
-});
 }
     
 
