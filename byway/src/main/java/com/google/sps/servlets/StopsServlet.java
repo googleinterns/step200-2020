@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/stop")
-public class StopsServlet extends HttpServlet {
+@WebServlet("/api/stop")
+public final class StopsServlet extends HttpServlet {
   ArrayList<String> stops= new ArrayList<String>();
   
   @Override
@@ -40,9 +40,6 @@ public class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     stops.add(stop);
-    for(int i = 0; i < stops.size(); i++){
-        System.out.println(stops.get(i));
-    }
     response.sendRedirect("/routepage.html"); 
   }
 }

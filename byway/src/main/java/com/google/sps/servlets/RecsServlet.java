@@ -24,8 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/recs")
-public class RecsServlet extends HttpServlet {
+@WebServlet("/api/recs")
+public final class RecsServlet extends HttpServlet {
+  private final Gson gson = new Gson(); 
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,7 +35,7 @@ public class RecsServlet extends HttpServlet {
     recs.add("Times Square");
     recs.add("MOMA");
     recs.add("Central Park");
-    Gson gson = new Gson();
+    
     String json=gson.toJson(recs);
     
     response.setContentType("application/json;");

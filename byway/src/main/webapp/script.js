@@ -50,12 +50,12 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   });
 }
 
-function foo(){
-    console.log("moo");
-}
+function addToStops(stop){
+  console.log("add stop to the ArrayList in the servlet");
+};
 
 function getRecs() {
-  fetch('/recs')
+  fetch('/api/recs')
   .then(response => response.json())
   .then((recs) => {
     const recList = document.getElementById('rec-list');
@@ -63,8 +63,10 @@ function getRecs() {
     recs.forEach((stop) => {
       let btn = document.createElement("button");
       btn.innerText = stop;
-      btn.setAttribute("onClick", "foo()");
       btn.setAttribute("class", "btn rec-btn");
+      btn.addEventListener("click", function() {
+        addToStops(stop);
+      });
       recList.appendChild(btn);
     });
   });
