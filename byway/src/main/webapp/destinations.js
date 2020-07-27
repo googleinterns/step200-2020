@@ -15,7 +15,7 @@
 /*
 
 
-/* exported initAutocomplete, getLocations, getStartDestination, getCurrentAddress */
+/* exported initAutocomplete, getCurrentAddress */
 /* global google */
 
 
