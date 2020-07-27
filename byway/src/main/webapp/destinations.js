@@ -20,6 +20,7 @@ window.onload = function() {
 };*/
 
 /* exported initAutocomplete, getLocations, getStartDestination, getCurrentAddress */
+/* global google */
 
 
 const defaultCenter = {
