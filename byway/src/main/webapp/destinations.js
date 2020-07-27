@@ -19,11 +19,8 @@ window.onload = function() {
   getLocations();
 };*/
 
-/* export initAutocomplete, a */
-/* export getLocations, a */
-/* export getStartDestination, a */
-/* export getCurrentAddress, a */
-/* global setProgressBar, a */
+/* export initAutocomplete, getLocations, getStartDestination, getCurrentAddress */
+
 
 const defaultCenter = {
   lat: 40.712776,
