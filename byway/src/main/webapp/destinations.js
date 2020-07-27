@@ -12,11 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-/*
-* Sets Progress Bar to correct location based on the page number
-* @param {int} pageNumber
-*/
 window.onload = function() {
   setProgressBar(1);
   getStartDestination();
@@ -40,7 +35,7 @@ function initAutocomplete() {
     mapTypeId: "roadmap"
   });
 
-
+  //navigator is an HTML geolocation API variable to get information about the users current location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       userlatlng = {
@@ -127,7 +122,6 @@ function createSearchBox(map,container){
 /*
 * fetches start location and destinations from DestinationsServlet and adds to DOM
 */
-
 function getLocations(){
   fetchDestinations().then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
@@ -143,23 +137,22 @@ function getLocations(){
 }
 
 /* 
-*fills Start location Searchbox with previously input
- */
+* fills Start location Searchbox with previously input
+*/
 function getStartDestination(){
-    fetchDestinations().then((userLocations)=>{
-        document.getElementById('start-search-box').value = userLocations.start;
-    });
+  fetchDestinations().then((userLocations)=>{
+    document.getElementById('start-search-box').value = userLocations.start;
+  });
 }
 
 /* 
 * fetches data from servlet
- */
+*/
 function fetchDestinations(){
-    let promise = fetch('/api/destinations').then(response => response.json());
-    return promise;
+  let promise = fetch('/api/destinations').then(response => response.json());
+  return promise;
 }
 
-  
 /* 
 * Gets users current location 
 */
