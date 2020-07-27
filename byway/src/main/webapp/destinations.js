@@ -129,7 +129,7 @@ function createSearchBox(map,container){
 */
 
 function getLocations(){
-  fetch('/apidestinations').then(response => response.json()).then((userLocations) => {
+  fetch('/api/destinations').then(response => response.json()).then((userLocations) => {
     document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
     const container = document.getElementById('destinations-container');
     container.innerText = "Destinations:";
@@ -146,7 +146,7 @@ function getLocations(){
 *fills Start location Searchbox with previously input
  */
 function getStartDestination(){
-  fetch('/apidestinations').then(response => response.json()).then((userLocations) =>{
+  fetch('/api/destinations').then(response => response.json()).then((userLocations) =>{
     console.log(userLocations.start);
     document.getElementById('start-search-box').value = userLocations.start;
   });
