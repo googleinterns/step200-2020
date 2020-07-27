@@ -9,7 +9,7 @@
   <body onload="loadButtons();">
     <div id="content">
       <div id="interests"></div>
-      <form action="generator" method="POST">
+      <form onsubmit="passData();" action="generator" method="POST">
         <input type="hidden" id="data" name="data" />
         <input type="submit" value="Next page" />
       </form>

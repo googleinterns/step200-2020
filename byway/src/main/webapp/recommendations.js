@@ -27,12 +27,13 @@ function initialize() {
   .then(response => response.json())
   .then((interests) => {
     interests.forEach(placeType => {
-      let request = {
-        location: randomLocation,
-        radius: '500',
-        query: placeType
-      }
-      service.textSearch(request, callback);
+      console.log(placeType);
+      // let request = {
+      //   location: randomLocation,
+      //   radius: '500',
+      //   query: placeType
+      // }
+      // service.textSearch(request, callback);
     });
   });
 }
@@ -47,7 +48,7 @@ function initialize() {
 function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (let i = 0; i < results.length; i++) {
-      createMarker(results[i]);
+      //createMarker(results[i]);
     }
   } else {
     alert("Our services are currently down. Oops!");
@@ -71,12 +72,12 @@ function createMarker(place) {
  * global variables.
  */
 function loadMap() {
-  randomLocation = new google.maps.LatLng(33.5, -112.26);
+  //randomLocation = new google.maps.LatLng(33.5, -112.26);
 
-  map = new google.maps.Map(document.getElementById('map'), {
+  /*map = new google.maps.Map(document.getElementById('map'), {
       center: randomLocation,
       zoom: 15
-  });
+  });*/
 
-  service = new google.maps.places.PlacesService(map);
+  //service = new google.maps.places.PlacesService(map);
 }

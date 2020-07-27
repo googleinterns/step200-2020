@@ -29,7 +29,6 @@ function checkStatus(elem) {
       return interest !== elem.innerText;
     });
   }
-  passData();
 }
 
 /** Update the class of the buttons to change their style. */
