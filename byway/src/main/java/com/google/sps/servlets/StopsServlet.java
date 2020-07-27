@@ -47,6 +47,6 @@ public class StopsServlet extends HttpServlet {
     else if(action.equals("remove")){
         stops.remove(stop);
     }
-    response.sendRedirect("/routepage.html"); 
+    // response.sendRedirect("/routepage.html"); 
   }
 }

@@ -50,7 +50,7 @@ public class RecsServlet extends HttpServlet {
     else if(action.equals("add")){
       recs.add(stop);
     }
-    response.sendRedirect("/routepage.html"); 
+    // response.sendRedirect("/routepage.html"); 
   }
   
 }
