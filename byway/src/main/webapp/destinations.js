@@ -11,12 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+//import {ProgressBar} from  './script'
+/*
 window.onload = function() {
   setProgressBar(1);
   getStartDestination();
   getLocations();
-};
+};*/
+
+/* export initAutocomplete, a */
+/* export getLocations, a */
+/* export getStartDestination, a */
+/* export getCurrentAddress, a */
+/* global getProgressBar(1), a */
 
 const defaultCenter = {
   lat: 40.712776,

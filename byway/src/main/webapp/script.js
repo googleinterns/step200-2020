@@ -9,4 +9,5 @@ function setProgressBar(pageNumber){
     items[i].className = 'active';
   }
   
-}
+ }
+
