@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', loadButtons());
 
 let selected = [];
 
+/** Convert selected array into JSON to send to server. */
+function passData() {
+  var data = document.getElementById("data");
+  data.value = JSON.stringify(selected);
+}
+
 /** 
  * Track the selected interests in an array according to their status. 
  * @param {Element elem} tracks the current button element chosen.

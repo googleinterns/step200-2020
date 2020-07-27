@@ -10,7 +10,8 @@
     <div id="header">Some content</div>
     <p> Scroll through and select some interests</p>
     <div id="interests"></div>
-    <form action="/api/places" method="POST">
+    <form onsubmit="passData();" action="/api/places" method="POST">
+      <input type="hidden" id="data" name="data" />
       <input type="submit" value="Next page" />
     </form>
   </body>

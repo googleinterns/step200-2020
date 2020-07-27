@@ -66,12 +66,12 @@ public final class PlacesServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    ArrayList<String> list = new ArrayList<>();
-    list.add("Zoo");
+    String interestsAsString = request.getParameter("data");
+    ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
 
     Entity user = new Entity("user");
     user.setProperty("id", counter);
-    user.setProperty("interests", list);
+    user.setProperty("interests", interests);
     datastore.put(user);
     
     counter++;
