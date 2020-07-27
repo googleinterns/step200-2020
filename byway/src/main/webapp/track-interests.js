@@ -45,11 +45,25 @@ function loadButtons() {
   .then((places) => {
     let buttonSection = document.getElementById("interests");
     places.forEach((place) => {
-      let button = document.createElement("button");
-      button.innerText = place;
-      button.setAttribute("onClick", "switchStatus(this)");
-      button.setAttribute("class", "btn");
+      let button = setButton(place);
       buttonSection.appendChild(button);
     });
   });
+}
+
+/**
+ * Creates a button element that contains the place of
+ * interest. When clicked, it switches status and indicates
+ * to the user if selected or deselected.
+ * @param {String place} contains the text of place of interest.
+ * @returns ButtonElement
+ */
+function setButton(place) {
+  let button = document.createElement("button");
+  button.innerText = place;
+  button.addEventListener('click', function(e) {
+    switchStatus(e.target);
+  });
+  button.className = "btn";
+  return button;
 }
