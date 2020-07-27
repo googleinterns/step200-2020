@@ -30,7 +30,7 @@
 .panel-title{
   border-radius: 10px;
   height: 50px;
-  width: parent;
+  width: 100%;
   margin-bottom: 10px;
 }
 

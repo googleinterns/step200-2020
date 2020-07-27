@@ -51,7 +51,7 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 
 function addToStops(stop){
   console.log("add stop to the ArrayList in the servlet");
-};
+}
 
 function getRecs() {
   fetch('/api/recs')
