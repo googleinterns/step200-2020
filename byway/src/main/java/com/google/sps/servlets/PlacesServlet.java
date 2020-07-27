@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
-  private int counter = 0;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -70,11 +69,9 @@ public final class PlacesServlet extends HttpServlet {
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
 
     Entity user = new Entity("user");
-    user.setProperty("id", counter);
     user.setProperty("interests", interests);
     datastore.put(user);
     
-    counter++;
     response.sendRedirect("/index.html");
   }
 }
