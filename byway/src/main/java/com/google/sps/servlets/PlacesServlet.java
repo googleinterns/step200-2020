@@ -14,6 +14,14 @@
 
 package com.google.maps;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
@@ -29,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
+  private int counter = 0;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,5 +60,21 @@ public final class PlacesServlet extends HttpServlet {
     place = place.substring(0,1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    ArrayList<String> list = new ArrayList<>();
+    list.add("Zoo");
+
+    Entity user = new Entity("user");
+    user.setProperty("id", counter);
+    user.setProperty("interests", list);
+    datastore.put(user);
+    
+    counter++;
+    response.sendRedirect("/index.html");
   }
 }
