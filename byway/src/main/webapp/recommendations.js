@@ -15,6 +15,7 @@
 let map;
 let service;
 let randomLocation;
+let RADIUS = 1000;
 
 /**
  * initializes the webpage with a map and loads
@@ -43,7 +44,7 @@ function loadRecommendations() {
       console.log(placeType);
       let request = {
         location: randomLocation,
-        radius: '50',
+        radius: RADIUS,
         query: placeType
       }
       service.textSearch(request, callback);
@@ -60,13 +61,34 @@ function loadRecommendations() {
  */
 function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    let length = maxOrRecommendedLength(results.length);
-    for (let i = 0; i < length; i++) {
-      createMarker(results[i]);
+    let length = maxLength(results.length);
+    let markerCounter = 0;
+    for (let i = 0; i < results.length; i++) {
+      if(fitsInRadius(results[i], RADIUS)) {
+        createMarker(results[i]);
+        markerCounter++;
+      }
+      if(markerCounter > length) {
+        break;
+      }
     }
   } else {
     alert("Our services are currently down. Oops!");
   }
+}
+
+/**
+ * Determines if a result fits inside of a
+ * predetermined radius range.
+ * @param {PlaceResult result} contains information about the location
+ * @param {int radius} specified range
+ * @returns boolean
+ */
+function fitsInRadius(result, radius) {
+  let currentLocation = result.geometry.location;
+  let distanceBetweenEnds =
+    google.maps.geometry.spherical.computeDistanceBetween(currentLocation, randomLocation);
+  return distanceBetweenEnds < radius;
 }
 
 /**
@@ -76,11 +98,11 @@ function callback(results, status) {
  * @param {int resultsLength} length of an Array
  * @returns integer value
  */
-function maxOrRecommendedLength(results) {
-  if(results.length > 3) {
+function maxLength(resultsLength) {
+  if(resultsLength > 3) {
     return 3;
   } else {
-    return results.length();
+    return resultsLength;
   }
 }
 
