@@ -65,12 +65,15 @@ public final class PlacesServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+    Query person = new Query("sample");
+    PreparedQuery pq = datastore.prepare(person);
+    //catch exception of too many users
+    Entity currentUser = pq.asSingleEntity();
+
     String interestsAsString = request.getParameter("data");
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
-
-    Entity user = new Entity("user");
-    user.setProperty("interests", interests);
-    datastore.put(user);
+    currentUser.setProperty("interests", interests);
+    datastore.put(currentUser);
     
     response.sendRedirect("/index.html");
   }
