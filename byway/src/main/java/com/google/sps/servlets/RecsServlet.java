@@ -53,18 +53,13 @@ public final class RecsServlet extends HttpServlet {
     datastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
     datastore.put(recEntity3);
+    System.out.println("init!");
     return;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (isFirstExecution){
-      init();
-      System.out.println("here");
-      isFirstExecution = false;
-    }
-    
-    Query query = new Query("Recommendation"); 
+    Query query = new Query(Recommendation.KIND); 
     PreparedQuery results = datastore.prepare(query);
     List<Recommendation> recs= new ArrayList<>();
 

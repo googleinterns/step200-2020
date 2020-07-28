@@ -72,15 +72,15 @@ function getStops(){
 
 /* Add stop to the ArrayList in the servlet */
 function addToStops(stop){
-  /** 
+ 
   // deleteFromRecs(stop); 
   console.log("delete from recs");
   const params = new URLSearchParams();
-  params.append("text", stop);
+  params.append("text", stop.placename);
   params.append("action", "add");
   fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
-  */
+ 
   console.log("add" + stop.placename + "to the ArrayList in the servlet");
 }
 

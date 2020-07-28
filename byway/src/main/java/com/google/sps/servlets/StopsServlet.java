@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that handles data for stops */
+/** Servlet that handles data for Stops added to the user's schedule */
 
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
