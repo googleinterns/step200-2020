@@ -61,7 +61,7 @@ function getStops(){
       var btn = document.createElement('button');
       btn.id = `stopList${i}`;
       btn.innerHTML = stops[i];
-      btn.setAttribute("class", "btn btn-info");
+      btn.setAttribute("class", "btn rec-btn");
       btn.addEventListener("click", function() {
         deleteFromStops(stops[i]);
       });
@@ -72,6 +72,7 @@ function getStops(){
 
 /* Add stop to the ArrayList in the servlet */
 function addToStops(stop){
+  /** 
   // deleteFromRecs(stop); 
   console.log("delete from recs");
   const params = new URLSearchParams();
@@ -79,6 +80,8 @@ function addToStops(stop){
   params.append("action", "add");
   fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
+  */
+  console.log("add" + stop.placename + "to the ArrayList in the servlet");
 }
 
 /* Delete stop from the ArrayList in the servlet */
@@ -101,13 +104,12 @@ function getRecs() {
   .then((recs) => {
     
     recs.forEach((stop)=>{
-      console.log(stop.placename);
       var btn = document.createElement('button');
       btn.id = stop.id;
       btn.innerText = stop.placename;
-      btn.setAttribute("class", "btn btn-warning");
+      btn.setAttribute("class", "btn rec-btn");
       btn.addEventListener("click", function() {
-        addToStops(stop.placename); 
+        addToStops(stop); 
       });
      recList.appendChild(btn);
       
@@ -141,6 +143,7 @@ function addToRecs(stop){
     .then(() => getRecs());
 }
 
+
 /* Delete stop from recommendations list in the servlet */
 function deleteFromRecs(stop){
   const params = new URLSearchParams();
@@ -149,3 +152,6 @@ function deleteFromRecs(stop){
   fetch('/api/recs', {method: 'POST', body: params})
     .then(() => getRecs());
 }
+
+/* exported initMap*/
+/* global google */

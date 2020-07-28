@@ -21,7 +21,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
-import com.google.sps.data.Rec;
+import com.google.sps.data.Recommendation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,14 +37,16 @@ import javax.servlet.http.HttpServletResponse;
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  
-  /** Fills datastore with hardcoded values, values will be from another datastore later **/
-  public void prepList(){
+  private boolean isFirstExecution = true;
+
+  /** Fills datastore with hardcoded values for Recommendation objects,
+  values will be from another datastore later **/
+  public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
-    Entity recEntity1 = new Entity("Rec");
-    Entity recEntity2 = new Entity("Rec");
-    Entity recEntity3 = new Entity("Rec");
+    Entity recEntity1 = new Entity(Recommendation.KIND);
+    Entity recEntity2 = new Entity(Recommendation.KIND);
+    Entity recEntity3 = new Entity(Recommendation.KIND);
     recEntity1.setProperty("placename", "Times Square");
     datastore.put(recEntity1);
     recEntity2.setProperty("placename", "MOMA");
@@ -56,17 +58,18 @@ public final class RecsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    prepList();
-    System.out.println("in do get");
-    Query query = new Query("Rec"); 
+    if (isFirstExecution){
+      init();
+      System.out.println("here");
+      isFirstExecution = false;
+    }
+    
+    Query query = new Query("Recommendation"); 
     PreparedQuery results = datastore.prepare(query);
-    List<Rec> recs= new ArrayList<>();
+    List<Recommendation> recs= new ArrayList<>();
 
     for (Entity entity: results.asIterable()){
-      long id = entity.getKey().getId();
-      String placename = (String) entity.getProperty("placename");
-      Rec rec = new Rec(id, placename);
-      recs.add(rec);
+      recs.add(Recommendation.fromEntity(entity));
     }
     
     response.setContentType("application/json;");
@@ -80,15 +83,12 @@ public final class RecsServlet extends HttpServlet {
     String action = request.getParameter("action");
     
     if(action.equals("remove")){
-      // recs.remove(stop);
       System.out.println("remove rec");
     }
     else if(action.equals("add")){
-      // recs.add(stop);
       Entity recEntity = new Entity("Rec");
       recEntity.setProperty("placename", stop);
-    }
-    // response.sendRedirect("/routepage.html"); 
+    } 
   }
   
 }
