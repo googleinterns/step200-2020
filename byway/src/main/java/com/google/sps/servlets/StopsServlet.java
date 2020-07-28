@@ -23,10 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles data for stops */
-@WebServlet("/stop")
-public class StopsServlet extends HttpServlet {
+
+@WebServlet("/api/stop")
+public final class StopsServlet extends HttpServlet {
+
   ArrayList<String> stops= new ArrayList<String>();
-  
+  private final Gson gson = new Gson(); 
+  // Implement datastore in routepage branch
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
@@ -40,6 +44,7 @@ public class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
+
     String action = request.getParameter("action");
     if(action.equals("add")){
        stops.add(stop);
@@ -48,5 +53,6 @@ public class StopsServlet extends HttpServlet {
         stops.remove(stop);
     }
     // response.sendRedirect("/routepage.html"); 
+
   }
 }

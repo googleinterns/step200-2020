@@ -14,10 +14,18 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
+import com.google.sps.data.Rec;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,18 +33,44 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /** Servlet that handles data for recommended places */
-@WebServlet("/recs")
-public class RecsServlet extends HttpServlet {
-  // initial list of fake data
-  ArrayList<String> recs=new ArrayList<String>(Arrays.asList("times square" , "moma" , "m&m store"));
+@WebServlet("/api/recs")
+public final class RecsServlet extends HttpServlet {
+  private final Gson gson = new Gson(); 
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
+  /** Fills datastore with hardcoded values, values will be from another datastore later **/
+  public void prepList(){
+    // when using actual values, there will only be one Entity object instantiated, not one per stop
+    // loop through Rena and Leo's datastore entries for recommended stops
+    Entity recEntity1 = new Entity("Rec");
+    Entity recEntity2 = new Entity("Rec");
+    Entity recEntity3 = new Entity("Rec");
+    recEntity1.setProperty("placename", "Times Square");
+    datastore.put(recEntity1);
+    recEntity2.setProperty("placename", "MOMA");
+    datastore.put(recEntity2);
+    recEntity3.setProperty("placename", "Central Park");
+    datastore.put(recEntity3);
+    return;
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Gson gson = new Gson();
-    String json=gson.toJson(recs);
+    prepList();
+    System.out.println("in do get");
+    Query query = new Query("Rec"); 
+    PreparedQuery results = datastore.prepare(query);
+    List<Rec> recs= new ArrayList<>();
+
+    for (Entity entity: results.asIterable()){
+      long id = entity.getKey().getId();
+      String placename = (String) entity.getProperty("placename");
+      Rec rec = new Rec(id, placename);
+      recs.add(rec);
+    }
     
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(recs));
   }
 
   /* Method which modifies the recs ArrayList */
@@ -44,11 +78,15 @@ public class RecsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
+    
     if(action.equals("remove")){
-      recs.remove(stop);
+      // recs.remove(stop);
+      System.out.println("remove rec");
     }
     else if(action.equals("add")){
-      recs.add(stop);
+      // recs.add(stop);
+      Entity recEntity = new Entity("Rec");
+      recEntity.setProperty("placename", stop);
     }
     // response.sendRedirect("/routepage.html"); 
   }

@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
   <meta charset="UTF-8">
   <title>Route Generator</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=&v=weekly"
-      defer></script>
-  <script src="script.js"></script>
-  <link rel="stylesheet" href="style.css">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=&v=weekly"
+    defer></script>
+  
+  <link rel="stylesheet" href="routepage.css">
 </head>
-<body onLoad="getRecs()">
-  <p>Place holder button to draw route</p>
+<body>
+  <p>Place holder button to draw route </p>
   <button id = "route">Generate Route</button>
   <div class = "route-container">
     <div class = "map-style">
@@ -38,17 +36,13 @@
     </div>
     
     <div class="box-outline" id="box-outline-stops">
-      <div class= "title" id="stops">
+      <div class= "panel-title" id="stops">
         <h3>Recommended Stops</h3>
       </div>
       <div class="center" id="rec-list"></div>
     </div>
   </div>
-
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-  <script src="https://pingendo.com/assets/bootstrap/bootstrap-4.0.0-alpha.6.min.js"></script>
- 
- </body>
+<script src="routepage.js"></script>
+</body>
 
 </html>

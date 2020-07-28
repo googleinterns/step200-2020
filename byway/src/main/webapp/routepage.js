@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+if (document.readyState === 'loading') {  // Loading hasn't finished yet
+  document.addEventListener('DOMContentLoaded', getRecs());
+} else {  // `DOMContentLoaded` has already fired
+  getRecs();
+}
+
 function initMap() {
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
@@ -29,7 +35,6 @@ function initMap() {
 }
 
 function calcRoute(directionsService, directionsRenderer, start, end) {
-  console.log('getting route');
   var request = {
     origin:  start,
     destination: end,
@@ -44,16 +49,10 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   });
 }
 
-/* Add a new waypoint to the request when a new stop is added to the schedule.*/
-function modifyMap(){
-  console.log('foo');
-  // calcRoute(directionsService, directionsRenderer, start, end);
-}
-
 /* Get the new list of stops upon user selection */
 function getStops(){
   const stopList = document.getElementById('stop-list');
-  fetch('/stop')
+  fetch('/api/stop')
   .then(response => response.json())
   .then((stops) => {
     // clear list of buttons, not just text so can't use innerText
@@ -73,12 +72,12 @@ function getStops(){
 
 /* Add stop to the ArrayList in the servlet */
 function addToStops(stop){
-  modifyMap();
-  deleteFromRecs(stop);
+  // deleteFromRecs(stop); 
+  console.log("delete from recs");
   const params = new URLSearchParams();
   params.append("text", stop);
   params.append("action", "add");
-  fetch('/stop', {method: 'POST', body: params})
+  fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
 }
 
@@ -88,17 +87,36 @@ function deleteFromStops(stop){
   const params = new URLSearchParams();
   params.append("text", stop);
   params.append("action", "remove");
-  fetch('/stop', {method: 'POST', body: params})
+  fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
 }
-
 /* Get the new list of recommendations upon load and user selection */
 function getRecs() {
  const recList = document.getElementById('rec-list');
-  fetch('/recs')
+ if(recList != null){
+        recList.innerHTML = ""; // clear list
+    }
+  fetch('/api/recs')
   .then(response => response.json())
   .then((recs) => {
-    recList.innerHTML = ""; // clear list
+    
+    recs.forEach((stop)=>{
+      console.log(stop.placename);
+      var btn = document.createElement('button');
+      btn.id = stop.id;
+      btn.innerText = stop.placename;
+      btn.setAttribute("class", "btn btn-warning");
+      btn.addEventListener("click", function() {
+        addToStops(stop.placename); 
+      });
+     recList.appendChild(btn);
+      
+    })
+    /** 
+    if(recList != null){
+        recList.innerHTML = ""; // clear list
+    }
+    
     for(let i = 0; i < recs.length; i++) {
       var btn = document.createElement('button');
       btn.id = `recList${i}`;
@@ -109,6 +127,8 @@ function getRecs() {
       });
         recList.appendChild(btn);
     }
+    */
+
   })
 }
 
@@ -117,7 +137,7 @@ function addToRecs(stop){
   const params = new URLSearchParams();
   params.append("text", stop);
   params.append("action", "add");
-  fetch('/recs', {method: 'POST', body: params})
+  fetch('/api/recs', {method: 'POST', body: params})
     .then(() => getRecs());
 }
 
@@ -126,8 +146,6 @@ function deleteFromRecs(stop){
   const params = new URLSearchParams();
   params.append("text", stop);
   params.append("action", "remove");
-  fetch('/recs', {method: 'POST', body: params})
+  fetch('/api/recs', {method: 'POST', body: params})
     .then(() => getRecs());
 }
-
-
