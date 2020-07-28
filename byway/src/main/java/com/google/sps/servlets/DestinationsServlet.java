@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
 /** Servlet that returns start location and destinations user inputs */
 @WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
@@ -26,12 +24,12 @@ DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 Entity destinationsEntity = new Entity("UserDestinations");
  // Key entityKey = destinationsEntity.getKey());
 
-@Override
-public void init() {
-  destinationsEntity.setProperty("start", "");
-  destinationsEntity.setProperty("destinations", new ArrayList<String>());
-  datastore.put(destinationsEntity);
-}
+  @Override
+  public void init() {
+    destinationsEntity.setProperty("start", "");
+    destinationsEntity.setProperty("destinations", new ArrayList<String>());
+    datastore.put(destinationsEntity);
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
