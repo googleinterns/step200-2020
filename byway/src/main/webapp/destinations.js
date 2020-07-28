@@ -142,7 +142,12 @@ function getLocations(){
 */
 function getStartDestination(){
   fetchDestinations().then((userLocations)=>{
-    document.getElementById('start-search-box').value = userLocations.start;
+    if (userLocations.start == null){
+      document.getElementById('start-search-box').value = "";
+    }
+    else{
+      document.getElementById('start-search-box').value = userLocations.start;
+    }
   });
 }
 

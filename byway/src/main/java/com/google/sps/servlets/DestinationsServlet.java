@@ -15,24 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+
+/** Servlet that returns start location and destinations user inputs */
 @WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
-
-    private final static class UserLocations{ 
-      private String start;
-      private ArrayList<String> destinations;
-
-        public UserLocations(String start, ArrayList destinations) {
-            this.start = start;
-            this.destinations = destinations;
-        }
-    };
 
 private final UserLocations places = new UserLocations("", new ArrayList<String>());
 private final Gson gson = new Gson();
 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  Entity destinationsEntity = new Entity("UserDestinations");
+Entity destinationsEntity = new Entity("UserDestinations");
  // Key entityKey = destinationsEntity.getKey());
 
 @Override
@@ -55,18 +46,11 @@ public void init() {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String startInput = request.getParameter("start-location");
-    String destination = request.getParameter("destinations"); 
+    places.addDestination(request.getParameter("destinations"));
 
-    places.start = startInput;
-    places.destinations.add(destination);
-
-    //Entity entity = datastore.get(entityKey);
-    destinationsEntity.setProperty("start", places.start);
-    destinationsEntity.setProperty("destinations", places.destinations);
+    destinationsEntity.setProperty("start", request.getParameter("start-location"));
+    destinationsEntity.setProperty("destinations", places.getDestinations());
     datastore.put(destinationsEntity);
-
-    //response.sendRedirect("/destinations.html");
   }
 
 }
