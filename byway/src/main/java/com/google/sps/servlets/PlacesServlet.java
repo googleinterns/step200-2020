@@ -17,11 +17,7 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
@@ -33,7 +29,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns all PlaceTypes from Places API. */
+/**
+ * Servlet that handles loading all placeTypes from Places API
+ * and stores the interests a specified user selects within datastore.
+ */
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
 
@@ -65,26 +64,30 @@ public final class PlacesServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    Query person = new Query("sample");
-    PreparedQuery pq = datastore.prepare(person);
-    for(Entity enteredUser: pq.asIterable()) {
+    Query allUsers = new Query("sample");
+    PreparedQuery preparedUsers = datastore.prepare(allUsers);
+    for(Entity enteredUser: preparedUsers.asIterable()) {
       long id = (long) enteredUser.getProperty("id");
       if(id == 2452) {
-        Entity currentUser = enteredUser;
-        addInterestsForUser(request, response, currentUser, datastore);
+        String interestsAsString = request.getParameter("data");
+        addInterestsForUser(interestsAsString, enteredUser, datastore);
+        response.sendRedirect("/generator.html");
       }
     }
   }
 
-  private void addInterestsForUser(HttpServletRequest request, HttpServletResponse response,
-                                  Entity currentUser, DatastoreService datastore) throws IOException{
+  /**
+   * Creates a list of interests from the JSON string passed in and adds it
+   * to this user's Entity object as a separate property.
+   * @param interestsAsString JSON String containing interests.
+   * @param currentUser       Entity with user information.
+   * @param datastore         DatastoreService with all users.
+   */
+  private void addInterestsForUser(String interestsAsString, Entity currentUser,
+                                    DatastoreService datastore) throws IOException {
 
-    String interestsAsString = request.getParameter("data");
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
     currentUser.setProperty("interests", interests);
     datastore.put(currentUser);
-    
-    response.sendRedirect("/generator.html");
   }
 }

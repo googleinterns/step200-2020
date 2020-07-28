@@ -17,12 +17,25 @@ let service;
 let randomLocation;
 
 /**
- * Loads the webpage with a map and uses
- * GeneratorServlet.java to find and show 
- * recommended locations based on servlet data.
+ * initializes the webpage with a map and loads
+ * recommendations based on user interest.
  */
 function initialize() {
-  loadMap();
+  randomLocation = new google.maps.LatLng(33.4806, -112.1864);
+  map = new google.maps.Map(document.getElementById('map'), {
+      center: randomLocation,
+      zoom: 15
+  });
+  service = new google.maps.places.PlacesService(map);
+  loadRecommendations();
+}
+
+/**
+ * Calls a Servlet to find a user's interests and
+ * uses a text search to find places fitting those
+ * loaded entires.
+ */
+function loadRecommendations() {
   fetch('/api/generator')
   .then(response => response.json())
   .then((interests) => {
@@ -47,7 +60,7 @@ function initialize() {
  */
 function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    let length = maxOrRecommendedLength(results);
+    let length = maxOrRecommendedLength(results.length);
     for (let i = 0; i < length; i++) {
       createMarker(results[i]);
     }
@@ -56,6 +69,13 @@ function callback(results, status) {
   }
 }
 
+/**
+ * Finds an integer length by comparing the passed-in length
+ * of an array with a recommended length, 3, and limits the
+ * length returned.
+ * @param {int resultsLength} length of an Array
+ * @returns integer value
+ */
 function maxOrRecommendedLength(results) {
   if(results.length > 3) {
     return 3;
@@ -74,19 +94,4 @@ function createMarker(place) {
     map: map,
     title: place.name
   });
-}
-
-/**
- * Creates a google.maps.Maps instance and initializes
- * global variables.
- */
-function loadMap() {
-  randomLocation = new google.maps.LatLng(33.4806, -112.1864);
-
-  map = new google.maps.Map(document.getElementById('map'), {
-      center: randomLocation,
-      zoom: 15
-  });
-
-  service = new google.maps.places.PlacesService(map);
 }
