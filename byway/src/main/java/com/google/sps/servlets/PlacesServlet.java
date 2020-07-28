@@ -75,8 +75,6 @@ public final class PlacesServlet extends HttpServlet {
         addInterestsForUser(request, response, currentUser, datastore);
       }
     }
-    
-
   }
 
   private void addInterestsForUser(HttpServletRequest request, HttpServletResponse response,
