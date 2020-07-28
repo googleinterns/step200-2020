@@ -14,30 +14,38 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
+import com.google.sps.data.Stop;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that handles data for Stops added to the user's schedule */
-
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
-
-  ArrayList<String> stops= new ArrayList<String>();
   private final Gson gson = new Gson(); 
-  // Implement datastore in routepage branch
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Gson gson = new Gson();
-    String json=gson.toJson(stops);
-    
+    Query query = new Query(Stop.KIND); 
+    PreparedQuery results = datastore.prepare(query);
+    List<Stop> stops= new ArrayList<>();
+    for (Entity entity: results.asIterable()){
+      stops.add(Stop.fromEntity(entity));
+    }
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(stops));
   }
 
   /* Method which modifies the stops ArrayList */
@@ -45,12 +53,12 @@ public final class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-    if(action.equals("add")){
-       stops.add(stop);
+    if(action.equals("remove")){
+      System.out.println("remove stops");
     }
-    else if(action.equals("remove")){
-        stops.remove(stop);
-    }
-    // response.sendRedirect("/routepage.html"); 
+    else if(action.equals("add")){
+      Entity stopEntity = new Entity(Stop.KIND);
+      stopEntity.setProperty("placename", stop);
+    } 
   }
 }

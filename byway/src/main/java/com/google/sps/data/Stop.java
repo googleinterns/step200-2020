@@ -13,17 +13,24 @@
 // limitations under the License.
 
 package com.google.sps.data;
+import com.google.appengine.api.datastore.Entity;
 
 /** A sample class to mock data received from another datastore table*/
 // TODO: Make a parent class that Rec and Stop can extend 
 public final class Stop{
-  /** We may need to add more fields later, so making a class seemed reasonable. */
+  // We may need to add more fields later, so making a class seemed reasonable.
   private final long id;
-  public final String placename; // change to private
+  private final String placename; 
+  public static final String KIND = "Stop";
   
-
   public Stop(long id, String placename) {
     this.id = id;
     this.placename = placename;
+  }
+
+  public static Stop fromEntity(Entity entity){
+    long id = entity.getKey().getId();
+    String placename = (String) entity.getProperty("placename");
+    return new Stop(id, placename);
   }
 }
