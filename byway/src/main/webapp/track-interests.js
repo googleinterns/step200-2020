@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-document.addEventListener('DOMContentLoaded', loadButtons());
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadButtons);
+} else {
+  loadButtons();
+}
 
-let selected = [];
+let interestsChosen = [];
 
 /** Convert selected array into JSON to send to server. */
 function passData() {
@@ -23,27 +27,19 @@ function passData() {
 }
 
 /** 
- * Track the selected interests in an array according to their status. 
+ * Track the interests chosen in an array according to their current
+ * status. Toggle their status afterwards.
  * @param {Element elem} tracks the current button element chosen.
  */
-function checkStatus(elem) {
-  if(elem.className.includes("active")) {
-    selected.push(elem.innerText);
+function toggleStatus(elem) {
+  if(!elem.className.includes("active")) {
+    interestsChosen.push(elem.innerText);
   } else {
-    selected = selected.filter(function(interest) {
+    interestsChosen = interestsChosen.filter(function(interest) {
       return interest !== elem.innerText;
     });
   }
-}
-
-/** 
- * Update the class of the buttons to change their style.
- * @param {Element elem} tracks the current button element chosen.
- */
-function switchStatus(elem) {
-  let switchClass = (elem.className.includes("active")? "btn": "btn active");
-  elem.className = switchClass;
-  checkStatus(elem);
+  elem.classList.toggle("active");
 }
 
 /** Display all the buttons onscreen with independent onClick events. */
@@ -53,7 +49,7 @@ function loadButtons() {
   .then((places) => {
     let buttonSection = document.getElementById("interests");
     places.forEach((place) => {
-      let button = setButton(place);
+      let button = createButtonForPlace(place);
       buttonSection.appendChild(button);
     });
   });
@@ -66,12 +62,10 @@ function loadButtons() {
  * @param {String place} contains the text of place of interest.
  * @returns ButtonElement
  */
-function setButton(place) {
+function createButtonForPlace(place) {
   let button = document.createElement("button");
   button.innerText = place;
-  button.addEventListener('click', function(e) {
-    switchStatus(e.target);
-  });
+  button.addEventListener('click', () => toggleStatus(button));
   button.className = "btn";
   return button;
 }
