@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
@@ -67,8 +68,12 @@ public final class PlacesServlet extends HttpServlet {
 
     Query person = new Query("sample");
     PreparedQuery pq = datastore.prepare(person);
-    //catch exception of too many users
-    Entity currentUser = pq.asSingleEntity();
+    Entity currentUser;
+    try {
+      currentUser = pq.asSingleEntity();
+    } catch(TooManyResultsException e) {
+      throw new TooManyResultsException();
+    }
 
     String interestsAsString = request.getParameter("data");
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
