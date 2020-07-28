@@ -44,7 +44,6 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
-
     String action = request.getParameter("action");
     if(action.equals("add")){
        stops.add(stop);
@@ -53,6 +52,5 @@ public final class StopsServlet extends HttpServlet {
         stops.remove(stop);
     }
     // response.sendRedirect("/routepage.html"); 
-
   }
 }
