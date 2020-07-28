@@ -68,12 +68,19 @@ public final class PlacesServlet extends HttpServlet {
 
     Query person = new Query("sample");
     PreparedQuery pq = datastore.prepare(person);
-    Entity currentUser;
-    try {
-      currentUser = pq.asSingleEntity();
-    } catch(TooManyResultsException e) {
-      throw new TooManyResultsException();
+    for(Entity enteredUser: pq.asIterable()) {
+      long id = (long) enteredUser.getProperty("id");
+      if(id == 2452) {
+        Entity currentUser = enteredUser;
+        addInterestsForUser(request, response, currentUser, datastore);
+      }
     }
+    
+
+  }
+
+  private void addInterestsForUser(HttpServletRequest request, HttpServletResponse response,
+                                  Entity currentUser, DatastoreService datastore) throws IOException{
 
     String interestsAsString = request.getParameter("data");
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
