@@ -51,10 +51,29 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 
 /* Get the new list of stops upon user selection */
 function getStops(){
+  console.log("in get stops!")
   const stopList = document.getElementById('stop-list');
+  if(stopList != null){
+        stopList.innerHTML = ""; // clear list
+    }
   fetch('/api/stop')
   .then(response => response.json())
   .then((stops) => {
+    stops.forEach((stop)=>{
+      console.log(stop.placename);
+      var btn = document.createElement('button');
+      btn.id = stop.id;
+      btn.innerText = stop.placename;
+      btn.setAttribute("class", "btn rec-btn");
+      btn.addEventListener("click", function() {
+        deleteFromStops(stop); 
+      });
+     stopList.appendChild(btn);
+      
+    })
+  })
+}
+    /**
     // clear list of buttons, not just text so can't use innerText
     stopList.innerHTML = ""; 
     for(let i = 0; i < stops.length; i++) {
@@ -68,20 +87,19 @@ function getStops(){
       stopList.appendChild(btn);
     }
   })
-}
+   */
+
 
 /* Add stop to the ArrayList in the servlet */
 function addToStops(stop){
- 
-  // deleteFromRecs(stop); 
+  deleteFromRecs(stop); 
   console.log("delete from recs");
   const params = new URLSearchParams();
   params.append("text", stop.placename);
   params.append("action", "add");
   fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
- 
-  console.log("add" + stop.placename + "to the ArrayList in the servlet");
+  console.log("add" + stop.placename + "to the stops");
 }
 
 /* Delete stop from the ArrayList in the servlet */
@@ -95,14 +113,13 @@ function deleteFromStops(stop){
 }
 /* Get the new list of recommendations upon load and user selection */
 function getRecs() {
- const recList = document.getElementById('rec-list');
- if(recList != null){
-        recList.innerHTML = ""; // clear list
-    }
+  const recList = document.getElementById('rec-list');
+  if(recList != null){
+    recList.innerHTML = ""; // clear list
+  }
   fetch('/api/recs')
   .then(response => response.json())
   .then((recs) => {
-    
     recs.forEach((stop)=>{
       var btn = document.createElement('button');
       btn.id = stop.id;
@@ -114,23 +131,6 @@ function getRecs() {
      recList.appendChild(btn);
       
     })
-    /** 
-    if(recList != null){
-        recList.innerHTML = ""; // clear list
-    }
-    
-    for(let i = 0; i < recs.length; i++) {
-      var btn = document.createElement('button');
-      btn.id = `recList${i}`;
-      btn.innerText = recs[i];
-      btn.setAttribute("class", "btn btn-warning");
-      btn.addEventListener("click", function() {
-        addToStops(recs[i]);
-      });
-        recList.appendChild(btn);
-    }
-    */
-
   })
 }
 
@@ -148,6 +148,7 @@ function addToRecs(stop){
 function deleteFromRecs(stop){
   const params = new URLSearchParams();
   params.append("text", stop);
+  params.append("id", stop.id);
   params.append("action", "remove");
   fetch('/api/recs', {method: 'POST', body: params})
     .then(() => getRecs());

@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -52,7 +53,6 @@ public final class RecsServlet extends HttpServlet {
     datastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
     datastore.put(recEntity3);
-    System.out.println("init!");
     return;
   }
 
@@ -75,9 +75,11 @@ public final class RecsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-    
+    long id = Long.parseLong(request.getParameter("id"));
+   
     if(action.equals("remove")){
-      System.out.println("remove rec");
+      Key recommendationEntityKey = KeyFactory.createKey(Recommendation.KIND, id);
+      datastore.delete(recommendationEntityKey);
     }
     else if(action.equals("add")){
       Entity recEntity = new Entity("Rec");

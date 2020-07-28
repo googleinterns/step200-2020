@@ -38,6 +38,7 @@ public final class StopsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("get stops");
     Query query = new Query(Stop.KIND); 
     PreparedQuery results = datastore.prepare(query);
     List<Stop> stops= new ArrayList<>();
@@ -57,8 +58,10 @@ public final class StopsServlet extends HttpServlet {
       System.out.println("remove stops");
     }
     else if(action.equals("add")){
+      System.out.println("add to stops datastore");
       Entity stopEntity = new Entity(Stop.KIND);
       stopEntity.setProperty("placename", stop);
+      datastore.put(stopEntity);
     } 
   }
 }
