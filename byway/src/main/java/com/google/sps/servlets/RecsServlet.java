@@ -22,7 +22,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
 import com.google.gson.Gson;
-import com.google.sps.data.Rec;
+import com.google.sps.data.Recommendation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /** Servlet that handles data for recommended places */
 @WebServlet("/api/recs")
@@ -39,7 +40,7 @@ public final class RecsServlet extends HttpServlet {
   
   /** Fills datastore with hardcoded values for Recommendation objects,
   values will be from another datastore later **/
-  public void init() throws ServletException{
+  public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
     Entity recEntity1 = new Entity(Recommendation.KIND);
@@ -59,7 +60,7 @@ public final class RecsServlet extends HttpServlet {
     init();
     Query query = new Query("Recommendation"); 
     PreparedQuery results = datastore.prepare(query);
-    List<Rec> recs= new ArrayList<>();
+    List<Recommendation> recs= new ArrayList<>();
 
     for (Entity entity: results.asIterable()){
       recs.add(Recommendation.fromEntity(entity));

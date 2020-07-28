@@ -19,6 +19,7 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 }
 
 function initMap() {
+  console.log("making map");
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
   var start = new google.maps.LatLng(37.7699298, -122.4469157);
@@ -50,7 +51,7 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 }
 
 function addToStops(stop){
-  console.log("add" + stop + "to the ArrayList in the servlet");
+  console.log("add" + stop.placename + "to the ArrayList in the servlet");
 }
 
 function getRecs() {
