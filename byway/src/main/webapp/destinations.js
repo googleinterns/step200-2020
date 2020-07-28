@@ -71,9 +71,14 @@ function createSearchBox(map,container){
    map.addListener("bounds_changed", () => {
     searchBox.setBounds(map.getBounds());
   });
-  let markers = [];
-
+  
   searchBox.addListener("places_changed", () => {
+    addMarkers(searchBox,map);
+  });
+}
+
+function addMarkers(searchBox,map){
+    let markers = [];
     const places = searchBox.getPlaces();
 
     if (places.length == 0) {
@@ -116,8 +121,6 @@ function createSearchBox(map,container){
       }
     });
     map.fitBounds(bounds);
-  });
-
 }
 
 /*
