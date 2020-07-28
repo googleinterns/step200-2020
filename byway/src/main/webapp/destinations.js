@@ -155,8 +155,7 @@ function getStartDestination(){
 * fetches data from servlet
 */
 function fetchDestinations(){
-  let promise = fetch('/api/destinations').then(response => response.json());
-  return promise;
+  return fetch('/api/destinations').then(response => response.json());
 }
 
 /* 
