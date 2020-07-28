@@ -21,26 +21,19 @@ if(document.readyState === 'loading') {
 let interestsChosen = [];
 
 /** 
- * Track the selected interests in an array according to their status. 
+ * Track the interests chosen in an array according to their current
+ * status. Toggle their status afterwards.
  * @param {Element elem} tracks the current button element chosen.
  */
-function checkStatus(elem) {
-  if(elem.className.includes("active")) {
+function toggleStatus(elem) {
+  if(!elem.className.includes("active")) {
     interestsChosen.push(elem.innerText);
   } else {
     interestsChosen = interestsChosen.filter(function(interest) {
       return interest !== elem.innerText;
     });
   }
-}
-
-/** 
- * Update the class of the buttons to change their style.
- * @param {Element elem} tracks the current button element chosen.
- */
-function switchStatus(elem) {
   elem.classList.toggle("active");
-  checkStatus(elem);
 }
 
 /** Display all the buttons onscreen with independent onClick events. */
@@ -66,9 +59,7 @@ function loadButtons() {
 function createButtonForPlace(place) {
   let button = document.createElement("button");
   button.innerText = place;
-  button.addEventListener('click', function(e) {
-    switchStatus(e.target);
-  });
+  button.addEventListener('click', () => toggleStatus(button));
   button.className = "btn";
   return button;
 }
