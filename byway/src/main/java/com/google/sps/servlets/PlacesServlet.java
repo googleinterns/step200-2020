@@ -14,19 +14,28 @@
 
 package com.google.maps;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
+import com.google.appengine.api.datastore.Query;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 
 /** Servlet that returns all PlaceTypes from Places API. */
-@WebServlet("/places")
-public class PlacesServlet extends HttpServlet {
+@WebServlet("/api/places")
+public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
 
@@ -34,17 +43,48 @@ public class PlacesServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> places = new ArrayList<>();
     for(PlaceType location: PlaceType.values()) {
-      String place = formatLocation(location.toString());
-      places.add(place.toString());
+      String place = formatLocation(location);
+      places.add(place);
     }
-    response.setContentType("text/html;");
+    response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(places));
   }
 
-  /** Format string by capitalizing and adding spaces in-between words. */
-  private String formatLocation(String place) {
+  /** 
+   * Format string by capitalizing and adding spaces in-between words.
+   * @param location is a PlaceType that indicates a type of location/interest.
+   * @return is the modified location name.
+   */
+  private String formatLocation(PlaceType location) {
+    String place = location.toString();
     place = place.substring(0,1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query person = new Query("sample");
+    PreparedQuery pq = datastore.prepare(person);
+    for(Entity enteredUser: pq.asIterable()) {
+      long id = (long) enteredUser.getProperty("id");
+      if(id == 2452) {
+        Entity currentUser = enteredUser;
+        addInterestsForUser(request, response, currentUser, datastore);
+      }
+    }
+  }
+
+  private void addInterestsForUser(HttpServletRequest request, HttpServletResponse response,
+                                  Entity currentUser, DatastoreService datastore) throws IOException{
+
+    String interestsAsString = request.getParameter("data");
+    ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
+    currentUser.setProperty("interests", interests);
+    datastore.put(currentUser);
+    
+    response.sendRedirect("/index.html");
   }
 }
