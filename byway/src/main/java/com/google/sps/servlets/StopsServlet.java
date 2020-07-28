@@ -32,7 +32,7 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    String json=gson.toJson(stops);
+    String json = gson.toJson(stops);
     
     response.setContentType("application/json;");
     response.getWriter().println(json);
