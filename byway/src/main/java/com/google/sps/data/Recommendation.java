@@ -16,14 +16,20 @@ package com.google.sps.data;
 
 /** A sample class to mock data received from another datastore table*/
 // TODO: Make a parent class that Rec and Stop can extend 
-public final class Rec{
+public final class Recommendation{
   /** We may need to add more fields later, so making a class seemed reasonable. */
   private final long id;
-  public final String placename; // change to private
+  private final String placename; 
+  public static final KIND = "Recommendation";
   
-
-  public Rec(long id, String placename) {
+  public Recommendation(long id, String placename) {
     this.id = id;
     this.placename = placename;
+  }
+
+  public static Rec fromEntity(Entity entity){
+    long id = entity.getKey().getId();
+    String placename = (String) entity.getProperty("placename");
+    return new Rec(id, placename);
   }
 }
