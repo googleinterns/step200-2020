@@ -42,6 +42,5 @@ public final class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     stops.add(stop);
-    
   }
 }
