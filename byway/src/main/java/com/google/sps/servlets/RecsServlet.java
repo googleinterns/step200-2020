@@ -60,7 +60,7 @@ public final class RecsServlet extends HttpServlet {
     init();
     Query query = new Query(Recommendation.KIND); 
     PreparedQuery results = datastore.prepare(query);
-    List<Recommendation> recs= new ArrayList<>();
+    List<Recommendation> recs = new ArrayList<>();
 
     for (Entity entity: results.asIterable()){
       recs.add(Recommendation.fromEntity(entity));
