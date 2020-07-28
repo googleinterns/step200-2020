@@ -71,4 +71,5 @@ function getRecs() {
   });
 }
 
-/* exported initMap, google */
+/* exported initMap*/
+/* global google */
