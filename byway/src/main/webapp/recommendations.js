@@ -23,7 +23,7 @@ let randomLocation;
  */
 function initialize() {
   loadMap();
-  fetch('/generator')
+  fetch('/api/generator')
   .then(response => response.json())
   .then((interests) => {
     interests.forEach(placeType => {

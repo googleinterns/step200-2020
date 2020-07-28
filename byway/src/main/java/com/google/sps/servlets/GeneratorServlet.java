@@ -14,6 +14,13 @@
 
 package com.google.maps;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
+import com.google.appengine.api.datastore.Query;
 import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -26,7 +33,7 @@ import java.util.ArrayList;
 /** Servlet that loads places of interest and generates 
  *  recommended places based on interests selected.
  */
-@WebServlet("/generator")
+@WebServlet("/api/generator")
 public class GeneratorServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
@@ -34,7 +41,18 @@ public class GeneratorServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query person = new Query("sample");
+    PreparedQuery pq = datastore.prepare(person);
+    for(Entity enteredUser: pq.asIterable()) {
+      long id = (long) enteredUser.getProperty("id");
+      if(id == 2452) {
+        Entity currentUser = enteredUser;
+        interestsSelected = (ArrayList) currentUser.getProperty("interests");
+      }
+    }
+    response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(interestsSelected));
   }
 

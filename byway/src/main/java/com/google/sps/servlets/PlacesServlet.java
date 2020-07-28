@@ -85,6 +85,6 @@ public final class PlacesServlet extends HttpServlet {
     currentUser.setProperty("interests", interests);
     datastore.put(currentUser);
     
-    response.sendRedirect("/index.html");
+    response.sendRedirect("/generator.html");
   }
 }

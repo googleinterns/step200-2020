@@ -23,7 +23,7 @@ let interestsChosen = [];
 /** Convert selected array into JSON to send to server. */
 function passData() {
   var data = document.getElementById("data");
-  data.value = JSON.stringify(selected);
+  data.value = JSON.stringify(interestsChosen);
 }
 
 /** 
