@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google */
+/* global google, setProgressBar */
 
 
 const defaultCenter = Object.freeze({
@@ -26,8 +26,11 @@ let userlatlng = {lat:null , lng: null};
 function initializeDestinationsPage(){
     initAutocomplete(); 
     setProgressBar(1); 
-    getLocations(); 
-    getStartDestination();
+    fetchDestinations().then(response => {
+      updateLocations(response);
+      updateStartDestination(response);
+    });
+    
 }
 /*
 * Creates map and search boxes with autocomplete
@@ -129,32 +132,28 @@ function addMarker(searchBox,map){
 /*
 * fetches start location and destinations from DestinationsServlet and adds to DOM
 */
-function getLocations(){
-  fetchDestinations().then((userLocations) => {
-    document.getElementById('start-location').innerText = "Start Location :" + userLocations.start;
+function updateLocations(locationData){
+    document.getElementById('start-location').innerText = "Start Location :" + locationData.start;
     const container = document.getElementById('destinations-container');
     container.innerText = "Destinations:";
-    let destinationArray= userLocations.destinations;
+    let destinationArray= locationData.destinations;
     destinationArray.forEach((destination) => {
       let destinationToAdd = document.createElement('p');
       destinationToAdd.innerText = destination;
       container.appendChild(destinationToAdd);
     }) 
-  });
 }
 
 /* 
 * fills Start location Searchbox with previously input
 */
-function getStartDestination(){
-  fetchDestinations().then((userLocations)=>{
-    if (userLocations.start == null){
+function updateStartDestination(locationData){
+    if (locationData.start == null){
       document.getElementById('start-search-box').value = "";
     }
     else{
-      document.getElementById('start-search-box').value = userLocations.start;
+      document.getElementById('start-search-box').value = locationData.start;
     }
-  });
 }
 
 /* 
@@ -193,8 +192,10 @@ window.onload = function(){
     formData.append('start-location', document.getElementById('start-search-box').value); 
     formData.append('destinations', document.getElementById('destinations-search-box').value);  
     fetch('/api/destinations', {method: 'POST', body:formData}).then(() => {
-      getLocations()
-      getStartDestination();
+      fetchDestinations().then(response => {
+        updateLocations(response);
+        updateStartDestination(response);
+      });
     });
   });
 }
