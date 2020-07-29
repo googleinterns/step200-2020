@@ -49,6 +49,12 @@ Entity userEntity = new Entity("UserInputs");
     userEntity.setProperty("start", request.getParameter("start-location"));
     userEntity.setProperty("destinations", places.getDestinations());
     datastore.put(userEntity);
+
+    String start = (String) userEntity.getProperty("start");
+    ArrayList<String> destinations = (ArrayList) userEntity.getProperty("destinations");
+    UserLocations userLocations = new UserLocations(start, destinations);    
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(userLocations));
   }
 
 }
