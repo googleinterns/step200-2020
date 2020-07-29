@@ -27,9 +27,12 @@
 }
 
 .header img.logo {
-  width:5vw;
-  height:5vw;
-  animation: move 4s linear infinite;
+  width:8vw;
+  height:8vw;
+  background-color:white;
+  padding: 2vw;
+  margin:2vw;
+  border-radius:50%;
 }
 
 @keyframes move{
