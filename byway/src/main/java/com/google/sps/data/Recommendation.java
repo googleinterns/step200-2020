@@ -13,6 +13,8 @@
 // limitations under the License.
 
 package com.google.sps.data;
+
+import static com.google.common.base.Preconditions.checkArgument;
 import com.google.appengine.api.datastore.Entity;
 
 /** A sample class to mock data received from another datastore table*/
@@ -29,6 +31,7 @@ public final class Recommendation{
   }
 
   public static Recommendation fromEntity(Entity entity){
+    checkArgument(entity.getKind().equals(KIND), "Wrong Entity kind, expected %s, got %s", KIND, entity.getKind());
     long id = entity.getKey().getId();
     String placename = (String) entity.getProperty("placename");
     return new Recommendation(id, placename);

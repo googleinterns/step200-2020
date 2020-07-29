@@ -1,9 +1,3 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
-}
-
 #map{
   height:500px; /* change to 40 vw */
   width:500px; /* 5 vw padding*/

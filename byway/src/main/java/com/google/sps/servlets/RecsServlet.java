@@ -40,6 +40,7 @@ public final class RecsServlet extends HttpServlet {
   
   /** Fills datastore with hardcoded values for Recommendation objects,
   values will be from another datastore later **/
+  @Override
   public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
@@ -52,12 +53,10 @@ public final class RecsServlet extends HttpServlet {
     datastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
     datastore.put(recEntity3);
-    return;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    init();
     Query query = new Query(Recommendation.KIND); 
     PreparedQuery results = datastore.prepare(query);
     List<Recommendation> recs = new ArrayList<>();

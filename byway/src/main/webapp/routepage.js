@@ -13,32 +13,33 @@
 // limitations under the License.
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
-  document.addEventListener('DOMContentLoaded', getRecs());
+  let recs = getRecs();
+  document.addEventListener('DOMContentLoaded', recs);
 } else {  // `DOMContentLoaded` has already fired
   getRecs();
 }
 
 function initMap() {
-  var directionsService = new google.maps.DirectionsService();
-  var directionsRenderer = new google.maps.DirectionsRenderer();
-  var start = new google.maps.LatLng(37.7699298, -122.4469157);
-  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-  var mapOptions = {
+  let directionsService = new google.maps.DirectionsService();
+  let directionsRenderer = new google.maps.DirectionsRenderer();
+  let start = new google.maps.LatLng(37.7699298, -122.4469157);
+  let end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  let mapOptions = {
     zoom: 14,
     center: start
   }
-  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-     document.getElementById("route").addEventListener("click", function() {
+    document.getElementById("route").addEventListener("click", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
 }
 
 function calcRoute(directionsService, directionsRenderer, start, end) {
-  var request = {
-      origin:  start,
-      destination: end,
-      travelMode: 'DRIVING'
+  let request = {
+    origin:  start,
+    destination: end,
+    travelMode: 'DRIVING'
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
@@ -71,5 +72,5 @@ function getRecs() {
   });
 }
 
-/* exported initMap*/
+/* exported initMap */
 /* global google */
