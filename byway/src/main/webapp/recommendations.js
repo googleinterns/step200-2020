@@ -68,7 +68,7 @@ function callback(results, status) {
         createMarker(results[i]);
         markerCounter++;
       }
-      if(markerCounter > length) {
+      if(markerCounter == length) {
         break;
       }
     }
