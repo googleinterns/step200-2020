@@ -160,7 +160,8 @@ function updateStartDestination(locationData){
 * fetches data from servlet
 */
 function fetchDestinations(){
-  return fetch('/api/destinations').then(response => response.json());
+  let promise= fetch('/api/destinations').then(response => response.json());
+  return promise;
 }
 
 /* 
