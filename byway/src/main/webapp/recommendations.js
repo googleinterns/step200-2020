@@ -61,14 +61,14 @@ function loadRecommendations() {
  */
 function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    let length = maxLength(results.length);
-    let markerCounter = 0;
+    let maxRecommendations = 3;
+    let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
       if(fitsInRadius(results[i], RADIUS)) {
         createMarker(results[i]);
-        markerCounter++;
+        numRecommendations++;
       }
-      if(markerCounter == length) {
+      if(numRecommendations == maxRecommendations) {
         break;
       }
     }
@@ -89,21 +89,6 @@ function fitsInRadius(result, radius) {
   let distanceBetweenEnds =
     google.maps.geometry.spherical.computeDistanceBetween(currentLocation, randomLocation);
   return distanceBetweenEnds < radius;
-}
-
-/**
- * Finds an integer length by comparing the passed-in length
- * of an array with a recommended length, 3, and limits the
- * length returned.
- * @param {int resultsLength} length of an Array
- * @returns integer value
- */
-function maxLength(resultsLength) {
-  if(resultsLength > 3) {
-    return 3;
-  } else {
-    return resultsLength;
-  }
 }
 
 /**
