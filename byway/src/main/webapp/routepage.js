@@ -134,7 +134,6 @@ function addToRecs(stop){
     .then(() => getRecs());
 }
 
-
 /** Delete stop from recommendations list in the servlet */
 function deleteFromRecs(stop){
   console.log("deletingfromrecs");

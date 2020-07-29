@@ -49,12 +49,12 @@ public final class StopsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(stops));
   }
 
-  /* Method which modifies the stops ArrayList */
+  /* Method which modifies the Stop datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-    
+
     if(action.equals("remove")){
       long id = Long.parseLong(request.getParameter("id"));
       Key stopEntityKey = KeyFactory.createKey(Stop.KIND, id);

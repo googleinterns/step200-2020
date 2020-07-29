@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Servlet that handles data for recommended places */
 @WebServlet("/api/recs")
 public final class RecsServlet extends HttpServlet {
@@ -41,7 +40,7 @@ public final class RecsServlet extends HttpServlet {
 
   /* Fills datastore with initial hardcoded values of Recommendation objects,
    * values will be from another datastore later
-  */
+   */
   public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
@@ -66,7 +65,6 @@ public final class RecsServlet extends HttpServlet {
     for (Entity entity: results.asIterable()){
       recs.add(Recommendation.fromEntity(entity));
     }
-    
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(recs));
   }
