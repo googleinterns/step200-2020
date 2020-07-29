@@ -23,6 +23,12 @@ const defaultCenter = Object.freeze({
 
 let userlatlng = {lat:null , lng: null};
 
+function initializeDestinationsPage(){
+    initAutocomplete(); 
+    setProgressBar(1); 
+    getLocations(); 
+    getStartDestination();
+}
 /*
 * Creates map and search boxes with autocomplete
 */
@@ -183,19 +189,16 @@ function getCurrentAddress(){
 window.onload = function(){
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const params = new URLSearchParams();
-    params.append('start-location', document.getElementById('start-search-box').value); 
-    params.append('destinations', document.getElementById('destinations-search-box').value);  
-    fetch('/api/destinations', {method: 'POST', body:params}).then(function(response){
-      return response.text();
-    }).then(function(text){
-      console.log(text)
-    }).then(() => {
+    const formData = new URLSearchParams();
+    formData.append('start-location', document.getElementById('start-search-box').value); 
+    formData.append('destinations', document.getElementById('destinations-search-box').value);  
+    fetch('/api/destinations', {method: 'POST', body:formData}).then(() => {
       getLocations()
-    }).then(() => {
       getStartDestination();
     });
   });
 }
+
+document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
     
 
