@@ -16,11 +16,11 @@
 /* global google */
 
 
-const defaultCenter = {
+const defaultCenter = Object.freeze({
   lat: 40.712776,
   lng:-74.005974
-};
-Object.freeze(defaultCenter);
+});
+
 let userlatlng = {lat:null , lng: null};
 
 /*

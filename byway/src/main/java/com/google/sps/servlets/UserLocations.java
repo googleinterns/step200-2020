@@ -1,5 +1,8 @@
 package com.google.sps.servlets;
 import java.util.ArrayList;
+/*
+* Stores users start location and destinaions as they add additional places
+*/
 
 public class UserLocations{ 
   private String start;
@@ -10,11 +13,17 @@ public class UserLocations{
     this.destinations = destinations;
   }
 
+  /*
+  * returns start location as a string of a formatted-address 
+  */
   public String getStart(){
     return start;
   } 
-     
-  public ArrayList getDestinations(){
+
+  /*
+  * returns ArrayList of users input destinations as strings of formatted-addresses
+  */   
+  public ArrayList<String> getDestinations(){
     return destinations;
   }
 

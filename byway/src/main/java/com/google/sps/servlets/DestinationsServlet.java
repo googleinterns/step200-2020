@@ -20,22 +20,22 @@ public class DestinationsServlet extends HttpServlet {
 
 private final UserLocations places = new UserLocations("", new ArrayList<String>());
 private final Gson gson = new Gson();
-DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-Entity destinationsEntity = new Entity("UserDestinations");
- // Key entityKey = destinationsEntity.getKey());
+private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+Entity userEntity = new Entity("UserInputs");
+
 
   @Override
   public void init() {
-    destinationsEntity.setProperty("start", "");
-    destinationsEntity.setProperty("destinations", new ArrayList<String>());
-    datastore.put(destinationsEntity);
+    userEntity.setProperty("start", "");
+    userEntity.setProperty("destinations", new ArrayList<String>());
+    datastore.put(userEntity);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String start = (String) destinationsEntity.getProperty("start");
-    ArrayList<String> destinations = (ArrayList) destinationsEntity.getProperty("destinations");
+    String start = (String) userEntity.getProperty("start");
+    ArrayList<String> destinations = (ArrayList) userEntity.getProperty("destinations");
     UserLocations userLocations = new UserLocations(start, destinations);    
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(userLocations));
@@ -46,9 +46,9 @@ Entity destinationsEntity = new Entity("UserDestinations");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     places.addDestination(request.getParameter("destinations"));
 
-    destinationsEntity.setProperty("start", request.getParameter("start-location"));
-    destinationsEntity.setProperty("destinations", places.getDestinations());
-    datastore.put(destinationsEntity);
+    userEntity.setProperty("start", request.getParameter("start-location"));
+    userEntity.setProperty("destinations", places.getDestinations());
+    datastore.put(userEntity);
   }
 
 }
