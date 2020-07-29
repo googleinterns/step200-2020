@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -34,13 +35,12 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final DatastoreService stopsDatastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("get stops");
     Query query = new Query(Stop.KIND); 
-    PreparedQuery results = datastore.prepare(query);
+    PreparedQuery results = stopsDatastore.prepare(query);
     List<Stop> stops= new ArrayList<>();
     for (Entity entity: results.asIterable()){
       stops.add(Stop.fromEntity(entity));
@@ -54,14 +54,16 @@ public final class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
+    
     if(action.equals("remove")){
-      System.out.println("remove stops");
+      long id = Long.parseLong(request.getParameter("id"));
+      Key stopEntityKey = KeyFactory.createKey(Stop.KIND, id);
+      stopsDatastore.delete(stopEntityKey);
     }
     else if(action.equals("add")){
-      System.out.println("add to stops datastore");
       Entity stopEntity = new Entity(Stop.KIND);
       stopEntity.setProperty("placename", stop);
-      datastore.put(stopEntity);
+      stopsDatastore.put(stopEntity);
     } 
   }
 }

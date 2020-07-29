@@ -18,6 +18,7 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
   getRecs();
 }
 
+/** Displays the map */
 function initMap() {
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
@@ -29,11 +30,12 @@ function initMap() {
   }
   var map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-  document.getElementById("stop-list").addEventListener("focus", function() {
+  document.getElementById("stop-list").addEventListener("click", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
 }
 
+/** Displays route overtop the map */
 function calcRoute(directionsService, directionsRenderer, start, end) {
   var request = {
     origin:  start,
@@ -49,9 +51,9 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   });
 }
 
-/* Get the new list of stops upon user selection */
+/** Get the new list of stops from servlet upon user selection */
 function getStops(){
-  console.log("in get stops!")
+  console.log("getStops()")
   const stopList = document.getElementById('stop-list');
   if(stopList != null){
         stopList.innerHTML = ""; // clear list
@@ -60,7 +62,6 @@ function getStops(){
   .then(response => response.json())
   .then((stops) => {
     stops.forEach((stop)=>{
-      console.log(stop.placename);
       var btn = document.createElement('button');
       btn.id = stop.id;
       btn.innerText = stop.placename;
@@ -73,46 +74,34 @@ function getStops(){
     })
   })
 }
-    /**
-    // clear list of buttons, not just text so can't use innerText
-    stopList.innerHTML = ""; 
-    for(let i = 0; i < stops.length; i++) {
-      var btn = document.createElement('button');
-      btn.id = `stopList${i}`;
-      btn.innerHTML = stops[i];
-      btn.setAttribute("class", "btn rec-btn");
-      btn.addEventListener("click", function() {
-        deleteFromStops(stops[i]);
-      });
-      stopList.appendChild(btn);
-    }
-  })
-   */
 
-
-/* Add stop to the ArrayList in the servlet */
+/** Add stop to the datastore in servlet */
 function addToStops(stop){
+  console.log("addToStops()")
   deleteFromRecs(stop); 
-  console.log("delete from recs");
   const params = new URLSearchParams();
   params.append("text", stop.placename);
+  params.append("id", stop.id);
   params.append("action", "add");
   fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
-  console.log("add" + stop.placename + "to the stops");
 }
 
-/* Delete stop from the ArrayList in the servlet */
+/** Delete stop from the datastore in the servlet */
 function deleteFromStops(stop){
+  console.log("deleteFromStops()");
   addToRecs(stop); 
   const params = new URLSearchParams();
-  params.append("text", stop);
+  params.append("text", stop.placename);
+  params.append("id", stop.id);
   params.append("action", "remove");
   fetch('/api/stop', {method: 'POST', body: params})
     .then(() => getStops()); // re-render list
 }
-/* Get the new list of recommendations upon load and user selection */
+
+/** Get the new list of recommendations from servlet upon load and user selection */
 function getRecs() {
+  console.log("getRecs()");
   const recList = document.getElementById('rec-list');
   if(recList != null){
     recList.innerHTML = ""; // clear list
@@ -134,20 +123,23 @@ function getRecs() {
   })
 }
 
-/* Add place back to recommendations list in the servlet */
+/** Add place back to recommendations datastore in the servlet */
 function addToRecs(stop){
+  console.log("addToRecs()");
   const params = new URLSearchParams();
-  params.append("text", stop);
+  params.append("text", stop.placename);
+  params.append("id", stop.id);
   params.append("action", "add");
   fetch('/api/recs', {method: 'POST', body: params})
     .then(() => getRecs());
 }
 
 
-/* Delete stop from recommendations list in the servlet */
+/** Delete stop from recommendations list in the servlet */
 function deleteFromRecs(stop){
+  console.log("deletingfromrecs");
   const params = new URLSearchParams();
-  params.append("text", stop);
+  params.append("text", stop.placename);
   params.append("id", stop.id);
   params.append("action", "remove");
   fetch('/api/recs', {method: 'POST', body: params})

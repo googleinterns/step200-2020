@@ -37,10 +37,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/recs")
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final DatastoreService recsDatastore = DatastoreServiceFactory.getDatastoreService();
 
-  /** Fills datastore with hardcoded values for Recommendation objects,
-  values will be from another datastore later **/
+  /* Fills datastore with initial hardcoded values of Recommendation objects,
+   * values will be from another datastore later
+  */
   public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
@@ -48,18 +49,18 @@ public final class RecsServlet extends HttpServlet {
     Entity recEntity2 = new Entity(Recommendation.KIND);
     Entity recEntity3 = new Entity(Recommendation.KIND);
     recEntity1.setProperty("placename", "Times Square");
-    datastore.put(recEntity1);
+    recsDatastore.put(recEntity1);
     recEntity2.setProperty("placename", "MOMA");
-    datastore.put(recEntity2);
+    recsDatastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
-    datastore.put(recEntity3);
+    recsDatastore.put(recEntity3);
     return;
   }
-
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Recommendation.KIND); 
-    PreparedQuery results = datastore.prepare(query);
+    PreparedQuery results = recsDatastore.prepare(query);
     List<Recommendation> recs= new ArrayList<>();
 
     for (Entity entity: results.asIterable()){
@@ -70,20 +71,21 @@ public final class RecsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(recs));
   }
 
-  /* Method which modifies the recs ArrayList */
+  /* Method which modifies the Recommendation datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-    long id = Long.parseLong(request.getParameter("id"));
-   
+
     if(action.equals("remove")){
+      long id = Long.parseLong(request.getParameter("id"));
       Key recommendationEntityKey = KeyFactory.createKey(Recommendation.KIND, id);
-      datastore.delete(recommendationEntityKey);
+      recsDatastore.delete(recommendationEntityKey);
     }
     else if(action.equals("add")){
-      Entity recEntity = new Entity("Rec");
-      recEntity.setProperty("placename", stop);
+      Entity recommendationEntity = new Entity(Recommendation.KIND);
+      recommendationEntity.setProperty("placename", stop);
+      recsDatastore.put(recommendationEntity);
     } 
   }
   
