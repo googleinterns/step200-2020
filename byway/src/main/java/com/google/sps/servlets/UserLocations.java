@@ -23,7 +23,6 @@ public class UserLocations{
   /**
   * returns ArrayList of users input destinations as strings of formatted-addresses
   */   
-
   public ArrayList<String> getDestinations(){
     return destinations;
   }
