@@ -31,7 +31,7 @@ private Key userKey;
 
   @Override
   public void init() {
-    Entity userEntity = new Entity("UserInputs", "test");
+    Entity userEntity = new Entity("UserInputs");
     userEntity.setProperty("start", "");
     userEntity.setProperty("destinations", new ArrayList<String>());
     datastore.put(userEntity);
