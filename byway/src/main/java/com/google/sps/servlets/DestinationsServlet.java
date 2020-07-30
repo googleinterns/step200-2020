@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -24,61 +25,43 @@ public class DestinationsServlet extends HttpServlet {
 private final UserLocations places = new UserLocations("", new ArrayList<String>());
 private final Gson gson = new Gson();
 private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-private Long userKey;
+private Key userKey;
 
   @Override
   public void init() {
     Entity userEntity = new Entity("UserInputs", "test");
     System.out.println(userKey);
-    userKey= userEntity.getKey().getId();
     userEntity.setProperty("start", "");
     userEntity.setProperty("destinations", new ArrayList<String>());
     datastore.put(userEntity);
+    userKey= userEntity.getKey();
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query userInput = new Query("UserInputs");
-    PreparedQuery query = datastore.prepare(userInput);
-    for(Entity user: query.asIterable()) {
-      Long key = user.getKey().getId();
-      if(key == userKey) {
-          System.out.println(key);
-        Entity currentUser = user;
-        String start = (String) currentUser.getProperty("start");
-        ArrayList<String> destinations = (ArrayList) currentUser.getProperty("destinations");
-        UserLocations userLocations = new UserLocations(start, destinations);    
-        response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(userLocations));
-        return;
-      }
-    }
-    UserLocations userLocations = new UserLocations("", new ArrayList<String>());    
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(userLocations));
+    Entity entity; 
+    try{ 
+      entity = datastore.get(userKey);
+      String start = (String) entity.getProperty("start");
+      ArrayList<String> destinations = (ArrayList) entity.getProperty("destinations");
+      UserLocations userLocations = new UserLocations(start, destinations);    
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(userLocations));
+    } catch(EntityNotFoundException e){
+      System.out.println("error");
+    } 
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-    Query userInput = new Query("UserInputs");
-    PreparedQuery query = datastore.prepare(userInput);
-    for(Entity user: query.asIterable()) {
-      Long key = user.getKey().getId();
-      if(key == userKey) {
-        Entity currentUser = user;
-        places.addDestination(request.getParameter("destinations"));
-        currentUser.setProperty("start", request.getParameter("start-location"));
-        currentUser.setProperty("destinations", places.getDestinations());
-        datastore.put(currentUser);
-
-        String start = (String) currentUser.getProperty("start");
-        ArrayList<String> destinations = (ArrayList) currentUser.getProperty("destinations");
-        UserLocations userLocations = new UserLocations(start, destinations);    
-        response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(userLocations));
-      }
-    }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity entity;
+    try{ 
+      entity = datastore.get(userKey) ;
+      places.addDestination(request.getParameter("destinations"));
+      entity.setProperty("start", request.getParameter("start-location"));
+      entity.setProperty("destinations", places.getDestinations());
+      datastore.put(entity);
+    } catch(EntityNotFoundException e){} 
     
   }
 
