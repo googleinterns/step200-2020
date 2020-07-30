@@ -189,16 +189,15 @@ function getCurrentAddress(){
 window.onload = function(){
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const formData = new URLSearchParams();
-    formData.append('start-location', document.getElementById('start-search-box').value); 
-    formData.append('destinations', document.getElementById('destinations-search-box').value);  
-    fetch('/api/destinations', {method: 'POST', body:formData}).then(() => {
-      fetchDestinations().then(response => {
-        updateLocations(response);
-        updateStartDestination(response);
+    const formData = new  FormData(document.getElementById("user-input-form"));
+    //formData.append('start-location', document.getElementById('start-search-box').value); 
+    //formData.append('destinations', document.getElementById('destinations-search-box').value); 
+    fetch('/api/destinations', {method: 'POST', body:formData}).then(()=>
+        fetchDestinations()).then(locationData => {
+        updateLocations(locationData);
+        updateStartDestination(locationData);
       });
     });
-  });
 }
 
 document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
