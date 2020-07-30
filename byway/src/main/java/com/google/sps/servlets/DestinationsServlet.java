@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.common.flogger.FluentLogger;
 
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /** Servlet that returns start location and destinations user inputs */
 @MultipartConfig
 @WebServlet("/api/destinations")
@@ -27,6 +29,7 @@ public class DestinationsServlet extends HttpServlet {
 private final UserLocations places = new UserLocations("", new ArrayList<String>());
 private final Gson gson = new Gson();
 private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 private Key userKey;
 
   @Override
@@ -50,7 +53,7 @@ private Key userKey;
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations));
     } catch(EntityNotFoundException e){
-      System.out.println("error");
+      logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
     } 
   }
 
@@ -69,6 +72,8 @@ private Key userKey;
       UserLocations userLocations = new UserLocations(start, destinations);    
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations));
-    } catch(EntityNotFoundException e){} 
+    } catch(EntityNotFoundException e){
+      logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
+    } 
   }
 }
