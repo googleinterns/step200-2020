@@ -31,9 +31,8 @@ public final class StopsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   // Implement datastore in routepage branch
 
-  @GuardedBy("this")
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public synchronized void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     String json = gson.toJson(stops);
     
@@ -41,9 +40,8 @@ public final class StopsServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
-  @GuardedBy("this")
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public synchronized void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     stops.add(stop);
   }
