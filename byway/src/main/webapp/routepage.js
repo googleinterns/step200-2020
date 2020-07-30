@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let recs = [];
+let stops = [];
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', getRecs());
 } else {  // `DOMContentLoaded` has already fired
@@ -74,29 +77,55 @@ function getStops(){
     })
   })
 }
+// TODO: Make into generic function w params
+function getStopsList(){
+  const stopList = document.getElementById('stop-list');
+  stopList.innerHTML = ""; // clear list
+  // re-render list but not asynchronously 
+  stops.forEach((stop)=>{
+    var btn = document.createElement('button');
+    btn.innerText = stop.placename
+    btn.setAttribute("class", "btn rec-btn");
+    btn.addEventListener("click", function() {
+      deleteFromStops(stop); 
+    });
+    stopList.appendChild(btn);
+  })
+}
 
 /** Add stop to the datastore in servlet */
-function addToStops(stop){
+function addToStops(s){
   console.log("addToStops()")
-  deleteFromRecs(stop); 
+  deleteFromRecs(s); 
+  console.log("s " + s.placename);
+  // modify stops array
+  stops.push(s);
+  getStopsList();
+
+  // add to datastore
   const params = new URLSearchParams();
   params.append("text", stop.placename);
   params.append("id", stop.id);
   params.append("action", "add");
   fetch('/api/stop', {method: 'POST', body: params})
-    .then(() => getStops()); // re-render list
+   // .then(() => getStops()); 
 }
 
 /** Delete stop from the datastore in the servlet */
 function deleteFromStops(stop){
   console.log("deleteFromStops()");
   addToRecs(stop); 
+  stops = stops.filter(function(stopObj){
+    return stopObj.placename != stop.placename;
+  })
+  getStopsList();
   const params = new URLSearchParams();
   params.append("text", stop.placename);
   params.append("id", stop.id);
   params.append("action", "remove");
   fetch('/api/stop', {method: 'POST', body: params})
-    .then(() => getStops()); // re-render list
+    //.then(() => getStops()); // re-render list
+  console.log("end of delete from stops");
 }
 
 /** Get the new list of recommendations from servlet upon load and user selection */
@@ -108,41 +137,65 @@ function getRecs() {
   }
   fetch('/api/recs')
   .then(response => response.json())
-  .then((recs) => {
-    recs.forEach((stop)=>{
+  .then((recommendations) => {
+    recommendations.forEach((rec)=>{
+      recs.push(rec);
       var btn = document.createElement('button');
-      btn.id = stop.id;
-      btn.innerText = stop.placename;
+      btn.id = rec.id;
+      btn.innerText = rec.placename;
       btn.setAttribute("class", "btn rec-btn");
       btn.addEventListener("click", function() {
-        addToStops(stop); 
+        addToStops(rec); 
       });
      recList.appendChild(btn);
       
     })
   })
 }
+function getRecsList(){
+  console.log("new rec list");
+  const recsList = document.getElementById('rec-list');
+  recsList.innerHTML = ""; // clear list
+  // re-render list but not asynchronously 
+  recs.forEach((stop)=>{
+    var btn = document.createElement('button');
+    btn.innerText = stop.placename
+    btn.setAttribute("class", "btn rec-btn");
+    btn.addEventListener("click", function() {
+      addToStops(stop);
+    });
+    recsList.appendChild(btn);
+  })
+}
 
 /** Add place back to recommendations datastore in the servlet */
 function addToRecs(stop){
   console.log("addToRecs()");
+  recs.push(stop);
+  getRecsList();
   const params = new URLSearchParams();
   params.append("text", stop.placename);
   params.append("id", stop.id);
   params.append("action", "add");
   fetch('/api/recs', {method: 'POST', body: params})
-    .then(() => getRecs());
+    //.then(() => getRecs());
 }
 
 /** Delete stop from recommendations list in the servlet */
 function deleteFromRecs(stop){
-  console.log("deletingfromrecs");
-  const params = new URLSearchParams();
-  params.append("text", stop.placename);
-  params.append("id", stop.id);
-  params.append("action", "remove");
-  fetch('/api/recs', {method: 'POST', body: params})
-    .then(() => getRecs());
+  console.log("deleting from recs" + stop.placename);
+  recs = recs.filter(function(rec){
+    return rec.placename != stop.placename;
+  })
+  console.log(recs);
+  getRecsList();
+  // unnecessary deletion on the backend
+  //const params = new URLSearchParams();
+  //params.append("text", stop.placename);
+  //params.append("id", stop.id);
+  //params.append("action", "remove");
+  //fetch('/api/recs', {method: 'POST', body: params})
+    // .then(() => getRecs());
 }
 
 /* exported initMap*/
