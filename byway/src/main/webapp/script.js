@@ -1,5 +1,5 @@
 /* exported setProgressBar */
-/*
+/** 
 * Sets Progress Bar to correct location based on the page number
 * @param {int} pageNumber
 */

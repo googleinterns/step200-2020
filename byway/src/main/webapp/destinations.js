@@ -32,7 +32,7 @@ function initializeDestinationsPage(){
     });
     
 }
-/*
+/**
 * Creates map and search boxes with autocomplete
 */
 function initAutocomplete() {   
@@ -65,7 +65,7 @@ function initAutocomplete() {
   
 }
 
-/*
+/** 
  * Creates a search box
  * @param {google.maps.Map} map
  * @param {string} container
@@ -129,7 +129,7 @@ function addMarker(searchBox,map){
     map.fitBounds(bounds);
 }
 
-/*
+/** 
 * fetches start location and destinations from DestinationsServlet and adds to DOM
 */
 function updateLocations(locationData){
@@ -144,7 +144,7 @@ function updateLocations(locationData){
     }) 
 }
 
-/* 
+/**  
 * fills Start location Searchbox with previously input
 */
 function updateStartDestination(locationData){
@@ -156,7 +156,7 @@ function updateStartDestination(locationData){
     }
 }
 
-/* 
+/**
 * fetches data from servlet
 */
 function fetchDestinations(){
@@ -164,7 +164,7 @@ function fetchDestinations(){
   return promise;
 }
 
-/* 
+/** 
 * Gets users current location 
 */
 function getCurrentAddress(){
@@ -183,21 +183,25 @@ function getCurrentAddress(){
   });
 }
 
-/* 
+/** 
 * add event listener for submit button
 */
 window.onload = function(){
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new  FormData(document.getElementById("user-input-form"));
-    fetch('/api/destinations', {method: 'POST', body:formData}).then(()=>
-        fetchDestinations()).then(locationData => {
+    fetch('/api/destinations', {method: 'POST', body:formData}).then((response)=>
+        response.json()).then(locationData => {
         updateLocations(locationData);
         updateStartDestination(locationData);
       });
     });
 }
 
-document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
+
+if (document.readyState === 'loading') {  // Loading hasn't finished yet
+  document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
+} 
+
     
 

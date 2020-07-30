@@ -26,11 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
 
-private final UserLocations places = new UserLocations("", new ArrayList<String>());
-private final Gson gson = new Gson();
-private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-private Key userKey;
+  private final Gson gson = new Gson();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+  private Key userKey;
 
   @Override
   public void init() {
@@ -49,7 +48,6 @@ private Key userKey;
       String start = (String) entity.getProperty("start");
       ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
       UserLocations userLocations = new UserLocations(start, destinations); 
-      System.out.println(userLocations.getDestinations());   
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations));
     } catch(EntityNotFoundException e){
@@ -62,13 +60,22 @@ private Key userKey;
     Entity entity;
     try{ 
       entity = datastore.get(userKey) ;
-      places.addDestination(request.getParameter("destinations"));
-      entity.setProperty("start", request.getParameter("start-location"));
-      entity.setProperty("destinations", places.getDestinations());
+      String start= request.getParameter("start-location");
+      String destination = request.getParameter("destinations");
+      entity.setProperty("start", start);
+      if((ArrayList<String>) entity.getProperty("destinations") == null){
+        ArrayList<String> destinations = new ArrayList<String>();
+        destinations.add(destination);
+        entity.setProperty("destinations", destinations);
+      }
+      else{
+        ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+        destinations.add(destination);
+        entity.setProperty("destinations", destinations);
+      }
       datastore.put(entity);
 
-      String start = (String) entity.getProperty("start");
-      ArrayList<String> destinations = (ArrayList) entity.getProperty("destinations");
+      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
       UserLocations userLocations = new UserLocations(start, destinations);    
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations));
