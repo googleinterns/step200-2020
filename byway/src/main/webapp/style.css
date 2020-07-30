@@ -27,12 +27,11 @@
 }
 
 .header img.logo {
-  width:8vw;
-  height:8vw;
+  width:10vw;
+  height:10vw;
   background-color:white;
-  padding: 2vw;
-  margin:2vw;
-  border-radius:50%;
+  padding:0vw;
+  border-radius:25%;
 }
 
 @keyframes move{
