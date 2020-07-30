@@ -64,11 +64,11 @@ private Key userKey;
       entity.setProperty("destinations", places.getDestinations());
       datastore.put(entity);
 
-      /*String start = (String) entity.getProperty("start");
+      String start = (String) entity.getProperty("start");
       ArrayList<String> destinations = (ArrayList) entity.getProperty("destinations");
       UserLocations userLocations = new UserLocations(start, destinations);    
       response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations));*/
+      response.getWriter().println(gson.toJson(userLocations));
     } catch(EntityNotFoundException e){} 
   }
 }
