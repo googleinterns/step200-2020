@@ -30,20 +30,21 @@ private Key userKey;
   @Override
   public void init() {
     Entity userEntity = new Entity("UserInputs", "test");
-    System.out.println(userKey);
     userEntity.setProperty("start", "");
     userEntity.setProperty("destinations", new ArrayList<String>());
     datastore.put(userEntity);
     userKey= userEntity.getKey();
+    System.out.println(userKey);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Entity entity; 
+    System.out.println(userKey);
     try{ 
       entity = datastore.get(userKey);
       String start = (String) entity.getProperty("start");
-      ArrayList<String> destinations = (ArrayList) entity.getProperty("destinations");
+      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
       UserLocations userLocations = new UserLocations(start, destinations);    
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations));
@@ -61,8 +62,12 @@ private Key userKey;
       entity.setProperty("start", request.getParameter("start-location"));
       entity.setProperty("destinations", places.getDestinations());
       datastore.put(entity);
-    } catch(EntityNotFoundException e){} 
-    
-  }
 
+      String start = (String) entity.getProperty("start");
+      ArrayList<String> destinations = (ArrayList) entity.getProperty("destinations");
+      UserLocations userLocations = new UserLocations(start, destinations);    
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(userLocations));
+    } catch(EntityNotFoundException e){} 
+  }
 }
