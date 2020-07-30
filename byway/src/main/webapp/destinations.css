@@ -8,53 +8,6 @@
   margin-top: 20px;
 }
 
-
-.header {
-  overflow: hidden;
-  background-color: #ffc05f;
-  padding: 20px 40px;
-}
-.header a {
-  float: left;
-  color: white;
-  text-align: center;
-  padding:14px;
-  text-decoration: none;
-  font-size: 7vw;
-  font-weight: bold;
-  line-height: 25px;
-  border-radius: 4px;
-}
-
-.header img.logo {
-  width:10vw;
-  height:10vw;
-  background-color:white;
-  padding:0vw;
-  border-radius:25%;
-}
-
-@keyframes move{
-    0%{
-        transform:translate(0);
-        opacity:0;
-    }
-    25%{
-        opacity:1
-    }
-    50%{
-        transform:translate(10vw);
-        opacity:0;
-    }
-    100%{
-        opacity:0;
-    }
-}
-
-.header-right {
-  float: right;
-}
-
 #destinations-page #map img
 {
   max-width : none;
@@ -140,61 +93,6 @@
   opacity: 0.5;
 }
 
-.progress-bar-container{
-    width:100%;
-}
-#progressbar{
-    counter-reset:step;
-}
 
-#progressbar li {
-    list-style-type:none;
-    float:left;
-    width:33.33%;
-    position:relative;
-    text-align:center;
-    text-transform: uppercase;
-}
-
-#progressbar li:before{
-    content:counter(step);
-    counter-increment:step;
-    width:30px;
-    height:30px;
-    line-height:30px;
-    border:2px solid #ddd;
-    display:block;
-    text-align:center;
-    margin:0 auto 10px auto;
-    border-radius:50%;
-    background-color:white;
-}
-
-#progressbar li:after{
-    content:'';
-    position:absolute;
-    width:100%;
-    height:2px;
-    background-color:#ddd;
-    top:15px;
-    left:-50%;
-    z-index:-1;
-}
-
-#progressbar li:first-child:after{
-    content:none;
-}
-
-#progressbar li.active{
-    color:#3196e2;
-}
-
-#progressbar li.active:before{
-    border-color:#3196e2;
-}
-
-#progressbar li.active + li:after{
-    background-color:#3196e2;
-}
 
 
