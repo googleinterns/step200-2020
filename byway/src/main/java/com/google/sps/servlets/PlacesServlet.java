@@ -71,7 +71,6 @@ public final class PlacesServlet extends HttpServlet {
       if(id == 2452) {
         String interestsAsString = request.getParameter("data");
         addInterestsForUser(interestsAsString, enteredUser, datastore);
-        response.sendRedirect("/generator.html");
       }
     }
   }
