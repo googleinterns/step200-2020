@@ -65,13 +65,13 @@ public final class PlacesServlet extends HttpServlet {
   }
 
   /**
-   * Temporary setup to find entity with hard-coded id value.
+   * Temporary setup to find entity with hard-coded id value. Set their interests.
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query person =
-      new Query("sample")
+      new Query("user")
         .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
     PreparedQuery pq = datastore.prepare(person);
     Entity userEntity;

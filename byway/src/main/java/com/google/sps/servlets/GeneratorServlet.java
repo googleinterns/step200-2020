@@ -39,7 +39,6 @@ import java.util.ArrayList;
 public class GeneratorServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
-  private ArrayList<String> interestsSelected = new ArrayList<>();
 
   /**
    * Temporary setup to retrieve a user entity with a specific trip id,
@@ -55,11 +54,11 @@ public class GeneratorServlet extends HttpServlet {
     Entity userEntity;
     try {
       userEntity = pq.asSingleEntity();
-      interestsSelected = (ArrayList) userEntity.getProperty("interests");
+      ArrayList<String> interestsSelected = (ArrayList) userEntity.getProperty("interests");
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(interestsSelected));
     } catch(TooManyResultsException e) {
       // TODO: Handle both TooManyResultsException and EntityNotFoundException
     }
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(interestsSelected));
   }
 }
