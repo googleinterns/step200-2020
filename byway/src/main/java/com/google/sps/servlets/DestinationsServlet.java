@@ -46,6 +46,9 @@ public class DestinationsServlet extends HttpServlet {
     try{ 
       entity = datastore.get(userKey);
     } catch(EntityNotFoundException e){
+      UserLocations userLocations = new UserLocations("", new ArrayList<String>()); 
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(userLocations)); 
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
     }
     if(entity != null){
@@ -63,6 +66,9 @@ public class DestinationsServlet extends HttpServlet {
     try{ 
       entity = datastore.get(userKey) ;
     } catch(EntityNotFoundException e){
+      UserLocations userLocations = new UserLocations("", new ArrayList<String>()); 
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(userLocations)); 
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
     }
     if(entity != null){
