@@ -29,6 +29,7 @@ import com.google.sps.data.Stop;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -61,26 +62,41 @@ public final class StopsServlet extends HttpServlet {
     if(action.equals("remove")){
       System.out.println("removed");
       long id = Long.parseLong(request.getParameter("id"));
-       Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
-    Query query = new Query(Stop.KIND).setFilter(propertyFilter);
-    PreparedQuery results = datastore.prepare(query);
-    List<Stop> stops= new ArrayList<>();
-    for (Entity entity: results.asIterable()){
-      stops.add(Stop.fromEntity(entity));
+      Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
+      Query query = new Query(Stop.KIND).setFilter(propertyFilter);
+      PreparedQuery results = datastore.prepare(query);
+      List<Stop> stops= new ArrayList<>();
+      for(Entity entity: results.asIterable()){
+        stops.add(Stop.fromEntity(entity));
     }
-    System.out.println("in doPost for stop");
+    System.out.println("remove: ");
     System.out.println(stops.get(0).placename);
     System.out.println(stops.get(0).id);
-      
     Key stopEntityKey = KeyFactory.createKey(Stop.KIND, stops.get(0).id);
     datastore.delete(stopEntityKey);
       
     }
     else if(action.equals("add")){
-      System.out.println("stop" + stop);
+      System.out.println("add: ");
+      // move out to a shared function
+      long id = Long.parseLong(request.getParameter("id"));
+      Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
+      Query query = new Query(Stop.KIND).setFilter(propertyFilter);
+      PreparedQuery results = datastore.prepare(query);
       Entity stopEntity = new Entity(Stop.KIND);
-      stopEntity.setProperty("placename", stop);
-      datastore.put(stopEntity);
+      List<Stop> stops= new ArrayList<>();
+      for(Entity entity: results.asIterable()){
+        stops.add(Stop.fromEntity(entity));
+      }
+      if(stops.size() == 0){
+        System.out.println("not duplicate");
+        stopEntity.setProperty("placename", stop);
+        datastore.put(stopEntity);
+      
+      }
+       
+      
+      // System.out.println(stopEntity.id());
     } 
   }
 }

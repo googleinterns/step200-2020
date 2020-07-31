@@ -59,7 +59,7 @@ public final class RecsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Recommendation.KIND); 
-    PreparedQuery results =datastore.prepare(query);
+    PreparedQuery results = datastore.prepare(query);
     List<Recommendation> recs= new ArrayList<>();
 
     for (Entity entity: results.asIterable()){

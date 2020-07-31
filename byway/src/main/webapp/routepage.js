@@ -14,13 +14,16 @@
 
 let recs = [];
 let stops = [];
-
+let l = load;
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
-  document.addEventListener('DOMContentLoaded', getRecs());
+  document.addEventListener('DOMContentLoaded', load);
 } else {  // `DOMContentLoaded` has already fired
-  getRecs();
+  l();
 }
-
+function load(){
+  getRecs();
+  getStops();
+}
 /** Displays the map */
 function initMap() {
   var directionsService = new google.maps.DirectionsService();
@@ -78,9 +81,11 @@ function getStops(){
 }
 // TODO: Make into generic function w params
 function getStopsList(){
-    console.log("getStopsList()");
+  console.log("getStopsList()");
   const stopList = document.getElementById('stop-list');
-  stopList.innerHTML = ""; // clear list
+  if(stopList != null){
+        stopList.innerHTML = ""; // clear list
+    }
   // re-render list but not asynchronously 
   stops.forEach((stop)=>{
     var btn = document.createElement('button');
@@ -96,8 +101,7 @@ function getStopsList(){
 /** Add stop to the datastore in servlet */
 function addToStops(stop){
   console.log("addToStops()");
-  console.log(stop.placename);
-  console.log(stop.id);
+
   deleteFromRecs(stop); 
   // modify stops array
   stops.push(stop);
