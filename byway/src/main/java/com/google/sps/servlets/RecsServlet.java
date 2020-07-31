@@ -64,7 +64,6 @@ public final class RecsServlet extends HttpServlet {
     for (Entity entity: results.asIterable()){
       recs.add(Recommendation.fromEntity(entity));
     }
-
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(recs));
   }

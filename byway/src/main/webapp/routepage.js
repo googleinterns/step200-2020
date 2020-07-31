@@ -13,8 +13,7 @@
 // limitations under the License.
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
-  let recs = getRecs;
-  document.addEventListener('DOMContentLoaded', recs);
+  document.addEventListener('DOMContentLoaded', getRecs);
 } else {  // `DOMContentLoaded` has already fired
   getRecs();
 }
