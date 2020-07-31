@@ -38,9 +38,9 @@ public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  /* Fills datastore with initial hardcoded values of Recommendation objects,
-   * values will be from another datastore later
-   */
+  /** Fills datastore with hardcoded values for Recommendation objects,
+  values will be from another datastore later **/
+  @Override
   public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
@@ -53,14 +53,13 @@ public final class RecsServlet extends HttpServlet {
     datastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
     datastore.put(recEntity3);
-    return;
   }
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Recommendation.KIND); 
     PreparedQuery results = datastore.prepare(query);
-    List<Recommendation> recs= new ArrayList<>();
+    List<Recommendation> recs = new ArrayList<>();
 
     for (Entity entity: results.asIterable()){
       recs.add(Recommendation.fromEntity(entity));

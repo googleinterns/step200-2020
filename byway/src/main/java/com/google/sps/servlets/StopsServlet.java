@@ -53,9 +53,9 @@ public final class StopsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(stops));
   }
 
-  /* Method which modifies the Stop datastore */
+  /* Method which adds and removes stops from the datastore kIND */
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public synchronized void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
     

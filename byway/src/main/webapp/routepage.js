@@ -33,24 +33,24 @@ function load(){
 
 /** Displays the map */
 function initMap() {
-  var directionsService = new google.maps.DirectionsService();
-  var directionsRenderer = new google.maps.DirectionsRenderer();
-  var start = new google.maps.LatLng(37.7699298, -122.4469157);
-  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-  var mapOptions = {
+  let directionsService = new google.maps.DirectionsService();
+  let directionsRenderer = new google.maps.DirectionsRenderer();
+  let start = new google.maps.LatLng(37.7699298, -122.4469157);
+  let end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  let mapOptions = {
     zoom: 14,
     center: start
   }
-  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-  document.getElementById("stop-list").addEventListener("click", function() {
+document.getElementById("route").addEventListener("click", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
 }
 
 /** Displays route overtop the map */
 function calcRoute(directionsService, directionsRenderer, start, end) {
-  var request = {
+  let request = {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING'
@@ -66,7 +66,6 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 
 /** Get the new list of stops from datastore onload */
 function getStops(){
-  console.log("getStops()")
   const stopList = document.getElementById('stop-list');
   if(stopList != null){
         stopList.innerText = ""; // clear list
@@ -140,7 +139,6 @@ function deleteFromStops(stop){
 
 /** Get the new list of recommendations from servlet onload */
 function getRecs() {
-  console.log("getRecs()");
   const recList = document.getElementById('rec-list');
   if(recList != null){
     recList.innerText = ""; // clear list
@@ -195,5 +193,6 @@ function deleteFromRecs(rec){
   getRecsList();
 }
 
-/* exported initMap*/
+/* exported initMap */
 /* global google */
+
