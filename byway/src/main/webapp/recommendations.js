@@ -81,7 +81,8 @@ function addRecommendations(results, status) {
       }
     }
   } else {
-    alert("Our services are currently down. Oops!");
+    alert("Status: " + status +
+          "\nOur services are currently down. Oops!");
   }
 }
 
