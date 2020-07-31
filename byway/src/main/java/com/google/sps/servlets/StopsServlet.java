@@ -60,7 +60,17 @@ public final class StopsServlet extends HttpServlet {
     String action = request.getParameter("action");
    
     if(action.equals("remove")){
-      System.out.println("removed");
+      System.out.println("remove: " + stop); 
+      Query query = new Query(Stop.KIND);
+      PreparedQuery results = datastore.prepare(query);
+      for(Entity entity: results.asIterable()){
+      if(entity.getProperty("placename").equals(stop)){
+        datastore.delete(entity.getKey());
+        System.out.println("removed");
+      }
+       
+      }
+    /**
       long id = Long.parseLong(request.getParameter("id"));
       Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
       Query query = new Query(Stop.KIND).setFilter(propertyFilter);
@@ -68,17 +78,21 @@ public final class StopsServlet extends HttpServlet {
       List<Stop> stops= new ArrayList<>();
       for(Entity entity: results.asIterable()){
         stops.add(Stop.fromEntity(entity));
-    }
-    System.out.println("remove: ");
-    System.out.println(stops.get(0).placename);
-    System.out.println(stops.get(0).id);
-    Key stopEntityKey = KeyFactory.createKey(Stop.KIND, stops.get(0).id);
-    datastore.delete(stopEntityKey);
-      
+      }
+      System.out.println("remove: " + stop);
+      if(stops.size() == 0){
+        System.out.println(stops.get(0).placename);
+        System.out.println(stops.get(0).id);
+        Key stopEntityKey = KeyFactory.createKey(Stop.KIND, stops.get(0).id);
+        datastore.delete(stopEntityKey);
+        System.out.println("not duplicate");
+      }
+      **/
     }
     else if(action.equals("add")){
-      System.out.println("add: ");
+      
       // move out to a shared function
+      System.out.println("add " + stop);
       long id = Long.parseLong(request.getParameter("id"));
       Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
       Query query = new Query(Stop.KIND).setFilter(propertyFilter);
