@@ -12,21 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* exported initAutocomplete, getCurrentAddress */
+/* global google, setProgressBar */
 
-var defaultCenter = {
+
+const defaultCenter = Object.freeze({
   lat: 40.712776,
   lng:-74.005974
-};
-var userlatlng = {lat:null , lng: null}
+});
 
+let userlatlng = {lat:null , lng: null};
+
+function initializeDestinationsPage(){
+  initAutocomplete(); 
+  setProgressBar(1); 
+  fetchDestinations().then(response => {
+    updateLocations(response,map);
+    updateStartDestination(response);
+  }); 
+}
+/**
+* Creates map and search boxes with autocomplete
+*/
 function initAutocomplete() {   
-  const map = new google.maps.Map(document.getElementById("map"), {
+  map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: defaultCenter.lat, lng: defaultCenter.lng },
     zoom: 13,
     mapTypeId: "roadmap"
   });
 
-
+  //navigator is an HTML geolocation API variable to get information about the users current location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       userlatlng = {
@@ -42,12 +57,17 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  createSearchBox(map,'pac-input');
-  createSearchBox(map,'pac-input-2');
-  getLocations(map);
-  
+  const START_SEARCH_BOX = 'start-search-box';
+  const DESTINATIONS_SEARCH_BOX= 'destinations-search-box';
+  createSearchBox(map,START_SEARCH_BOX);
+  createSearchBox(map,DESTINATIONS_SEARCH_BOX); 
 }
 
+/** 
+ * Creates a search box
+ * @param {google.maps.Map} map
+ * @param {string} container
+ */
 function createSearchBox(map,container){
   const start = document.getElementById(container);
   const searchBox = new google.maps.places.SearchBox(start);
@@ -55,9 +75,14 @@ function createSearchBox(map,container){
    map.addListener("bounds_changed", () => {
     searchBox.setBounds(map.getBounds());
   });
-  let markers = [];
-
+  
   searchBox.addListener("places_changed", () => {
+    addMarker(searchBox,map);
+  });
+}
+
+function addMarker(searchBox,map){
+    let markers = [];
     const places = searchBox.getPlaces();
 
     if (places.length == 0) {
@@ -100,16 +125,15 @@ function createSearchBox(map,container){
       }
     });
     map.fitBounds(bounds);
-  });
 }
 
-
-/* fetches start location and destinations from DestinationsServlet and adds to DOM*/
-function getLocations(map){
-  fetch('/destinations').then(response => response.json()).then((userLocations) => {
+/** 
+* fetches start location and destinations from DestinationsServlet and adds to DOM
+*/
+function updateLocations(locationData, map){
     const container = document.getElementById('destinations-container');
-    let destinationArray= userLocations.destinations;
-
+    container.innerText="";
+    let destinationArray= locationData.destinations;
     destinationArray.forEach((destination) => {
       const request = {
         query: destination,
@@ -136,24 +160,38 @@ function getLocations(map){
         }
       });  
     }) 
-  });
 }
 
-/* fills Start location Searchbox with previous input */
-function getStartDestination(){
-  fetch('/destinations').then(response => response.json()).then((userLocations) =>{
-    console.log(userLocations.start);
-    document.getElementById('pac-input').value = userLocations.start;
-  });
+/**  
+* fills Start location Searchbox with previously input
+*/
+function updateStartDestination(locationData){
+    if (locationData.start == null){
+      document.getElementById('start-search-box').value = "";
+    }
+    else{
+      document.getElementById('start-search-box').value = locationData.start;
+    }
 }
-  
-/* Gets users current location */
+
+/**
+* fetches data from servlet
+*/
+function fetchDestinations(){
+  let promise= fetch('/api/destinations').then(response => response.json());
+  return promise;
+}
+
+/** 
+* Gets users current location 
+*/
 function getCurrentAddress(){
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ 'location': userlatlng}, (results, status) => {
     if (status === "OK") {
       if (results[0]) {
-        document.getElementById('pac-input').value=results[0].formatted_address;
+          console.log(results[0].formatted_address);
+        document.getElementById("start-search-box").value=results[0].formatted_address;
       } else {
           window.alert("No results found");
         }
@@ -162,3 +200,25 @@ function getCurrentAddress(){
       }
   });
 }
+/** 
+* add event listener for submit button
+*/
+window.onload = function(){
+  document.getElementById('user-input-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new  FormData(document.getElementById("user-input-form"));
+    fetch('/api/destinations', {method: 'POST', body:formData}).then((response)=>
+        response.json()).then(locationData => {
+        updateLocations(locationData, map);
+        updateStartDestination(locationData);
+      });
+    });
+}
+
+
+if (document.readyState === 'loading') {  // Loading hasn't finished yet
+  document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
+} 
+
+    
+

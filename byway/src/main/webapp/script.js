@@ -9,5 +9,5 @@ function setProgressBar(pageNumber){
   for(let i=0; i < pageNumber;i++){
     items[i].className = 'active';
   }
+}
   
- }

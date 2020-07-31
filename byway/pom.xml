@@ -14,6 +14,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
+    <javac.version>9+181-r4173-1</javac.version>
   </properties>
 
   <dependencies>
@@ -29,10 +30,67 @@
       <artifactId>gson</artifactId>
       <version>2.8.6</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>1.9.59</version>
+    </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/com.google.flogger/flogger -->
+    <dependency>
+      <groupId>com.google.flogger</groupId>
+      <artifactId>flogger</artifactId>
+      <version>0.5.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.flogger/flogger -->
+    <dependency>
+      <groupId>com.google.flogger</groupId>
+      <artifactId>flogger-system-backend</artifactId>
+      <version>0.5.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>29.0-jre</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.errorprone/error_prone_annotations -->
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.4.0</version>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+          <compilerArgs>
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-Xplugin:ErrorProne</arg>
+          </compilerArgs>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>2.4.0</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+
       <!-- Provides `mvn package appengine:run` for local testing
            and `mvn package appengine:deploy` for deploying. -->
       <plugin>
@@ -41,10 +99,33 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
-          <deploy.projectId>YOUR_PROJECT_ID_HERE</deploy.projectId>
+          <deploy.projectId>step200-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>jdk8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <fork>true</fork>
+              <compilerArgs combine.children="append">
+                <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+              </compilerArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

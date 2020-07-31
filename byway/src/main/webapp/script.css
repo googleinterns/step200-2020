@@ -2,87 +2,79 @@
 .header {
   overflow: hidden;
   background-color: #ffc05f;
-  padding: 20px 40px;
+  padding: 0px 40px;
 }
-.header a {
-  float: left;
+.header #name {
+  float: right;
   color: white;
   text-align: center;
-  padding:14px;
-  text-decoration: none;
+  margin-top:20px;
   font-size: 7vw;
   font-weight: bold;
-  line-height: 25px;
-  border-radius: 4px;
 }
 
 .header img.logo {
-  width:10vw;
-  height:10vw;
+  width:8vw;
+  height:8vw;
   background-color:white;
-  padding:0vw;
+  margin:2vw;
   border-radius:25%;
 }
 
-.header-right {
-  float: right;
+.progress-bar-container{
+  width:100%;
 }
 
-.progress-bar-container{
-    width:100%;
-}
 #progressbar{
-    counter-reset:step;
+  counter-reset:step;
 }
 
 #progressbar li {
-    list-style-type:none;
-    float:left;
-    width:33.33%;
-    position:relative;
-    text-align:center;
-    text-transform: uppercase;
+  list-style-type:none;
+  float:left;
+  width:33.33%;
+  position:relative;
+  text-align:center;
+  text-transform: uppercase;
 }
 
 #progressbar li:before{
-    content:counter(step);
-    counter-increment:step;
-    width:30px;
-    height:30px;
-    line-height:30px;
-    border:2px solid #ddd;
-    display:block;
-    text-align:center;
-    margin:0 auto 10px auto;
-    border-radius:50%;
-    background-color:white;
+  content:counter(step);
+  counter-increment:step;
+  width:30px;
+  height:30px;
+  line-height:30px;
+  border:2px solid #ddd;
+  display:block;
+  text-align:center;
+  margin:0 auto 10px auto;
+  border-radius:50%;
+  background-color:white;
 }
 
 #progressbar li:after{
-    content:'';
-    position:absolute;
-    width:100%;
-    height:2px;
-    background-color:#ddd;
-    top:15px;
-    left:-50%;
-    z-index:-1;
+  content:'';
+  position:absolute;
+  width:100%;
+  height:2px;
+  background-color:#ddd;
+  top:15px;
+  left:-50%;
+  z-index:-1;
 }
 
 #progressbar li:first-child:after{
-    content:none;
+  content:none;
 }
 
 #progressbar li.active{
-    color:#3196e2;
+  color:#3196e2;
 }
 
 #progressbar li.active:before{
-    border-color:#3196e2;
+  border-color:#3196e2;
 }
 
 #progressbar li.active + li:after{
-    background-color:#3196e2;
+  background-color:#3196e2;
 }
-
-

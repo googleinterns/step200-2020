@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <title>Select Destinations</title>
     <link rel="stylesheet" href="destinations.css" >
-    <link rel="stylesheet" href= "style.css" >
+    <link rel="stylesheet" href= "script.css" >
     <script src="destinations.js"></script>
     <script src="script.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&callback=initAutocomplete&libraries=places&directions&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&libraries=places&directions&v=weekly"
       defer
     ></script>
    
   </head>
-  <body id="destinations-page" onload="setProgressBar(1); getStartDestination();"  >
+  <body id="destinations-page"  >
 
     <div class="header">
       <img src="/images/logo.png" alt="logo" class="logo">
-      <div class="header-right">
-        <a>byway.</a>
-      </div>
+      <div id="name">byway.</div>
     </div>
     
     <div id="progressbar-container">
@@ -34,7 +32,7 @@
     <div id="map-search-container">
       <div id="map"></div>
       <div id= "destination-input-form">
-        <form action="/destinations" method="POST">
+        <form action="/api/destinations" method="POST" id="user-input-form">
             <p class="location-label"> Start Location</p>
            <div class="input-and-button"> 
             <input
