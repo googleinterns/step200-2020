@@ -23,7 +23,7 @@ if(document.readyState === 'loading') {
 let map;
 let placesService;
 let randomLocation;
-const RADIUS = 1000;
+const RADIUS = 1000; // Measured in meters
 
 /**
  * initializes the webpage with a map and loads
@@ -62,7 +62,10 @@ function loadRecommendations() {
 
 /**
  * Checks the response from PlacesService and creates markers
- * on the locations found from the request.
+ * on the locations found from the request. Temporarily limit
+ * the markers added.
+ * TODO: Load all results, but have a list that limits the results
+ * shown rather than limiting the results being loaded.
  * @param {Array results} contains the results of the request.
  * @param {PlacesServiceStatus status} contains the service status
  * of the request.
