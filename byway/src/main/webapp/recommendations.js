@@ -21,9 +21,9 @@ if(document.readyState === 'loading') {
 }
 
 let map;
-let service;
+let placesService;
 let randomLocation;
-let RADIUS = 1000;
+const RADIUS = 1000;
 
 /**
  * initializes the webpage with a map and loads
@@ -35,7 +35,7 @@ function initialize() {
       center: randomLocation,
       zoom: 15
   });
-  service = new google.maps.places.PlacesService(map);
+  placesService = new google.maps.places.PlacesService(map);
   loadRecommendations();
 }
 
@@ -55,7 +55,7 @@ function loadRecommendations() {
         radius: RADIUS,
         query: placeType
       }
-      service.textSearch(request, callback);
+      placesService.textSearch(request, addRecommendations);
     });
   });
 }
@@ -67,13 +67,13 @@ function loadRecommendations() {
  * @param {PlacesServiceStatus status} contains the service status
  * of the request.
  */
-function callback(results, status) {
+function addRecommendations(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     let maxRecommendations = 3;
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
       if(fitsInRadius(results[i], RADIUS)) {
-        createMarker(results[i]);
+        placeMarker(results[i]);
         numRecommendations++;
       }
       if(numRecommendations == maxRecommendations) {
@@ -103,7 +103,7 @@ function fitsInRadius(result, radius) {
  * Places a marker onto the map at the specified location.
  * @param {Request place} holds information about the found query.
  */
-function createMarker(place) {
+function placeMarker(place) {
   new google.maps.Marker({
     position: place.geometry.location,
     map: map,
