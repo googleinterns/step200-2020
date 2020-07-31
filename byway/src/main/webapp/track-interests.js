@@ -13,9 +13,18 @@
 // limitations under the License.
 
 if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadButtons);
+  document.addEventListener('DOMContentLoaded', loadContent);
 } else {
+  loadContent();
+}
+
+/**
+ * Loads the content of the page by loading buttons
+ * and the form tracking buttons selected.
+ */
+function loadContent() {
   loadButtons();
+  loadForm();
 }
 
 /**
@@ -23,7 +32,7 @@ if(document.readyState === 'loading') {
  * page. Handles submit event to keep user on the
  * same page and send information.
  */
-window.onload = function() {
+function loadForm() {
   let interestsForm = document.getElementById('interests-form');
   interestsForm.addEventListener('submit', (event) => {
     let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
@@ -34,12 +43,6 @@ window.onload = function() {
 }
 
 let interestsChosen = new Set();
-
-/** Convert selected array into JSON to send to server. */
-function passData() {
-  var data = document.getElementById("data");
-  data.value = JSON.stringify(Array.from(interestsChosen));
-}
 
 /** 
  * Track the interests chosen in an array according to their current
