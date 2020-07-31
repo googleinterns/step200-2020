@@ -18,7 +18,10 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -38,17 +41,23 @@ public class GeneratorServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private ArrayList<String> interestsSelected = new ArrayList<>();
 
+  /**
+   * Temporary setup to retrieve a user entity with a specific trip id,
+   * hard-coded as '2452' at the moment. Retrieves and returns their interests.
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query person = new Query("sample");
+    Query person =
+        new Query("user")
+            .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
     PreparedQuery pq = datastore.prepare(person);
-    for(Entity enteredUser: pq.asIterable()) {
-      long id = (long) enteredUser.getProperty("id");
-      if(id == 2452) {
-        Entity currentUser = enteredUser;
-        interestsSelected = (ArrayList) currentUser.getProperty("interests");
-      }
+    Entity userEntity;
+    try {
+      userEntity = pq.asSingleEntity();
+      interestsSelected = (ArrayList) userEntity.getProperty("interests");
+    } catch(TooManyResultsException e) {
+      // TODO: Handle both TooManyResultsException and EntityNotFoundException
     }
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(interestsSelected));

@@ -18,7 +18,10 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
@@ -61,17 +64,23 @@ public final class PlacesServlet extends HttpServlet {
     return place;
   }
 
+  /**
+   * Temporary setup to find entity with hard-coded id value.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query allUsers = new Query("sample");
-    PreparedQuery preparedUsers = datastore.prepare(allUsers);
-    for(Entity enteredUser: preparedUsers.asIterable()) {
-      long id = (long) enteredUser.getProperty("id");
-      if(id == 2452) {
-        String interestsAsString = request.getParameter("data");
-        addInterestsForUser(interestsAsString, enteredUser, datastore);
-      }
+    Query person =
+      new Query("sample")
+        .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
+    PreparedQuery pq = datastore.prepare(person);
+    Entity userEntity;
+    try {
+      userEntity = pq.asSingleEntity();
+      String interestsAsString = request.getParameter("data");
+      addInterestsForUser(interestsAsString, userEntity, datastore);
+    } catch(TooManyResultsException e) {
+      // TODO: Handle both TooManyResultsException and EntityNotFoundException
     }
   }
 
