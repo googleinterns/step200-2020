@@ -221,6 +221,8 @@ window.onload = function(){
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
 } 
-
+else{
+  initializeDestinationsPage();
+}
     
 
