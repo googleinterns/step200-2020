@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* exported marker */
 /* global google */
 
 if(document.readyState === 'loading') {
@@ -105,7 +104,7 @@ function fitsInRadius(result, radius) {
  * @param {Request place} holds information about the found query.
  */
 function createMarker(place) {
-  var marker = new google.maps.Marker({
+  new google.maps.Marker({
     position: place.geometry.location,
     map: map,
     title: place.name
