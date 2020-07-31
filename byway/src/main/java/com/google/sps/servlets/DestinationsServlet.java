@@ -60,7 +60,8 @@ public class DestinationsServlet extends HttpServlet {
     Entity entity;
     try{ 
       entity = datastore.get(userKey) ;
-      String start= request.getP  String destination = request.getParameter("destinations");
+      String start= request.getParameter("start"); 
+      String destination = request.getParameter("destinations");
       entity.setProperty("start", start);
       if((ArrayList<String>) entity.getProperty("destinations") == null){
         ArrayList<String> destinations = new ArrayList<String>();
@@ -83,3 +84,4 @@ public class DestinationsServlet extends HttpServlet {
     } 
   }
 }
+
