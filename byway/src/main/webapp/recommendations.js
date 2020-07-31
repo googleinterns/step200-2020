@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google, marker */
+/* exported marker */
+/* global google */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
