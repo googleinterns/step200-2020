@@ -19,8 +19,8 @@ import com.google.appengine.api.datastore.Entity;
 // TODO: Make a parent class that Rec and Stop can extend 
 public final class Stop{
   // We may need to add more fields later, so making a class seemed reasonable.
-  private final long id;
-  private final String placename; 
+  public final long id; // make private
+  public final String placename; 
   public static final String KIND = "Stop";
   
   public Stop(long id, String placename) {

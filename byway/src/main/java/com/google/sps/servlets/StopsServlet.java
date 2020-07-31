@@ -21,6 +21,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 import com.google.sps.data.Stop;
 import java.io.IOException;
@@ -35,12 +38,12 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
-  private final DatastoreService stopsDatastore = DatastoreServiceFactory.getDatastoreService();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Stop.KIND); 
-    PreparedQuery results = stopsDatastore.prepare(query);
+    PreparedQuery results = datastore.prepare(query);
     List<Stop> stops= new ArrayList<>();
     for (Entity entity: results.asIterable()){
       stops.add(Stop.fromEntity(entity));
@@ -54,16 +57,30 @@ public final class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-
+   
     if(action.equals("remove")){
+      System.out.println("removed");
       long id = Long.parseLong(request.getParameter("id"));
-      Key stopEntityKey = KeyFactory.createKey(Stop.KIND, id);
-      stopsDatastore.delete(stopEntityKey);
+       Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
+    Query query = new Query(Stop.KIND).setFilter(propertyFilter);
+    PreparedQuery results = datastore.prepare(query);
+    List<Stop> stops= new ArrayList<>();
+    for (Entity entity: results.asIterable()){
+      stops.add(Stop.fromEntity(entity));
+    }
+    System.out.println("in doPost for stop");
+    System.out.println(stops.get(0).placename);
+    System.out.println(stops.get(0).id);
+      
+    Key stopEntityKey = KeyFactory.createKey(Stop.KIND, stops.get(0).id);
+    datastore.delete(stopEntityKey);
+      
     }
     else if(action.equals("add")){
+      System.out.println("stop" + stop);
       Entity stopEntity = new Entity(Stop.KIND);
       stopEntity.setProperty("placename", stop);
-      stopsDatastore.put(stopEntity);
+      datastore.put(stopEntity);
     } 
   }
 }

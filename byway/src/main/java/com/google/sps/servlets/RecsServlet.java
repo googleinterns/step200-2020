@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/recs")
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
-  private final DatastoreService recsDatastore = DatastoreServiceFactory.getDatastoreService();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /* Fills datastore with initial hardcoded values of Recommendation objects,
    * values will be from another datastore later
@@ -48,18 +48,18 @@ public final class RecsServlet extends HttpServlet {
     Entity recEntity2 = new Entity(Recommendation.KIND);
     Entity recEntity3 = new Entity(Recommendation.KIND);
     recEntity1.setProperty("placename", "Times Square");
-    recsDatastore.put(recEntity1);
+    datastore.put(recEntity1);
     recEntity2.setProperty("placename", "MOMA");
-    recsDatastore.put(recEntity2);
+    datastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
-    recsDatastore.put(recEntity3);
+    datastore.put(recEntity3);
     return;
   }
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Recommendation.KIND); 
-    PreparedQuery results = recsDatastore.prepare(query);
+    PreparedQuery results =datastore.prepare(query);
     List<Recommendation> recs= new ArrayList<>();
 
     for (Entity entity: results.asIterable()){
@@ -78,12 +78,12 @@ public final class RecsServlet extends HttpServlet {
     if(action.equals("remove")){
       long id = Long.parseLong(request.getParameter("id"));
       Key recommendationEntityKey = KeyFactory.createKey(Recommendation.KIND, id);
-      recsDatastore.delete(recommendationEntityKey);
+      datastore.delete(recommendationEntityKey);
     }
     else if(action.equals("add")){
       Entity recommendationEntity = new Entity(Recommendation.KIND);
       recommendationEntity.setProperty("placename", stop);
-      recsDatastore.put(recommendationEntity);
+      datastore.put(recommendationEntity);
     } 
   }
   

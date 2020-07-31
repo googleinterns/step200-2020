@@ -73,12 +73,12 @@ function getStops(){
         deleteFromStops(stop); 
       });
      stopList.appendChild(btn);
-      
     })
   })
 }
 // TODO: Make into generic function w params
 function getStopsList(){
+    console.log("getStopsList()");
   const stopList = document.getElementById('stop-list');
   stopList.innerHTML = ""; // clear list
   // re-render list but not asynchronously 
@@ -94,12 +94,13 @@ function getStopsList(){
 }
 
 /** Add stop to the datastore in servlet */
-function addToStops(s){
-  console.log("addToStops()")
-  deleteFromRecs(s); 
-  console.log("s " + s.placename);
+function addToStops(stop){
+  console.log("addToStops()");
+  console.log(stop.placename);
+  console.log(stop.id);
+  deleteFromRecs(stop); 
   // modify stops array
-  stops.push(s);
+  stops.push(stop);
   getStopsList();
 
   // add to datastore
@@ -114,6 +115,8 @@ function addToStops(s){
 /** Delete stop from the datastore in the servlet */
 function deleteFromStops(stop){
   console.log("deleteFromStops()");
+  console.log(stop.placename);
+  console.log(stop.id);
   addToRecs(stop); 
   stops = stops.filter(function(stopObj){
     return stopObj.placename != stop.placename;
@@ -139,6 +142,7 @@ function getRecs() {
   .then(response => response.json())
   .then((recommendations) => {
     recommendations.forEach((rec)=>{
+      
       recs.push(rec);
       var btn = document.createElement('button');
       btn.id = rec.id;
@@ -158,6 +162,7 @@ function getRecsList(){
   recsList.innerHTML = ""; // clear list
   // re-render list but not asynchronously 
   recs.forEach((stop)=>{
+    
     var btn = document.createElement('button');
     btn.innerText = stop.placename
     btn.setAttribute("class", "btn rec-btn");
@@ -175,10 +180,12 @@ function addToRecs(stop){
   getRecsList();
   const params = new URLSearchParams();
   params.append("text", stop.placename);
+  console.log(stop.placename);
+  /**
   params.append("id", stop.id);
   params.append("action", "add");
   fetch('/api/recs', {method: 'POST', body: params})
-    //.then(() => getRecs());
+    //.then(() => getRecs()); */
 }
 
 /** Delete stop from recommendations list in the servlet */
