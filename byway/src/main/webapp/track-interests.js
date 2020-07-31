@@ -18,7 +18,7 @@ if(document.readyState === 'loading') {
   loadButtons();
 }
 
-let interestsChosen = [];
+let interestsChosen = new Set();
 
 /** Convert selected array into JSON to send to server. */
 function passData() {
@@ -31,15 +31,14 @@ function passData() {
  * status. Toggle their status afterwards.
  * @param {Element elem} tracks the current button element chosen.
  */
-function toggleStatus(elem) {
-  if(!elem.className.includes("active")) {
-    interestsChosen.push(elem.innerText);
+function updateStatus(place, elem) {
+  if(interestsChosen.has(place)) {
+    interestsChosen.delete(place);
+    elem.classList.remove('active');
   } else {
-    interestsChosen = interestsChosen.filter(function(interest) {
-      return interest !== elem.innerText;
-    });
+    interestsChosen.add(place);
+    elem.classList.add('active');
   }
-  elem.classList.toggle("active");
 }
 
 /** Display all the buttons onscreen with independent onClick events. */
@@ -65,7 +64,7 @@ function loadButtons() {
 function createButtonForPlace(place) {
   let button = document.createElement("button");
   button.innerText = place;
-  button.addEventListener('click', () => toggleStatus(button));
+  button.addEventListener('click', () => updateStatus(place, button));
   button.className = "btn";
   return button;
 }
