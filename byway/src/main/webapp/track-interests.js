@@ -34,7 +34,7 @@ function loadContent() {
  */
 function loadForm() {
   let interestsForm = document.getElementById('interests-form');
-  interestsForm.addEventListener('submit', (event) => {
+  interestsForm.addEventListener('submit', () => {
     let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
     let params = new URLSearchParams();
     params.append("data", interestsAsJSONString);
