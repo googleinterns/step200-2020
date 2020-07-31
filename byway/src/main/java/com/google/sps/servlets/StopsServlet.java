@@ -58,42 +58,24 @@ public final class StopsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-   
+    
     if(action.equals("remove")){
-      System.out.println("remove: " + stop); 
       Query query = new Query(Stop.KIND);
       PreparedQuery results = datastore.prepare(query);
+      // Note: A more proper solution is to use Filter, like in add but 
+      // but I noticed it was not working as intended 
       for(Entity entity: results.asIterable()){
-      if(entity.getProperty("placename").equals(stop)){
-        datastore.delete(entity.getKey());
-        System.out.println("removed");
+        if(entity.getProperty("placename").equals(stop)){
+          datastore.delete(entity.getKey());
+        }
       }
-       
-      }
-    /**
-      long id = Long.parseLong(request.getParameter("id"));
-      Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
-      Query query = new Query(Stop.KIND).setFilter(propertyFilter);
-      PreparedQuery results = datastore.prepare(query);
-      List<Stop> stops= new ArrayList<>();
-      for(Entity entity: results.asIterable()){
-        stops.add(Stop.fromEntity(entity));
-      }
-      System.out.println("remove: " + stop);
-      if(stops.size() == 0){
-        System.out.println(stops.get(0).placename);
-        System.out.println(stops.get(0).id);
-        Key stopEntityKey = KeyFactory.createKey(Stop.KIND, stops.get(0).id);
-        datastore.delete(stopEntityKey);
-        System.out.println("not duplicate");
-      }
-      **/
     }
     else if(action.equals("add")){
-      
-      // move out to a shared function
-      System.out.println("add " + stop);
-      long id = Long.parseLong(request.getParameter("id"));
+      Entity stopEntity = new Entity(Stop.KIND);
+      stopEntity.setProperty("placename", stop);
+      datastore.put(stopEntity);
+      /**
+      TODO: use filter
       Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
       Query query = new Query(Stop.KIND).setFilter(propertyFilter);
       PreparedQuery results = datastore.prepare(query);
@@ -106,11 +88,9 @@ public final class StopsServlet extends HttpServlet {
         System.out.println("not duplicate");
         stopEntity.setProperty("placename", stop);
         datastore.put(stopEntity);
-      
       }
-       
-      
-      // System.out.println(stopEntity.id());
+      **/
+     
     } 
   }
 }

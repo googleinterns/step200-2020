@@ -69,7 +69,10 @@ public final class RecsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(recs));
   }
 
-  /* Method which modifies the Recommendation datastore */
+  /* Method which modifies the Recommendation datastore 
+   * Note: This function is no longer used since it was advised I don't tamper with
+   * recommendation data. 
+  */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
