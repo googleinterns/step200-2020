@@ -53,22 +53,31 @@
 }
 
 #destinations-page .location{
-  border:1px solid black;
-  margin:20px;
-  height:6vw;
-  width:35vw;
-
+  width:40vw;
+  margin:auto;
+  padding-top:3px;
 }
 #destinations-page #destinations-container .destination-photo{
   display:inline-block;
   max-width: 100%;
   max-height: 100%;
-  width: auto;
-  height: auto;
+  border-radius: 25%;
+  width: 6vw;
 }
 
 #destinations-page #destinations-container .destination-info{
   display:inline-block;
+  font-size:1vw;
+  text-align: center;
+  line-height:50%;
+  position: relative;
+  margin:auto;
+}
+
+#destinations-page #destinations-container .destination-name{
+  font-size:1.3vw;
+  font-weight: bold;
+
 }
 
 #destinations-page #next-button{

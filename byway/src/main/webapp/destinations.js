@@ -147,12 +147,14 @@ function updateLocations(locationData, map){
           let destinationPhoto=document.createElement('img');
           destinationPhoto.className="destination-photo";
           destinationPhoto.src = results[0].photos[0].getUrl();
-        
           let destinationInfo=document.createElement('p');
           destinationInfo.className = 'destination-info';
-          destinationInfo.innerText= results[0].name;
+          let destinationName = document.createElement('p');
+          destinationName.innerText = results[0].name;
+          destinationName.className = 'destination-name';
           let destinationAddress= document.createElement('p');
           destinationAddress.innerText = results[0].formatted_address;
+          destinationInfo.appendChild(destinationName);
           destinationInfo.appendChild(destinationAddress);
           container.appendChild(destinationToAdd);
           destinationToAdd.appendChild(destinationPhoto);
