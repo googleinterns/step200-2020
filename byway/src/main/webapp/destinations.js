@@ -22,6 +22,7 @@ const defaultCenter = Object.freeze({
 });
 
 let userlatlng = {lat:null , lng: null};
+let map;
 
 function initializeDestinationsPage(){
   initAutocomplete(); 
