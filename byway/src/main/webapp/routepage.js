@@ -12,10 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+// copies of recommendations and selected stops, stored as arrays
+// for synchronous updating
+let recs = [];
+let stops = [];
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
-  document.addEventListener('DOMContentLoaded', getRecs);
+  document.addEventListener('DOMContentLoaded', load);
 } else {  // `DOMContentLoaded` has already fired
+  load();
+}
+
+/** Used to restore stops and recommendations upon load or refresh */
+function load(){
   getRecs();
+  getStops();
 }
 
 function initMap() {
@@ -29,11 +41,13 @@ function initMap() {
   }
   let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-    document.getElementById("route").addEventListener("click", function() {
+  document.getElementById("route").addEventListener("click", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
 }
 
+
+/** Displays route overtop the map */
 function calcRoute(directionsService, directionsRenderer, start, end) {
   let request = {
     origin:  start,
@@ -49,27 +63,139 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   });
 }
 
-function addToStops(stop){
-  console.log("add" + stop.placename + "to the ArrayList in the servlet");
-}
+/** Get the new list of stops from datastore onload */
+function getStops(){
+  const stopList = document.getElementById('stop-list');
 
-function getRecs() {
-  fetch('/api/recs')
+  if(stopList != null){
+    stopList.innerText = ""; // clear list
+  }
+
+  fetch('/api/stop')
   .then(response => response.json())
-  .then((recs) => {
-    const recList = document.getElementById('rec-list');
-    recList.innerText = ""; // clear old comments 
-    recs.forEach((stop) => {
-      let btn = document.createElement("button");
+  .then((stopsResponse) => {
+    stopsResponse.forEach((stop)=>{
+      stops.push(stop);
+      var btn = document.createElement('button');
+      btn.id = stop.id;
       btn.innerText = stop.placename;
       btn.setAttribute("class", "btn rec-btn");
       btn.addEventListener("click", function() {
-        addToStops(stop);
+        deleteFromStops(stop); 
       });
-      recList.appendChild(btn);
+     stopList.appendChild(btn);
+    })
+  })
+}
+
+/** Get the new list of stops locally */
+function getStopsList(){
+  const stopList = document.getElementById('stop-list');
+
+  if(stopList != null){
+    stopList.innerText = ""; 
+  }
+
+  // re-render list synchronously
+  stops.forEach((stop)=>{
+    var btn = document.createElement('button');
+    btn.innerText = stop.placename
+    btn.setAttribute("class", "btn rec-btn");
+    btn.addEventListener("click", function() {
+      deleteFromStops(stop); 
     });
-  });
+    stopList.appendChild(btn);
+  })
+}
+
+/** Add stop locally and to datastore */
+function addToStops(stop){
+  deleteFromRecs(stop); 
+
+  // add to stops array locally in js
+  stops.push(stop);
+  getStopsList();
+
+  // add to datastore
+  const params = new URLSearchParams();
+  params.append("text", stop.placename);
+  params.append("action", "add");
+  fetch('/api/stop', {method: 'POST', body: params});
+}
+
+/** Delete stop locally and from datastore*/
+function deleteFromStops(stop){
+  addToRecs(stop); 
+
+  // delete from stops array locally in js
+  stops = stops.filter(function(stopObj){
+    return stopObj.placename != stop.placename;
+  })
+  getStopsList();
+
+  // delete from datastore
+  const params = new URLSearchParams();
+  params.append("text", stop.placename);
+  params.append("action", "remove");
+  fetch('/api/stop', {method: 'POST', body: params});
+}
+
+/** Get the new list of recommendations from servlet onload */
+function getRecs() {
+  const recList = document.getElementById('rec-list');
+  if(recList != null){
+    recList.innerText = ""; // clear list
+  }
+  fetch('/api/recs')
+  .then(response => response.json())
+  .then((recommendations) => {
+    recommendations.forEach((rec)=>{
+      // populate local js array initially
+      recs.push(rec);
+      var btn = document.createElement('button');
+      btn.id = rec.id;
+      btn.innerText = rec.placename;
+      btn.setAttribute("class", "btn rec-btn");
+      btn.addEventListener("click", function() {
+        addToStops(rec); 
+      });
+     recList.appendChild(btn);
+    })
+  })
+}
+
+/** Get the new list of recommendations locally */
+function getRecsList(){
+  const recsList = document.getElementById('rec-list');
+  recsList.innerText = ""; // clear list
+  // re-render list synchronously
+  recs.forEach((rec)=>{
+    var btn = document.createElement('button');
+    btn.innerText = rec.placename
+    btn.setAttribute("class", "btn rec-btn");
+    btn.addEventListener("click", function() {
+      addToStops(rec);
+    });
+    recsList.appendChild(btn);
+  })
+}
+
+/** Add recommendation locally*/
+function addToRecs(rec){
+  recs.push(rec);
+  getRecsList();
+  const params = new URLSearchParams();
+  params.append("text", rec.placename);
+}
+
+/** Delete recommendation locally */
+function deleteFromRecs(rec){
+  recs = recs.filter(function(r){
+    return r.placename != rec.placename;
+  })
+  getRecsList();
 }
 
 /* exported initMap */
 /* global google */
+
