@@ -21,76 +21,73 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
-import com.google.sps.data.Stop;
+import com.google.sps.data.Recommendation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/api/stop")
-public final class StopsServlet extends HttpServlet {
+/** Servlet that handles data for recommended places */
+@WebServlet("/api/recs")
+public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+  /* Fills datastore with initial hardcoded values of Recommendation objects,
+   * values will be from another datastore later
+   */
+  public void init(){
+    // when using actual values, there will only be one Entity object instantiated, not one per stop
+    // loop through Rena and Leo's datastore entries for recommended stops
+    Entity recEntity1 = new Entity(Recommendation.KIND);
+    Entity recEntity2 = new Entity(Recommendation.KIND);
+    Entity recEntity3 = new Entity(Recommendation.KIND);
+    recEntity1.setProperty("placename", "Times Square");
+    datastore.put(recEntity1);
+    recEntity2.setProperty("placename", "MOMA");
+    datastore.put(recEntity2);
+    recEntity3.setProperty("placename", "Central Park");
+    datastore.put(recEntity3);
+    return;
+  }
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query(Stop.KIND); 
+    Query query = new Query(Recommendation.KIND); 
     PreparedQuery results = datastore.prepare(query);
-    List<Stop> stops= new ArrayList<>();
+    List<Recommendation> recs= new ArrayList<>();
+
     for (Entity entity: results.asIterable()){
-      stops.add(Stop.fromEntity(entity));
+      recs.add(Recommendation.fromEntity(entity));
     }
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(stops));
+    response.getWriter().println(gson.toJson(recs));
   }
 
-  /* Method which modifies the Stop datastore */
+  /* Method which modifies the Recommendation datastore 
+   * Note: This function is no longer used since it was advised I don't tamper with
+   * recommendation data. 
+  */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     String action = request.getParameter("action");
-    
+
     if(action.equals("remove")){
-      Query query = new Query(Stop.KIND);
-      PreparedQuery results = datastore.prepare(query);
-      // Note: A more proper solution is to use Filter, like in add but 
-      // but I noticed it was not working as intended 
-      for(Entity entity: results.asIterable()){
-        if(entity.getProperty("placename").equals(stop)){
-          datastore.delete(entity.getKey());
-        }
-      }
+      long id = Long.parseLong(request.getParameter("id"));
+      Key recommendationEntityKey = KeyFactory.createKey(Recommendation.KIND, id);
+      datastore.delete(recommendationEntityKey);
     }
     else if(action.equals("add")){
-      Entity stopEntity = new Entity(Stop.KIND);
-      stopEntity.setProperty("placename", stop);
-      datastore.put(stopEntity);
-      /**
-      TODO: use filter
-      Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
-      Query query = new Query(Stop.KIND).setFilter(propertyFilter);
-      PreparedQuery results = datastore.prepare(query);
-      Entity stopEntity = new Entity(Stop.KIND);
-      List<Stop> stops= new ArrayList<>();
-      for(Entity entity: results.asIterable()){
-        stops.add(Stop.fromEntity(entity));
-      }
-      if(stops.size() == 0){
-        System.out.println("not duplicate");
-        stopEntity.setProperty("placename", stop);
-        datastore.put(stopEntity);
-      }
-      **/
-     
+      Entity recommendationEntity = new Entity(Recommendation.KIND);
+      recommendationEntity.setProperty("placename", stop);
+      datastore.put(recommendationEntity);
     } 
   }
+  
 }
