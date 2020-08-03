@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Entity;
+import java.util.ArrayList;
 
 /**
  * A class to make a Trip type, containing
@@ -24,33 +24,30 @@ import com.google.appengine.api.datastore.Entity;
 public final class Trip{
 
   private long id;
-  private final ArrayList<String> destinations;
-  private final ArrayList<String> interests;
-  private final ArrayList<String> route;
+  private ArrayList<String> destinations;
+  private ArrayList<String> interests;
+  private ArrayList<String> route;
 
   public Trip(long id, ArrayList<String> destinations) {
+    configureTrip(id, destinations, null, null);
+  }
+
+  public Trip(long id, ArrayList<String> destinations,
+              ArrayList<String> interests) {
+    configureTrip(id, destinations, interests, null);
+  }
+
+  public Trip(long id, ArrayList<String> destinations,
+              ArrayList<String> interests, ArrayList<String> route) {
+    configureTrip(id, destinations, interests, route);
+  }
+
+  private void configureTrip(long id, ArrayList<String> destinations,
+              ArrayList<String> interests, ArrayList<String> route) {
     this.id = id;
     this.destinations = destinations;
-    this.interests = null;
-    this.route = null;
-  }
-
-  public void setInterestsFor(long id, ArrayList<String> interests){
-    if(this.id == id) {
-      this.interests = interests;
-    } else {
-      // Indicate illegal action somehow?
-      return;
-    }
-  }
-
-  public void setRouteFor(long id, ArrayList<String> route) {
-    if(this.id == id) {
-      this.route = route;
-    } else {
-      // Indicate illegal action somehow?
-      return;
-    }
+    this.interests = interests;
+    this.route = route;
   }
 
   public ArrayList<String> getInterests() {
@@ -59,5 +56,9 @@ public final class Trip{
 
   public ArrayList<String> getRoute() {
       return this.route;
+  }
+
+  public ArrayList<String> getDestinations() {
+    return this.destinations;
   }
 } 
