@@ -14,15 +14,23 @@
 
 package com.google.maps;
 
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlaceType;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.gson.Gson;
+import com.google.maps.model.PlaceType;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /** Servlet that returns all PlaceTypes from Places API. */
 @WebServlet("/api/places")
