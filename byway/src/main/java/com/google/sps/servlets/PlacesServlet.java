@@ -17,6 +17,7 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
@@ -73,13 +74,12 @@ public final class PlacesServlet extends HttpServlet {
       new Query("user")
         .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
     PreparedQuery pq = datastore.prepare(person);
-    Entity userEntity;
-    try {
-      userEntity = pq.asSingleEntity();
+    Entity userEntity = pq.asSingleEntity();
+    if(userEntity != null) {
       String interestsAsString = request.getParameter("data");
       addInterestsForUser(interestsAsString, userEntity, datastore);
-    } catch(TooManyResultsException e) {
-      // TODO: Handle both TooManyResultsException and EntityNotFoundException
+    } else {
+      response.setStatus(response.SC_NOT_FOUND);
     }
   }
 

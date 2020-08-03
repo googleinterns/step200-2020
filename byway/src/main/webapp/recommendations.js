@@ -46,7 +46,16 @@ function initialize() {
  */
 function loadRecommendations() {
   fetch('/api/generator')
-  .then(response => response.json())
+  .then(response => {
+    // Temporary setup. Send either to login screen
+    // or back to homepage to restart.
+    if(response.status === 404) {
+      alert("You don't seem to be logged in");
+      return;
+    } else {
+      return response.json()
+    }
+  })
   .then((interests) => {
     interests.forEach(placeType => {
       console.log(placeType);

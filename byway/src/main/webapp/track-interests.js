@@ -62,7 +62,16 @@ function updateStatus(place, elem) {
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
   fetch('/api/places')
-  .then(response => response.json())
+  .then(response => {
+    // Temporary setup. Send either to login screen
+    // or back to homepage to restart.
+      if(response.status === 404) {
+        alert("You don't seem to be logged in");
+        return;
+      } else {
+        return response.json()
+      }
+  })
   .then((places) => {
     let buttonSection = document.getElementById("interests");
     places.forEach((place) => {
