@@ -42,10 +42,25 @@ function initMap() {
   let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   document.getElementById("route").addEventListener("click", function() {
-    calcRoute(directionsService, directionsRenderer, start, end);
+    // calcRoute(directionsService, directionsRenderer, start, end);
+    loadRecommendations();
   });
 }
 
+function loadRecommendations() {
+  fetch('/api/generator')
+  .then((interests) => {
+    interests.forEach(placeType => {
+      console.log(placeType);
+      let request = {
+        location: randomLocation,
+        radius: RADIUS,
+        query: placeType
+      }
+      placesService.textSearch(request, addRecommendations);
+    });
+  });
+}
 
 /** Displays route overtop the map */
 function calcRoute(directionsService, directionsRenderer, start, end) {
