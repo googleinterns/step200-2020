@@ -50,14 +50,13 @@ public class DestinationsServlet extends HttpServlet {
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations)); 
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
+      return;
     }
-    if(entity != null){
-      String start = (String) entity.getProperty("start");
-      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-      UserLocations userLocations = new UserLocations(start, destinations); 
-      response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations)); 
-    }
+    String start = (String) entity.getProperty("start");
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    UserLocations userLocations = new UserLocations(start, destinations); 
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(userLocations)); 
   }
 
   @Override
@@ -70,26 +69,26 @@ public class DestinationsServlet extends HttpServlet {
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(userLocations)); 
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
+      return;
     }
-    if(entity != null){
-      String start= request.getParameter("start-location"); 
-      String destination = request.getParameter("destinations");
-      entity.setProperty("start", start);
-      if((ArrayList<String>) entity.getProperty("destinations") == null){
-        ArrayList<String> destinations = new ArrayList<String>();
-        destinations.add(destination);
-        entity.setProperty("destinations", destinations);
-      }
-      else{
-        ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-        destinations.add(destination);
-        entity.setProperty("destinations", destinations);
-      }
-      datastore.put(entity);
+    String start= request.getParameter("start-location"); 
+    String destination = request.getParameter("destinations");
+    entity.setProperty("start", start);
+    if((ArrayList<String>) entity.getProperty("destinations") == null){
+      ArrayList<String> destinations = new ArrayList<String>();
+      destinations.add(destination);
+      entity.setProperty("destinations", destinations);
+    }
+    else{
       ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-      UserLocations userLocations = new UserLocations(start, destinations);    
-      response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations)); 
+      destinations.add(destination);
+      entity.setProperty("destinations", destinations);
     }
+    datastore.put(entity);
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    UserLocations userLocations = new UserLocations(start, destinations);    
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(userLocations)); 
   }
 }
+

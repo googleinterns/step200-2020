@@ -225,5 +225,6 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 else{
   initializeDestinationsPage();
 }
+
     
 
