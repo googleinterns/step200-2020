@@ -58,8 +58,8 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  createSearchBox(map,'start-search-box');
-  createSearchBox(map,'destinations-search-box'); 
+  createSearchBox('start-search-box');
+  createSearchBox('destinations-search-box'); 
 }
 
 /** 
