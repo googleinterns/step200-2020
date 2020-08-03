@@ -13,9 +13,33 @@
 // limitations under the License.
 
 if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadButtons);
+  document.addEventListener('DOMContentLoaded', loadContent);
 } else {
+  loadContent();
+}
+
+/**
+ * Loads the content of the page by loading buttons
+ * and the form tracking buttons selected.
+ */
+function loadContent() {
   loadButtons();
+  loadForm();
+}
+
+/**
+ * Sets properties to the interest form on the html
+ * page. Handles submit event to keep user on the
+ * same page and send information.
+ */
+function loadForm() {
+  let interestsForm = document.getElementById('interests-form');
+  interestsForm.addEventListener('submit', () => {
+    let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
+    let params = new URLSearchParams();
+    params.append("data", interestsAsJSONString);
+    fetch('/api/places', {method: 'POST', body: params});
+  })
 }
 
 let interestsChosen = new Set();
