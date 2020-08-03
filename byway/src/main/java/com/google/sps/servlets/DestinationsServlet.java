@@ -42,16 +42,21 @@ public class DestinationsServlet extends HttpServlet {
     userKey = tripEntity.getKey();
 
     Entity entity; 
-    try{ 
-      entity = datastore.get(userKey);
-      String start = (String) entity.getProperty("start");
-      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-      UserLocations userLocations = new UserLocations(KeyFactory.keyToString(userKey),start, destinations); 
-      response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations));
+      try{ 
+      entity = datastore.get(userKey) ;
     } catch(EntityNotFoundException e){
+      UserLocations userLocations = new UserLocations("","", new ArrayList<String>()); 
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(userLocations)); 
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
-    } 
+      return;
+    }
+
+    String start = (String) entity.getProperty("start");
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    UserLocations userLocations = new UserLocations(KeyFactory.keyToString(userKey),start, destinations); 
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(userLocations));
 
     boolean userExists = false;
     String userId = userService.getCurrentUser().getUserId();
@@ -86,25 +91,29 @@ public class DestinationsServlet extends HttpServlet {
     String start= request.getParameter("start-location");
     String destination = request.getParameter("destinations");
     try{ 
-      entity = datastore.get(userKey);
-      entity.setProperty("start", start);
-      if((ArrayList<String>) entity.getProperty("destinations") == null){
-        ArrayList<String> destinations = new ArrayList<String>();
-        destinations.add(destination);
-        entity.setProperty("destinations", destinations);
-      }
-      else{
-        ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-        destinations.add(destination);
-        entity.setProperty("destinations", destinations);
-      }
-      datastore.put(entity);
-      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-      UserLocations userLocations = new UserLocations(KeyFactory.keyToString(userKey), start, destinations);    
-      response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations));
+      entity = datastore.get(userKey) ;
     } catch(EntityNotFoundException e){
+      UserLocations userLocations = new UserLocations("","", new ArrayList<String>()); 
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(userLocations)); 
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
-    } 
+      return;
+    }
+    entity.setProperty("start", start);
+    if((ArrayList<String>) entity.getProperty("destinations") == null){
+      ArrayList<String> destinations = new ArrayList<String>();
+      destinations.add(destination);
+      entity.setProperty("destinations", destinations);
+    }
+    else{
+      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+      destinations.add(destination);
+      entity.setProperty("destinations", destinations);
+    }
+    datastore.put(entity);
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    UserLocations userLocations = new UserLocations(KeyFactory.keyToString(userKey), start, destinations);    
+      response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(userLocations));
   }
 }

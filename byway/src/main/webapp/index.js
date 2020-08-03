@@ -4,7 +4,7 @@
       loginLink.id = "login-button";
       loginLink.href = login.url;
       loginLink.innerText= "LOGIN";
-      container= document.getElementById("login-link");
+      let container = document.getElementById("login-link");
       container.href = login.url;
       container.append(loginLink);
     }
