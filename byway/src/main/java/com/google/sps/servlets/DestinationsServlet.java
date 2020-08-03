@@ -74,18 +74,18 @@ public class DestinationsServlet extends HttpServlet {
     String start = request.getParameter("start-location"); 
     String destination = request.getParameter("destinations");
     entity.setProperty("start", start);
-    if((ArrayList<String>) entity.getProperty("destinations") == null){
-      ArrayList<String> destinations = new ArrayList<String>();
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    if(destinations == null){
+      destinations = new ArrayList<String>();
       destinations.add(destination);
       entity.setProperty("destinations", destinations);
     }
     else{
-      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
       destinations.add(destination);
       entity.setProperty("destinations", destinations);
     }
     datastore.put(entity);
-    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    destinations = (ArrayList<String>) entity.getProperty("destinations");
     UserLocations userLocations = new UserLocations(start, destinations);    
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(userLocations)); 

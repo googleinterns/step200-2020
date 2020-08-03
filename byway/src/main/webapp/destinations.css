@@ -5,60 +5,60 @@
 }
 
 #destinations-page #map img{
-  max-width : none;
+  max-width: none;
 }
 
  #destinations-page #map-search-container{
-  position:relative;
-  padding:5vw;
+  position: relative;
+  padding: 5vw;
   display: grid;
-  grid-template-columns:50% 50%;
+  grid-template-columns: 50% 50%;
   grid-template-rows: 80% 20%;
 }
 
 #destinations-page #map {
   height: 40vw;
-  width:40vw;
-  position:relative;
+  width: 40vw;
+  position: relative;
   grid-column: 1/span 1;
-  grid-row:1/span 2;
+  grid-row: 1/span 2;
 }
 
 #destinations-page #destination-input-form{
-  position:relative;
+  position: relative;
   grid-column: 2/span 2;
-  grid-row:1/span 1;
-  border:2px solid #ff826c;
-  border-radius:10%;
-  width:100%;
-  height:35vw;
+  grid-row: 1/span 1;
+  border: 2px solid #ff826c;
+  border-radius: 10%;
+  width: 100%;
+  height: 35vw;
   overflow: scroll;
 }
 
 #destinations-page .input-and-button{
-  width:100%;
-  position:relative;
+  width: 100%;
+  position: relative;
   text-align: center;
 }
 
 
 #destinations-page .location-label{
   text-align: center;
-  font-size:2vw;
+  font-size: 2vw;
   font-weight: bold;
   background-color: #ff826c;
-  padding-left:3vw;
-  padding-right:3vw;
-  border-radius:0%;
+  padding-left: 3vw;
+  padding-right: 3vw;
+  border-radius: 0%;
 }
 
 #destinations-page .location{
-  width:40vw;
-  margin:auto;
-  padding-top:3px;
+  width: 40vw;
+  margin: auto;
+  padding-top: 3px;
 }
 #destinations-page #destinations-container .destination-photo{
-  display:inline-block;
+  display: inline-block;
   max-width: 100%;
   max-height: 100%;
   border-radius: 25%;
@@ -66,36 +66,35 @@
 }
 
 #destinations-page #destinations-container .destination-info{
-  display:inline-block;
-  font-size:1vw;
+  display: inline-block;
+  font-size: 1vw;
   text-align: center;
-  line-height:50%;
+  line-height: 50%;
   position: relative;
-  margin:auto;
+  margin: auto;
 }
 
 #destinations-page #destinations-container .destination-name{
-  font-size:1.3vw;
+  font-size: 1.3vw;
   font-weight: bold;
-
 }
 
 #destinations-page #next-button{
-  position:relative;
-  grid-column:2/span 2;
-  grid-row:2/span 2;
+  position: relative;
+  grid-column: 2/span 2;
+  grid-row:  2/span 2;
   height: 3vw;
   width:10vw;
-  top:3.1vw;
-  left:50%;
+  top: 3.1vw;
+  left:  50%;
   transform: translate(-50%, 0%);
   background-color:#3196e2;
   border-radius:50px;
   text-decoration: none;
   color:white;
   font-size: 2vw;
-  font-weight:bold;
-  text-align:center;
+  font-weight: bold;
+  text-align: center;
   padding-top: 6px;
 }
 

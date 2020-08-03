@@ -28,7 +28,7 @@ function initializeDestinationsPage(){
   initAutocomplete(); 
   setProgressBar(1); 
   fetchDestinations().then(response => {
-    updateLocations(response,map);
+    updateLocations(response);
     updateStartDestination(response);
   }); 
 }
@@ -58,18 +58,15 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  const START_SEARCH_BOX = 'start-search-box';
-  const DESTINATIONS_SEARCH_BOX= 'destinations-search-box';
-  createSearchBox(map,START_SEARCH_BOX);
-  createSearchBox(map,DESTINATIONS_SEARCH_BOX); 
+  createSearchBox(map,'start-search-box');
+  createSearchBox(map,'destinations-search-box'); 
 }
 
 /** 
  * Creates a search box
- * @param {google.maps.Map} map
  * @param {string} container
  */
-function createSearchBox(map,container){
+function createSearchBox(container){
   const start = document.getElementById(container);
   const searchBox = new google.maps.places.SearchBox(start);
 
@@ -82,7 +79,7 @@ function createSearchBox(map,container){
   });
 }
 
-function addMarker(searchBox,map){
+function addMarker(searchBox){
     let markers = [];
     const places = searchBox.getPlaces();
 
@@ -131,7 +128,7 @@ function addMarker(searchBox,map){
 /** 
 * fetches start location and destinations from DestinationsServlet and adds to DOM
 */
-function updateLocations(locationData, map){
+function updateLocations(locationData){
     const container = document.getElementById('destinations-container');
     container.innerText = "";
     let destinationArray= locationData.destinations;
@@ -143,26 +140,39 @@ function updateLocations(locationData, map){
       let service = new google.maps.places.PlacesService(map);
       service.findPlaceFromQuery(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
+          addLocationtoDOM(results);
+        }
+        else{
           let destinationToAdd = document.createElement('p');
           destinationToAdd.className = 'location';
-          let destinationPhoto = document.createElement('img');
-          destinationPhoto.className = "destination-photo";
-          destinationPhoto.src = results[0].photos[0].getUrl();
-          let destinationInfo=document.createElement('p');
-          destinationInfo.className = 'destination-info';
-          let destinationName = document.createElement('p');
-          destinationName.innerText = results[0].name;
-          destinationName.className = 'destination-name';
-          let destinationAddress= document.createElement('p');
-          destinationAddress.innerText = results[0].formatted_address;
-          destinationInfo.appendChild(destinationName);
-          destinationInfo.appendChild(destinationAddress);
+          destinationToAdd.innerText = destination;
           container.appendChild(destinationToAdd);
-          destinationToAdd.appendChild(destinationPhoto);
-          destinationToAdd.appendChild(destinationInfo);
         }
       });  
     }) 
+}
+
+/** 
+* adds Users Input Destinations to DOM with image and address
+*/
+function addLocationtoDOM(results){
+  let destinationToAdd = document.createElement('p');
+    destinationToAdd.className = 'location';
+    let destinationPhoto = document.createElement('img');
+    destinationPhoto.className = "destination-photo";
+    destinationPhoto.src = results[0].photos[0].getUrl();
+    let destinationInfo=document.createElement('p');
+    destinationInfo.className = 'destination-info';
+    let destinationName = document.createElement('p');
+    destinationName.innerText = results[0].name;
+    destinationName.className = 'destination-name';
+    let destinationAddress= document.createElement('p');
+    destinationAddress.innerText = results[0].formatted_address;
+    destinationInfo.appendChild(destinationName);
+    destinationInfo.appendChild(destinationAddress);
+    container.appendChild(destinationToAdd);
+    destinationToAdd.appendChild(destinationPhoto);
+    destinationToAdd.appendChild(destinationInfo);
 }
 
 /**  
@@ -212,7 +222,7 @@ window.onload = function(){
     const formData = new  FormData(document.getElementById("user-input-form"));
     fetch('/api/destinations', {method: 'POST', body:formData}).then((response)=>
         response.json()).then(locationData => {
-        updateLocations(locationData, map);
+        updateLocations(locationData);
         updateStartDestination(locationData);
       });
     });
