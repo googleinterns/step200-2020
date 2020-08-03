@@ -140,7 +140,7 @@ function updateLocations(locationData){
       let service = new google.maps.places.PlacesService(map);
       service.findPlaceFromQuery(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          addLocationtoDOM(results);
+          addLocationtoDOM(results, container);
         }
         else{
           let destinationToAdd = document.createElement('p');
@@ -155,24 +155,24 @@ function updateLocations(locationData){
 /** 
 * adds Users Input Destinations to DOM with image and address
 */
-function addLocationtoDOM(results){
+function addLocationtoDOM(results,container){
   let destinationToAdd = document.createElement('p');
-    destinationToAdd.className = 'location';
-    let destinationPhoto = document.createElement('img');
-    destinationPhoto.className = "destination-photo";
-    destinationPhoto.src = results[0].photos[0].getUrl();
-    let destinationInfo=document.createElement('p');
-    destinationInfo.className = 'destination-info';
-    let destinationName = document.createElement('p');
-    destinationName.innerText = results[0].name;
-    destinationName.className = 'destination-name';
-    let destinationAddress= document.createElement('p');
-    destinationAddress.innerText = results[0].formatted_address;
-    destinationInfo.appendChild(destinationName);
-    destinationInfo.appendChild(destinationAddress);
-    container.appendChild(destinationToAdd);
-    destinationToAdd.appendChild(destinationPhoto);
-    destinationToAdd.appendChild(destinationInfo);
+  destinationToAdd.className = 'location';
+  let destinationPhoto = document.createElement('img');
+  destinationPhoto.className = "destination-photo";
+  destinationPhoto.src = results[0].photos[0].getUrl();
+  let destinationInfo=document.createElement('p');
+  destinationInfo.className = 'destination-info';
+  let destinationName = document.createElement('p');
+  destinationName.innerText = results[0].name;
+  destinationName.className = 'destination-name';
+  let destinationAddress= document.createElement('p');
+  destinationAddress.innerText = results[0].formatted_address;
+  destinationInfo.appendChild(destinationName);
+  destinationInfo.appendChild(destinationAddress);
+  container.appendChild(destinationToAdd);
+  destinationToAdd.appendChild(destinationPhoto);
+  destinationToAdd.appendChild(destinationInfo);
 }
 
 /**  
