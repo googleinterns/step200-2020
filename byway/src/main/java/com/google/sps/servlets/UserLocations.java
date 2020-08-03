@@ -28,7 +28,7 @@ public class UserLocations{
   }
 
   public void setStart(String startLocation){
-    start=startLocation;
+    start = startLocation;
   }
 
   public void addDestination(String location){

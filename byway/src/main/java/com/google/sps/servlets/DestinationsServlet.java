@@ -37,7 +37,7 @@ public class DestinationsServlet extends HttpServlet {
     userEntity.setProperty("start", "");
     userEntity.setProperty("destinations", new ArrayList<String>());
     datastore.put(userEntity);
-    userKey= userEntity.getKey();
+    userKey = userEntity.getKey();
   }
   
   @Override
@@ -71,7 +71,7 @@ public class DestinationsServlet extends HttpServlet {
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
       return;
     }
-    String start= request.getParameter("start-location"); 
+    String start = request.getParameter("start-location"); 
     String destination = request.getParameter("destinations");
     entity.setProperty("start", start);
     if((ArrayList<String>) entity.getProperty("destinations") == null){

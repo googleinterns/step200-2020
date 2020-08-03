@@ -133,7 +133,7 @@ function addMarker(searchBox,map){
 */
 function updateLocations(locationData, map){
     const container = document.getElementById('destinations-container');
-    container.innerText="";
+    container.innerText = "";
     let destinationArray= locationData.destinations;
     destinationArray.forEach((destination) => {
       const request = {
@@ -144,9 +144,9 @@ function updateLocations(locationData, map){
       service.findPlaceFromQuery(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           let destinationToAdd = document.createElement('p');
-          destinationToAdd.className='location';
-          let destinationPhoto=document.createElement('img');
-          destinationPhoto.className="destination-photo";
+          destinationToAdd.className = 'location';
+          let destinationPhoto = document.createElement('img');
+          destinationPhoto.className = "destination-photo";
           destinationPhoto.src = results[0].photos[0].getUrl();
           let destinationInfo=document.createElement('p');
           destinationInfo.className = 'destination-info';
