@@ -42,7 +42,7 @@ public class DestinationsServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Entity entity = null; 
+    Entity entity; 
     try{ 
       entity = datastore.get(userKey);
     } catch(EntityNotFoundException e){
@@ -61,7 +61,7 @@ public class DestinationsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-    Entity entity = null;
+    Entity entity;
     try{ 
       entity = datastore.get(userKey) ;
     } catch(EntityNotFoundException e){
