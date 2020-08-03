@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 import com.google.sps.data.Stop;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -36,11 +35,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that handles data for stops */
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+  /* Method which retrieves the Stop KIND from datastore */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query(Stop.KIND); 
@@ -53,7 +54,7 @@ public final class StopsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(stops));
   }
 
-  /* Method which modifies the Stop datastore */
+  /* Method which modifies the Stop KIND in datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
@@ -62,7 +63,7 @@ public final class StopsServlet extends HttpServlet {
     if(action.equals("remove")){
       Query query = new Query(Stop.KIND);
       PreparedQuery results = datastore.prepare(query);
-      // Note: A more proper solution is to use Filter, like in add but 
+      // Note: A more proper solution is to use Filter
       // but I noticed it was not working as intended 
       for(Entity entity: results.asIterable()){
         if(entity.getProperty("placename").equals(stop)){
@@ -75,7 +76,7 @@ public final class StopsServlet extends HttpServlet {
       stopEntity.setProperty("placename", stop);
       datastore.put(stopEntity);
       /**
-      TODO: use filter
+      TODO: use filter as a check for duplication
       Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
       Query query = new Query(Stop.KIND).setFilter(propertyFilter);
       PreparedQuery results = datastore.prepare(query);

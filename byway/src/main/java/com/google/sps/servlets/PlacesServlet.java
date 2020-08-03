@@ -12,44 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.maps;
 
-import java.io.IOException;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
-  ArrayList<String> recs= new ArrayList<String>();
-  ArrayList<String> stops= new ArrayList<String>();
-  
+/** Servlet that returns all PlaceTypes from Places API. */
+@WebServlet("/api/places")
+public final class PlacesServlet extends HttpServlet {
+
+  private final Gson gson = new Gson();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("in doGet");
-    recs.add("Times Square");
-    recs.add("MOMA");
-    recs.add("Central Park");
-    Gson gson = new Gson();
-    String json=gson.toJson(recs);
-    
-    response.setContentType("application/json;");
-    response.getWriter().println(json);
-  }
-  /**
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String stop = request.getParameter("text");
-    stops.add(stop);
-    for(int i = 0; i < stops.size(); i++){
-        System.out.println(stops.get(i));
+    ArrayList<String> places = new ArrayList<>();
+    for(PlaceType location: PlaceType.values()) {
+      String place = formatLocation(location);
+      places.add(place);
     }
-    response.sendRedirect("/routepage.html"); 
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(places));
   }
-  **/
+
+  /** 
+   * Format string by capitalizing and adding spaces in-between words.
+   * @param location is a PlaceType that indicates a type of location/interest.
+   * @return is the modified location name.
+   */
+  private String formatLocation(PlaceType location) {
+    String place = location.toString();
+    place = place.substring(0,1).toUpperCase() + place.substring(1);
+    place = place.replace('_', ' ');
+    return place;
+  }
 }
