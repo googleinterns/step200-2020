@@ -52,4 +52,39 @@ public final class PlacesServlet extends HttpServlet {
     place = place.replace('_', ' ');
     return place;
   }
+
+  /**
+   * Temporary setup to find entity with hard-coded id value. Set their interests.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query person =
+      new Query("user")
+        .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
+    PreparedQuery pq = datastore.prepare(person);
+    Entity userEntity = pq.asSingleEntity();
+    if(userEntity != null) {
+      String interestsAsString = request.getParameter("data");
+      addInterestsForUser(interestsAsString, userEntity, datastore);
+    } else {
+      response.setStatus(response.SC_NOT_FOUND);
+    }
+  }
+
+
+  /**
+   * Creates a list of interests from the JSON string passed in and adds it
+   * to this user's Entity object as a separate property.
+   * @param interestsAsString JSON String containing interests.
+   * @param currentUser       Entity with user information.
+   * @param datastore         DatastoreService with all users.
+   */
+  private void addInterestsForUser(String interestsAsString, Entity currentUser,
+                                    DatastoreService datastore) throws IOException {
+
+    ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
+    currentUser.setProperty("interests", interests);
+    datastore.put(currentUser);
+  }
 }
