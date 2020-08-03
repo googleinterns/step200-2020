@@ -27,10 +27,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
 
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserService userService = UserServiceFactory.getUserService();
-  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
   private Key userKey;
   
   @Override
