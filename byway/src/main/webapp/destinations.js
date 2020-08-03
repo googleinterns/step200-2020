@@ -140,7 +140,7 @@ function updateLocations(locationData, map){
         query: destination,
         fields: ["name", "photos", "formatted_address", "rating", "business_status"]
       };
-      service = new google.maps.places.PlacesService(map);
+      let service = new google.maps.places.PlacesService(map);
       service.findPlaceFromQuery(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           let destinationToAdd = document.createElement('p');
