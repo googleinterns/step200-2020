@@ -32,7 +32,8 @@ public final class User {
   public User(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
     this.userId = checkNotNull(userId, "userId");
-    this.tripIds = new ArrayList<>(tripIds);
+    Collection<String> validTripIds = checkNotNull(tripIds, "tripIds");
+    this.tripIds = new ArrayList<>(validTripIds);
   }
 
   public String getEmail() {

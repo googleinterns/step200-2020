@@ -33,11 +33,14 @@ public final class Trip {
 
   public Trip(String id, String start, Collection<String> destinations,
               Collection<String> interests, Collection<String> route) {
-    this.id = id;
+    this.id = checkNotNull(id, "id");
     this.start = checkNotNull(start, "start");
-    this.destinations = checkNotNull(new ArrayList<String> destinations, "destinations");
-    this.interests = checkNotNull(new ArrayList<String> interests, "interests");
-    this.route = checkNotNull(new ArrayList<String> route, "route");
+    Collection<String> validDestinations = checkNotNull(destinations, "destinations");
+    Collection<String> validInterests = checkNotNull(interests, "interests");
+    Collection<String> validRoute = checkNotNull(route, "route");
+    this.destinations = new ArrayList<String>(validDestinations);
+    this.interests = new ArrayList<String>(validInterests);
+    this.route = new ArrayList<String>(validRoute);
   }
 
   public ArrayList<String> getInterests() {
