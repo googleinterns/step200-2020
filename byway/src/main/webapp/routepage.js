@@ -26,8 +26,8 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 
 /** Used to restore stops and recommendations upon load or refresh */
 function load(){
-  getRecs();
-  getStops();
+  getRecsOnload();
+  getStopsOnload();
 }
 
 function initMap() {
@@ -62,8 +62,17 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
     }
   });
 }
+
+/** Clear the stops panel in the html */
+function clearStops(){
+  const stopList = document.getElementById('stop-list');
+  if(stopList != null){
+    stopList.innerText = ""; // clear list
+  }
+}
+
 /** Render stop list  */
-function renderStop(stop, fromDatastore){
+function renderStops(stop, fromDatastore){
   const stopList = document.getElementById('stop-list');
   // add to stop array in the js 
   if(fromDatastore){
@@ -80,39 +89,29 @@ function renderStop(stop, fromDatastore){
 }
 
 /** Get the new list of stops from datastore onload */
-function getStops(){
-  const stopList = document.getElementById('stop-list');
-  if(stopList != null){
-    stopList.innerText = ""; // clear list
-  }
+function getStopsOnload(){
+  clearStops();
   fetch('/api/stop')
   .then(response => response.json())
   .then((stopsResponse) => {
     stopsResponse.forEach((stop)=>{
-      renderStop(stop, true);
+      renderStops(stop, true);
     });
   })
 }
 
 /** Get the new list of stops locally */
 function getStopsList(){
-  const stopList = document.getElementById('stop-list');
-  if(stopList != null){
-    stopList.innerText = ""; // clear list
-  }
-  if(stopList != null){
-    stopList.innerText = ""; 
-  }
+  clearStops();
   // re-render list synchronously
   stops.forEach((stop)=>{
-    renderStop(stop, false);
+    renderStops(stop, false);
   })
 }
 
 /** Add stop locally and to datastore */
 function addToStops(stop){
   deleteFromRecs(stop); 
-
   // add to stops array locally in js
   stops.push(stop);
   getStopsList();
@@ -127,7 +126,7 @@ function addToStops(stop){
 /** Delete stop locally and from datastore*/
 function deleteFromStops(stop){
   addToRecs(stop); 
-
+  console.log("delete " + stop.placename);
   // delete from stops array locally in js
   stops = stops.filter(function(stopObj){
     return stopObj.placename != stop.placename;
@@ -141,43 +140,49 @@ function deleteFromStops(stop){
   fetch('/api/stop', {method: 'POST', body: params});
 }
 
-/** Get the new list of recommendations from servlet onload */
-function getRecs() {
+/** Clear the recommendations panel in the html */
+function clearRecs(){
   const recList = document.getElementById('rec-list');
   if(recList != null){
     recList.innerText = ""; // clear list
   }
+}
+
+/** Render recommendations list */
+function renderRecs(rec, fromDatastore){
+  const recsList = document.getElementById('rec-list');
+  // populate local js array initially
+  if(fromDatastore){
+    recs.push(rec);
+  }
+  var btn = document.createElement('button');
+  btn.id = rec.id;
+  btn.innerText = rec.placename;
+  btn.className =  "btn rec-btn";
+  btn.addEventListener("click", function() {
+    addToStops(rec); 
+  });
+  recsList.appendChild(btn);
+}
+
+/** Get the new list of recommendations from servlet onload */
+function getRecsOnload() {
+  clearRecs();
   fetch('/api/recs')
   .then(response => response.json())
   .then((recommendations) => {
     recommendations.forEach((rec)=>{
-      // populate local js array initially
-      recs.push(rec);
-      var btn = document.createElement('button');
-      btn.id = rec.id;
-      btn.innerText = rec.placename;
-      btn.className =  "btn rec-btn";
-      btn.addEventListener("click", function() {
-        addToStops(rec); 
-      });
-     recList.appendChild(btn);
+      renderRecs(rec, true);
     })
   })
 }
 
 /** Get the new list of recommendations locally */
 function getRecsList(){
-  const recsList = document.getElementById('rec-list');
-  recsList.innerText = ""; // clear list
+  clearRecs();
   // re-render list synchronously
   recs.forEach((rec)=>{
-    var btn = document.createElement('button');
-    btn.innerText = rec.placename;
-    btn.className =  "btn rec-btn";
-    btn.addEventListener("click", function() {
-      addToStops(rec);
-    });
-    recsList.appendChild(btn);
+      renderRecs(rec, false);
   })
 }
 
