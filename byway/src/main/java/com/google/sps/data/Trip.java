@@ -15,6 +15,7 @@
 package com.google.sps.data;
 
 import java.util.ArrayList;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class to make a Trip type, containing
@@ -23,19 +24,19 @@ import java.util.ArrayList;
  */
 public final class Trip {
 
-  private String id;
-  private String start;
-  private ArrayList<String> destinations;
-  private ArrayList<String> interests;
-  private ArrayList<String> route;
+  private final String id;
+  private final String start;
+  private final ArrayList<String> destinations;
+  private final ArrayList<String> interests;
+  private final ArrayList<String> route;
 
   public Trip(String id, String start, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
     this.id = id;
-    this.start = start;
-    this.destinations = destinations;
-    this.interests = interests;
-    this.route = route;
+    this.start = checkNotNull(start, "start");
+    this.destinations = checkNotNull(destinations, "destinations");
+    this.interests = checkNotNull(interests, "interests");
+    this.route = checkNotNull(route, "route");
   }
 
   public ArrayList<String> getInterests() {
