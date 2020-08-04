@@ -37,7 +37,7 @@ function loadForm() {
   interestsForm.addEventListener('submit', () => {
     let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
     let params = new URLSearchParams();
-    params.append("data", interestsAsJSONString);
+    params.append("interests", interestsAsJSONString);
     fetch('/api/places', {method: 'POST', body: params});
   })
 }
@@ -64,7 +64,7 @@ function loadButtons() {
   fetch('/api/places')
   .then(response => response.json())
   .then((places) => {
-    let buttonSection = document.getElementById("interests");
+    let buttonSection = document.getElementById("interests-section");
     places.forEach((place) => {
       let button = createButtonForPlace(place);
       buttonSection.appendChild(button);

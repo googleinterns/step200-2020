@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -66,7 +67,6 @@ public final class PlacesServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query person =
       new Query("user")
         .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
@@ -74,7 +74,7 @@ public final class PlacesServlet extends HttpServlet {
     Entity userEntity = pq.asSingleEntity();
     if(userEntity != null) {
       String interestsAsString = request.getParameter("data");
-      addInterestsForUser(interestsAsString, userEntity, datastore);
+      addInterestsForUser(interestsAsString, userEntity);
     } else {
       response.setStatus(response.SC_NOT_FOUND);
     }
@@ -88,8 +88,7 @@ public final class PlacesServlet extends HttpServlet {
    * @param currentUser       Entity with user information.
    * @param datastore         DatastoreService with all users.
    */
-  private void addInterestsForUser(String interestsAsString, Entity currentUser,
-                                    DatastoreService datastore) throws IOException {
+  private void addInterestsForUser(String interestsAsString, Entity currentUser) throws IOException {
 
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
     currentUser.setProperty("interests", interests);
