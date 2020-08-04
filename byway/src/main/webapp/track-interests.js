@@ -83,6 +83,6 @@ function createButtonForPlace(place) {
   let button = document.createElement("button");
   button.innerText = place;
   button.addEventListener('click', () => updateStatus(place, button));
-  button.className = "btn";
+  button.className = "interestBtn";
   return button;
 }
