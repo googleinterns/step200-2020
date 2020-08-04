@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.sps.data.Trip;
 
-/** Servlet that returns start location and destinations user inputs */
+/** Servlet that returns trip id and start location and destinations user inputs */
 @MultipartConfig
 @WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
@@ -47,19 +47,59 @@ public class DestinationsServlet extends HttpServlet {
     try{ 
       entity = datastore.get(tripKey) ;
     } catch(EntityNotFoundException e){
-      Trip trip = new Trip("","", new ArrayList<String>()); 
+      Trip trip = new Trip("","", new ArrayList<String>(), null, null); 
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(trip)); 
       logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
       return;
     }
-
     String start = (String) entity.getProperty("start");
     ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    Trip trip = new Trip(KeyFactory.keyToString(tripKey),start, destinations); 
+    Trip trip = new Trip(KeyFactory.keyToString(tripKey),start, destinations, null, null); 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
+    
+    addUserEntity();
+  }
 
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    Entity entity;
+    String start= request.getParameter("start-location");
+    String destination = request.getParameter("destinations");
+    try{ 
+      entity = datastore.get(tripKey) ;
+    } catch(EntityNotFoundException e){
+      Trip trip = new Trip("","", new ArrayList<String>(), null, null); 
+      response.setContentType("application/json;");
+      response.getWriter().println(gson.toJson(trip)); 
+      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
+      return;
+    }
+    entity.setProperty("start", start);
+    if((ArrayList<String>) entity.getProperty("destinations") == null){
+      ArrayList<String> destinations = new ArrayList<String>();
+      destinations.add(destination);
+      entity.setProperty("destinations", destinations);
+    }
+    else{
+      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+      destinations.add(destination);
+      entity.setProperty("destinations", destinations);
+    }
+    datastore.put(entity);
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    Trip trip = new Trip(KeyFactory.keyToString(tripKey), start, destinations, null, null);    
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(trip));
+  }
+  
+
+  /*
+  * Adds new user entity if user has not logged in before
+  * Adds tripKey to the user's array of trips
+  **/
+  public void addUserEntity(){
     boolean userExists = false;
     String userId = userService.getCurrentUser().getUserId();
     String userEmail = userService.getCurrentUser().getEmail();
@@ -85,37 +125,5 @@ public class DestinationsServlet extends HttpServlet {
       userEntity.setProperty("trips", trips);
       datastore.put(userEntity);
     }
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
-    Entity entity;
-    String start= request.getParameter("start-location");
-    String destination = request.getParameter("destinations");
-    try{ 
-      entity = datastore.get(tripKey) ;
-    } catch(EntityNotFoundException e){
-      Trip trip = new Trip("","", new ArrayList<String>()); 
-      response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(trip)); 
-      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
-      return;
-    }
-    entity.setProperty("start", start);
-    if((ArrayList<String>) entity.getProperty("destinations") == null){
-      ArrayList<String> destinations = new ArrayList<String>();
-      destinations.add(destination);
-      entity.setProperty("destinations", destinations);
-    }
-    else{
-      ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-      destinations.add(destination);
-      entity.setProperty("destinations", destinations);
-    }
-    datastore.put(entity);
-    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    Trip trip = new Trip(KeyFactory.keyToString(tripKey), start, destinations);    
-      response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(trip));
   }
 }

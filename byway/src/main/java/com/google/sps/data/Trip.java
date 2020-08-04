@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * a specific id, destinations, interests and routes 
  * to be used when updating a trip.
  */
-public final class Trip{
+public final class Trip {
 
   private String id;
   private String start;
@@ -29,21 +29,7 @@ public final class Trip{
   private ArrayList<String> interests;
   private ArrayList<String> route;
 
-  public Trip(String id, String start, ArrayList<String> destinations) {
-    configureTrip(id, start, destinations, null, null);
-  }
-
   public Trip(String id, String start, ArrayList<String> destinations,
-              ArrayList<String> interests) {
-    configureTrip(id, start, destinations, interests, null);
-  }
-
-  public Trip(String id, String start, ArrayList<String> destinations,
-              ArrayList<String> interests, ArrayList<String> route) {
-    configureTrip(id, start, destinations, interests, route);
-  }
-
-  private void configureTrip(String id, String start, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
     this.id = id;
     this.start = start;
@@ -64,7 +50,11 @@ public final class Trip{
     return this.destinations;
   }
 
-  public String getStart(){
+  public String getTripId() {
+      return this.id;
+  }
+
+  public String getStart() {
       return this.start;
   }
-} 
+}  
