@@ -40,14 +40,15 @@ public final class User {
   }
 
   public User createUserFromEntity(Entity userEntity) {
-    checkArgument(userEntity.getKind().equals(KIND),
-      "Wrong entity kind. Expected %s, received %s", KIND, userEntity.getKind());
-    String email = checkNotNull((String) userEntity.getProperty("email"),
+    Entity validEntity = checkNotNull(userEntity, "User entity is null");
+    checkArgument(validEntity.getKind().equals(KIND),
+      "Wrong entity kind. Expected %s, received %s", KIND, validEntity.getKind());
+    String email = checkNotNull((String) validEntity.getProperty("email"),
       "User entity does not contain an email");
-    String userId = checkNotNull((String) userEntity.getProperty("userId"),
+    String userId = checkNotNull((String) validEntity.getProperty("userId"),
       "User entity does not contain a user Id");
     ArrayList<String> tripIds =
-      checkNotNull((ArrayList<String>) userEntity.getProperty("tripIds"),
+      checkNotNull((ArrayList<String>) validEntity.getProperty("tripIds"),
         "User entity does not contain trip Ids");
     return new User(email, userId, tripIds);
   }

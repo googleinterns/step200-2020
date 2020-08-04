@@ -47,20 +47,21 @@ public final class Trip {
   }
 
   public Trip createTripFromEntity(Entity tripEntity) {
-    checkArgument(tripEntity.getKind().equals(KIND),
-      "Wrong Entity kind. Expected %s, received %s", KIND, tripEntity.getKind());
-    String id = checkNotNull((String) tripEntity.getProperty("id"),
+    Entity validEntity = checkNotNull(tripEntity, "Trip entity is null");
+    checkArgument(validEntity.getKind().equals(KIND),
+      "Wrong Entity kind. Expected %s, received %s", KIND, validEntity.getKind());
+    String id = checkNotNull((String) validEntity.getProperty("id"),
       "Trip entity does not contain an id");
-    String start = checkNotNull((String) tripEntity.getProperty("start"),
+    String start = checkNotNull((String) validEntity.getProperty("start"),
       "Trip entity does not contain a start");
     ArrayList<String> destinations =
-      checkNotNull((ArrayList<String>) tripEntity.getProperty("destinations"),
+      checkNotNull((ArrayList<String>) validEntity.getProperty("destinations"),
         "Trip entity does not contain destinations");
     ArrayList<String> interests =
-      checkNotNull((ArrayList<String>) tripEntity.getProperty("interests"),
+      checkNotNull((ArrayList<String>) validEntity.getProperty("interests"),
         "Trip entity does not contain interests");
     ArrayList<String> route =
-      checkNotNull((ArrayList<String>) tripEntity.getProperty("route"),
+      checkNotNull((ArrayList<String>) validEntity.getProperty("route"),
         "Trip entity does not contain route");
     return new Trip(id, start, destinations, interests, route);
   }
