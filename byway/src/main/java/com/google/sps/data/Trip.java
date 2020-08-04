@@ -44,18 +44,15 @@ public final class Trip {
   }
 
   public ArrayList<String> getInterests() {
-    ArrayList<String> interestsCopy = this.interests;
-    return interestsCopy;
+    return new ArrayList<String>(this.interests);
   }
 
   public ArrayList<String> getRoute() {
-    ArrayList<String> routeCopy = this.route;
-    return routeCopy;
+    return new ArrayList<String>(this.route);
   }
 
   public ArrayList<String> getDestinations() {
-    ArrayList<String> destinationsCopy = this.destinations;
-    return destinationsCopy;
+    return new ArrayList<String>(this.destinations);
   }
 
   public String getTripId() {

@@ -41,8 +41,7 @@ public final class User {
   }
 
   public ArrayList<String> getTripIds() {
-    ArrayList<String> tripIdsCopy = this.tripIds;
-    return tripIdsCopy;
+    return new ArrayList<String>(this.tripIds);
   }
 
   public String getUserId() {
