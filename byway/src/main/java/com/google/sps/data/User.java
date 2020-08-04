@@ -43,11 +43,6 @@ public final class User{
     this.tripIds = new ArrayList<>();
   }
 
-  public Trip(long id, ArrayList<String> destinations,
-              ArrayList<String> interests, ArrayList<String> route) {
-    configureTrip(id, destinations, interests, route);
-  }
-
   public ArrayList<String> getEmail() {
       return this.email;
   }
