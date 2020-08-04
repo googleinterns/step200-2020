@@ -21,6 +21,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.Trip;
 
 /** Servlet that returns start location and destinations user inputs */
 @MultipartConfig
@@ -46,18 +47,18 @@ public class DestinationsServlet extends HttpServlet {
     try{ 
       entity = datastore.get(tripKey) ;
     } catch(EntityNotFoundException e){
-      UserLocations userLocations = new UserLocations("","", new ArrayList<String>()); 
+      Trip trip = new Trip("","", new ArrayList<String>()); 
       response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations)); 
-      logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", tripKey);
+      response.getWriter().println(gson.toJson(trip)); 
+      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
       return;
     }
 
     String start = (String) entity.getProperty("start");
     ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    UserLocations userLocations = new UserLocations(KeyFactory.keyToString(tripKey),start, destinations); 
+    Trip trip = new Trip(KeyFactory.keyToString(tripKey),start, destinations); 
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(userLocations));
+    response.getWriter().println(gson.toJson(trip));
 
     boolean userExists = false;
     String userId = userService.getCurrentUser().getUserId();
@@ -94,10 +95,10 @@ public class DestinationsServlet extends HttpServlet {
     try{ 
       entity = datastore.get(tripKey) ;
     } catch(EntityNotFoundException e){
-      UserLocations userLocations = new UserLocations("","", new ArrayList<String>()); 
+      Trip trip = new Trip("","", new ArrayList<String>()); 
       response.setContentType("application/json;");
-      response.getWriter().println(gson.toJson(userLocations)); 
-      logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", tripKey);
+      response.getWriter().println(gson.toJson(trip)); 
+      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
       return;
     }
     entity.setProperty("start", start);
@@ -113,8 +114,8 @@ public class DestinationsServlet extends HttpServlet {
     }
     datastore.put(entity);
     ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    UserLocations userLocations = new UserLocations(KeyFactory.keyToString(tripKey), start, destinations);    
+    Trip trip = new Trip(KeyFactory.keyToString(tripKey), start, destinations);    
       response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(userLocations));
+    response.getWriter().println(gson.toJson(trip));
   }
 }
