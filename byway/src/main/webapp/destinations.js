@@ -158,11 +158,11 @@ function addLocationtoDOM(results,container){
   
   let destinationPhoto = document.createElement('img');
   destinationPhoto.src = results[0].photos[0].getUrl();
-  let destinationInfo = document.createElement('div');
+  let destinationInfo = document.createElement('p');
   destinationInfo.className = 'destination-info';
-  let destinationName = document.createElement('div');
+  let destinationName = document.createElement('p');
   destinationName.innerText = results[0].name;
-  let destinationAddress= document.createElement('div');
+  let destinationAddress= document.createElement('p');
   destinationAddress.innerText = results[0].formatted_address;
 
   destinationInfo.appendChild(destinationName);
