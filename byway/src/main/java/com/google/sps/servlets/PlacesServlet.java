@@ -73,7 +73,7 @@ public final class PlacesServlet extends HttpServlet {
     PreparedQuery pq = datastore.prepare(person);
     Entity userEntity = pq.asSingleEntity();
     if(userEntity != null) {
-      String interestsAsString = request.getParameter("data");
+      String interestsAsString = request.getParameter("interests");
       addInterestsForUser(interestsAsString, userEntity);
     } else {
       response.setStatus(response.SC_NOT_FOUND);
