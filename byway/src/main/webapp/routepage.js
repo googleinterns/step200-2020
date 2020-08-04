@@ -62,49 +62,50 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
     }
   });
 }
+/** Render stop list  */
+function renderStop(stop, fromDatastore){
+  const stopList = document.getElementById('stop-list');
+  // add to stop array in the js 
+  if(fromDatastore){
+    stops.push(stop);
+  }
+  let btn = document.createElement('button');
+  btn.id = stop.id;
+  btn.innerText = stop.placename;
+  btn.className =  "btn rec-btn";
+  btn.addEventListener("click", function() {
+    deleteFromStops(stop); 
+  });
+  stopList.appendChild(btn);
+}
 
 /** Get the new list of stops from datastore onload */
 function getStops(){
   const stopList = document.getElementById('stop-list');
-
   if(stopList != null){
     stopList.innerText = ""; // clear list
   }
-
   fetch('/api/stop')
   .then(response => response.json())
   .then((stopsResponse) => {
     stopsResponse.forEach((stop)=>{
-      stops.push(stop);
-      var btn = document.createElement('button');
-      btn.id = stop.id;
-      btn.innerText = stop.placename;
-      btn.setAttribute("class", "btn rec-btn");
-      btn.addEventListener("click", function() {
-        deleteFromStops(stop); 
-      });
-     stopList.appendChild(btn);
-    })
+      renderStop(stop, true);
+    });
   })
 }
 
 /** Get the new list of stops locally */
 function getStopsList(){
   const stopList = document.getElementById('stop-list');
-
+  if(stopList != null){
+    stopList.innerText = ""; // clear list
+  }
   if(stopList != null){
     stopList.innerText = ""; 
   }
-
   // re-render list synchronously
   stops.forEach((stop)=>{
-    var btn = document.createElement('button');
-    btn.innerText = stop.placename
-    btn.setAttribute("class", "btn rec-btn");
-    btn.addEventListener("click", function() {
-      deleteFromStops(stop); 
-    });
-    stopList.appendChild(btn);
+    renderStop(stop, false);
   })
 }
 
@@ -155,7 +156,7 @@ function getRecs() {
       var btn = document.createElement('button');
       btn.id = rec.id;
       btn.innerText = rec.placename;
-      btn.setAttribute("class", "btn rec-btn");
+      btn.className =  "btn rec-btn";
       btn.addEventListener("click", function() {
         addToStops(rec); 
       });
@@ -171,8 +172,8 @@ function getRecsList(){
   // re-render list synchronously
   recs.forEach((rec)=>{
     var btn = document.createElement('button');
-    btn.innerText = rec.placename
-    btn.setAttribute("class", "btn rec-btn");
+    btn.innerText = rec.placename;
+    btn.className =  "btn rec-btn";
     btn.addEventListener("click", function() {
       addToStops(rec);
     });
