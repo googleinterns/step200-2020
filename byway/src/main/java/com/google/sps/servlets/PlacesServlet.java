@@ -17,7 +17,6 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -32,7 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-/** Servlet that returns all PlaceTypes from Places API. */
+/**
+ * Servlet that returns all PlaceTypes from Places API.
+ * Stores which placeTypes, or interests, user selects
+ * in datastore with their specific Trip Entity.
+ */
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
 
@@ -67,17 +70,15 @@ public final class PlacesServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query person =
-      new Query("user")
+    Query specificTrip =
+      new Query("trip")
         .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
-    PreparedQuery pq = datastore.prepare(person);
-    Entity userEntity = pq.asSingleEntity();
-    if(userEntity != null) {
-      String interestsAsString = request.getParameter("interests");
-      addInterestsForUser(interestsAsString, userEntity);
-    } else {
-      response.setStatus(response.SC_NOT_FOUND);
-    }
+    PreparedQuery pq = datastore.prepare(specificTrip);
+
+    // Guaranteed to have one entity, since id would be unique.
+    Entity trip = pq.asSingleEntity();
+    String interestsAsString = request.getParameter("interests");
+    addInterestsForTrip(interestsAsString, trip);
   }
 
 
@@ -88,10 +89,10 @@ public final class PlacesServlet extends HttpServlet {
    * @param currentUser       Entity with user information.
    * @param datastore         DatastoreService with all users.
    */
-  private void addInterestsForUser(String interestsAsString, Entity currentUser) throws IOException {
+  private void addInterestsForTrip(String interestsAsString, Entity trip) throws IOException {
 
     ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
-    currentUser.setProperty("interests", interests);
-    datastore.put(currentUser);
+    trip.setProperty("interests", interests);
+    datastore.put(trip);
   }
 }
