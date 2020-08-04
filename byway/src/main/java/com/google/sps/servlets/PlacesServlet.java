@@ -25,8 +25,10 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,6 +46,7 @@ public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -89,9 +92,9 @@ public final class PlacesServlet extends HttpServlet {
    * @param  request servlet request
    * @return list of interests
    */
-  private String findInterests(HttpServletRequest request) {
+  private ArrayList<String> findInterests(HttpServletRequest request) {
     String interestsAsJSON = request.getParameter("interests");
-    ArrayList<String> interests = gson.fromJson(interestsAsJSON, ArrayList.class);
+    ArrayList<String> interests = gson.fromJson(interestsAsJSON, ARRAYLIST_STRING);
     return interests;
   }
 
