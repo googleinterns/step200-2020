@@ -14,6 +14,7 @@
 
 package com.google.sps.data;
 
+import java.util.Collection;
 import java.util.ArrayList;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -30,32 +31,35 @@ public final class Trip {
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
-  public Trip(String id, String start, ArrayList<String> destinations,
-              ArrayList<String> interests, ArrayList<String> route) {
+  public Trip(String id, String start, Collection<String> destinations,
+              Collection<String> interests, Collection<String> route) {
     this.id = id;
     this.start = checkNotNull(start, "start");
-    this.destinations = checkNotNull(destinations, "destinations");
-    this.interests = checkNotNull(interests, "interests");
-    this.route = checkNotNull(route, "route");
+    this.destinations = checkNotNull(new ArrayList<String> destinations, "destinations");
+    this.interests = checkNotNull(new ArrayList<String> interests, "interests");
+    this.route = checkNotNull(new ArrayList<String> route, "route");
   }
 
   public ArrayList<String> getInterests() {
-      return this.interests;
+    ArrayList<String> interestsCopy = this.interests;
+    return interestsCopy;
   }
 
   public ArrayList<String> getRoute() {
-      return this.route;
+    ArrayList<String> routeCopy = this.route;
+    return routeCopy;
   }
 
   public ArrayList<String> getDestinations() {
-    return this.destinations;
+    ArrayList<String> destinationsCopy = this.destinations;
+    return destinationsCopy;
   }
 
   public String getTripId() {
-      return this.id;
+    return this.id;
   }
 
   public String getStart() {
-      return this.start;
+    return this.start;
   }
 } 
