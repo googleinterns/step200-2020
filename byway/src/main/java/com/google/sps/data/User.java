@@ -15,6 +15,8 @@
 package com.google.sps.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class to make a User type, containing an optional 
@@ -24,18 +26,25 @@ import java.util.ArrayList;
 public final class User {
 
   private String email;
+  private String userId;
   private ArrayList<String> tripIds;
 
-  public User(String email, ArrayList<String> tripIds) {
-    this.email = email;
-    this.tripIds = tripIds;
+  public User(String email, String userId, Collection<String> tripIds) {
+    this.email = checkNotNull(email, "email");
+    this.userId = checkNotNull(userId, "userId");
+    this.tripIds = new ArrayList<>(tripIds);
   }
 
   public String getEmail() {
-      return this.email;
+    return this.email;
   }
 
   public ArrayList<String> getTripIds() {
-      return this.tripIds;
+    ArrayList<String> tripIdsCopy = this.tripIds;
+    return tripIdsCopy;
+  }
+
+  public String getUserId() {
+    return this.userId;
   }
 } 
