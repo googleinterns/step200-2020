@@ -17,6 +17,10 @@
 // for synchronous updating
 let recs = [];
 let stops = [];
+let map;
+let randomLocation;
+let placesService;
+const RADIUS = 1000; // Measured in meters
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', load);
@@ -39,26 +43,92 @@ function initMap() {
     zoom: 14,
     center: start
   }
-  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
+  /** 
   document.getElementById("route").addEventListener("click", function() {
     // calcRoute(directionsService, directionsRenderer, start, end);
     loadRecommendations();
-  });
+  }); */
+   placesService = new google.maps.places.PlacesService(map);
+  loadRecommendations();
 }
 
 function loadRecommendations() {
+  console.log("loadrecs()");
+  randomLocation = new google.maps.LatLng(33.4806, -112.1864);
+  
   fetch('/api/generator')
+  .then(response => response.json())
   .then((interests) => {
-    interests.forEach(placeType => {
-      console.log(placeType);
-      let request = {
-        location: randomLocation,
-        radius: RADIUS,
-        query: placeType
+  interests.forEach(placeType => {
+    console.log(placeType);
+    let request = {
+      location: randomLocation,
+      radius: RADIUS,
+      query: placeType
+    }
+    placesService.textSearch(request, addRecommendations);
+  
+  });
+});
+}
+/**
+ * Checks the response from PlacesService and creates markers
+ * on the locations found from the request. Temporarily limit
+ * the markers added.
+ * TODO: Load all results, but have a list that limits the results
+ * shown rather than limiting the results being loaded.
+ * @param {Array results} contains the results of the request.
+ * @param {PlacesServiceStatus status} contains the service status
+ * of the request.
+ */
+function addRecommendations(results, status) {
+  console.log("add recs");
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    let maxRecommendations = 3;
+    let numRecommendations = 0;
+    for (let i = 0; i < results.length; i++) {
+      if(fitsInRadius(results[i], RADIUS)) {
+        placeMarker(results[i]);
+        numRecommendations++;
       }
-      placesService.textSearch(request, addRecommendations);
-    });
+      if(numRecommendations == maxRecommendations) {
+        break;
+      }
+    }
+  } else {
+    alert("Status: " + status +
+          "\nOur services are currently down. Oops!");
+  }
+}
+
+/**
+ * Determines if a result fits inside of a
+ * predetermined radius range.
+ * @param {PlaceResult result} contains information about the location
+ * @param {int radius} specified range
+ * @returns boolean
+ */
+function fitsInRadius(result, radius) {
+  console.log("firsinRadius");
+  let currentLocation = result.geometry.location;
+  console.log(currentLocation);
+  let distanceBetweenEnds =
+    google.maps.geometry.spherical.computeDistanceBetween(currentLocation, randomLocation);
+  return distanceBetweenEnds < radius;
+}
+
+/**
+ * Places a marker onto the map at the specified location.
+ * @param {Request place} holds information about the found query.
+ */
+function placeMarker(place) {
+  console.log("placemarker");
+  new google.maps.Marker({
+    position: place.geometry.location,
+    map: map,
+    title: place.name
   });
 }
 

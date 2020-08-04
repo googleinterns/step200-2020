@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+  
   /** Fills datastore with hardcoded values for Recommendation objects,
   values will be from another datastore later **/
   @Override
