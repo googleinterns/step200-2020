@@ -21,10 +21,10 @@ import java.util.ArrayList;
  * email String and a list of trip IDs the user can have. 
  * Users that are not logged in can only have one trip ID.
  */
-public final class User{
+public final class User {
 
   private String email;
-  private ArrayList<long> tripIds;
+  private ArrayList<String> tripIds;
 
   public User(long tripId) {
     ArrayList<long> singleTrip = new ArrayList<>();
@@ -33,7 +33,7 @@ public final class User{
     this.tripIds = singleTrip;
   }
 
-  public User(String email, ArrayList<long> tripIds) {
+  public User(String email, ArrayList<String> tripIds) {
     this.email = email;
     this.tripIds = tripIds;
   }
@@ -43,7 +43,7 @@ public final class User{
     this.tripIds = new ArrayList<>();
   }
 
-  public ArrayList<String> getEmail() {
+  public String getEmail() {
       return this.email;
   }
 
