@@ -85,7 +85,6 @@ public class DestinationsServlet extends HttpServlet {
       entity.setProperty("destinations", destinations);
     }
     datastore.put(entity);
-    destinations = (ArrayList<String>) entity.getProperty("destinations");
     UserLocations userLocations = new UserLocations(start, destinations);    
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(userLocations)); 

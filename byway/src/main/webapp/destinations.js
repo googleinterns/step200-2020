@@ -143,10 +143,7 @@ function updateLocations(locationData){
           addLocationtoDOM(results, container);
         }
         else{
-          let destinationToAdd = document.createElement('p');
-          destinationToAdd.className = 'location';
-          destinationToAdd.innerText = destination;
-          container.appendChild(destinationToAdd);
+          alert("Location Invalid");
         }
       });  
     }) 
@@ -156,21 +153,22 @@ function updateLocations(locationData){
 * adds Users Input Destinations to DOM with image and address
 */
 function addLocationtoDOM(results,container){
-  let destinationToAdd = document.createElement('p');
+  let destinationToAdd = document.createElement('div');
   destinationToAdd.className = 'location';
+  
   let destinationPhoto = document.createElement('img');
-  destinationPhoto.className = "destination-photo";
   destinationPhoto.src = results[0].photos[0].getUrl();
-  let destinationInfo=document.createElement('p');
+  let destinationInfo = document.createElement('div');
   destinationInfo.className = 'destination-info';
-  let destinationName = document.createElement('p');
+  let destinationName = document.createElement('div');
   destinationName.innerText = results[0].name;
-  destinationName.className = 'destination-name';
-  let destinationAddress= document.createElement('p');
+  let destinationAddress= document.createElement('div');
   destinationAddress.innerText = results[0].formatted_address;
+
   destinationInfo.appendChild(destinationName);
   destinationInfo.appendChild(destinationAddress);
-  container.appendChild(destinationToAdd);
+
+  container.append(destinationToAdd);
   destinationToAdd.appendChild(destinationPhoto);
   destinationToAdd.appendChild(destinationInfo);
 }

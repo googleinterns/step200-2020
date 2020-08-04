@@ -57,7 +57,7 @@
   margin: auto;
   padding-top: 3px;
 }
-#destinations-page #destinations-container .destination-photo{
+#destinations-page .location img{
   display: inline-block;
   max-width: 100%;
   max-height: 100%;
@@ -65,18 +65,13 @@
   width: 6vw;
 }
 
-#destinations-page #destinations-container .destination-info{
+#destinations-page .location .destination-info{
   display: inline-block;
   font-size: 1vw;
   text-align: center;
-  line-height: 50%;
+  line-height: 80%;
   position: relative;
   margin: auto;
-}
-
-#destinations-page #destinations-container .destination-name{
-  font-size: 1.3vw;
-  font-weight: bold;
 }
 
 #destinations-page #next-button{
