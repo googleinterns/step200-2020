@@ -30,17 +30,17 @@ public final class Trip {
   private ArrayList<String> route;
 
   public Trip(String id, ArrayList<String> destinations) {
-    configureTrip(id, destinations[0], destinations, null, null);
+    configureTrip(id, destinations.get(0), destinations, null, null);
   }
 
   public Trip(String id, ArrayList<String> destinations,
               ArrayList<String> interests) {
-    configureTrip(id, destinations[0], destinations, interests, null);
+    configureTrip(id, destinations.get(0), destinations, interests, null);
   }
 
   public Trip(String id, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
-    configureTrip(id, destinations[0], destinations, interests, route);
+    configureTrip(id, destinations.get(0), destinations, interests, route);
   }
 
   private void configureTrip(String id, String start, ArrayList<String> destinations,

@@ -26,21 +26,9 @@ public final class User {
   private String email;
   private ArrayList<String> tripIds;
 
-  public User(String tripId) {
-    ArrayList<String> singleTrip = new ArrayList<>();
-    singleTrip.add(tripId);
-    this.email = "";
-    this.tripIds = singleTrip;
-  }
-
   public User(String email, ArrayList<String> tripIds) {
     this.email = email;
     this.tripIds = tripIds;
-  }
-
-  public User(String email) {
-    this.email = email;
-    this.tripIds = new ArrayList<>();
   }
 
   public String getEmail() {
