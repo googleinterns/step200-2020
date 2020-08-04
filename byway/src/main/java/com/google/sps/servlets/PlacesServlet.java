@@ -74,27 +74,34 @@ public final class PlacesServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Key specificTripKey = KeyFactory.createKey("trip", 5013773022658560L);
+    ArrayList<String> interests = findInterests(request);
     Entity trip;
     try {
       trip = datastore.get(specificTripKey);
-      String interestsAsString = request.getParameter("interests");
-      addInterestsForTrip(interestsAsString, trip);
+      addInterestsToTrip(interests, trip);
     } catch(EntityNotFoundException e) {
       //thrown automatically
     }
   }
 
+  /**
+   * Converts the JSON of interests selected and parses it into an ArrayList of Strings.
+   * @param  request servlet request
+   * @return list of interests
+   */
+  private String findInterests(HttpServletRequest request) {
+    String interestsAsJSON = request.getParameter("interests");
+    ArrayList<String> interests = gson.fromJson(interestsAsJSON, ArrayList.class);
+    return interests;
+  }
+
 
   /**
-   * Creates a list of interests from the JSON string passed in and adds it
-   * to this user's Entity object as a separate property.
-   * @param interestsAsString JSON String containing interests.
-   * @param currentUser       Entity with user information.
-   * @param datastore         DatastoreService with all users.
+   * Adds list of interests to the Trip entity and save in datastore.
+   * @param interests list of interests
+   * @param trip      Entity with Trip information
    */
-  private void addInterestsForTrip(String interestsAsString, Entity trip) throws IOException {
-
-    ArrayList<String> interests = gson.fromJson(interestsAsString, ArrayList.class);
+  private void addInterestsToTrip(ArrayList<String> interests, Entity trip) throws IOException {
     trip.setProperty("interests", interests);
     datastore.put(trip);
   }
