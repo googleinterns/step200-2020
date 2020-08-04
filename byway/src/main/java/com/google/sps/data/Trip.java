@@ -23,27 +23,27 @@ import java.util.ArrayList;
  */
 public final class Trip {
 
-  private long id;
+  private String id;
   private String start;
   private ArrayList<String> destinations;
   private ArrayList<String> interests;
   private ArrayList<String> route;
 
-  public Trip(long id, ArrayList<String> destinations) {
+  public Trip(String id, ArrayList<String> destinations) {
     configureTrip(id, destinations[0], destinations, null, null);
   }
 
-  public Trip(long id, ArrayList<String> destinations,
+  public Trip(String id, ArrayList<String> destinations,
               ArrayList<String> interests) {
     configureTrip(id, destinations[0], destinations, interests, null);
   }
 
-  public Trip(long id, ArrayList<String> destinations,
+  public Trip(String id, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
     configureTrip(id, destinations[0], destinations, interests, route);
   }
 
-  private void configureTrip(long id, String start, ArrayList<String> destinations,
+  private void configureTrip(String id, String start, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
     this.id = id;
     this.start = start;
@@ -64,7 +64,7 @@ public final class Trip {
     return this.destinations;
   }
 
-  public ArrayList<String> getTripId() {
+  public String getTripId() {
       return this.id;
   }
 
