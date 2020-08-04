@@ -26,8 +26,8 @@ public final class User {
   private String email;
   private ArrayList<String> tripIds;
 
-  public User(long tripId) {
-    ArrayList<long> singleTrip = new ArrayList<>();
+  public User(String tripId) {
+    ArrayList<String> singleTrip = new ArrayList<>();
     singleTrip.add(tripId);
     this.email = "";
     this.tripIds = singleTrip;
