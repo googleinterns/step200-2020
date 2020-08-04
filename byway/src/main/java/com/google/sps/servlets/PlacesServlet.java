@@ -17,6 +17,9 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -70,15 +73,15 @@ public final class PlacesServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query specificTrip =
-      new Query("trip")
-        .setFilter(new FilterPredicate("id", FilterOperator.EQUAL, 2452));
-    PreparedQuery pq = datastore.prepare(specificTrip);
-
-    // Guaranteed to have one entity, since id would be unique.
-    Entity trip = pq.asSingleEntity();
-    String interestsAsString = request.getParameter("interests");
-    addInterestsForTrip(interestsAsString, trip);
+    Key specificTripKey = KeyFactory.createKey("trip", 5013773022658560L);
+    Entity trip;
+    try {
+      trip = datastore.get(specificTripKey);
+      String interestsAsString = request.getParameter("interests");
+      addInterestsForTrip(interestsAsString, trip);
+    } catch(EntityNotFoundException e) {
+      //thrown automatically
+    }
   }
 
 
