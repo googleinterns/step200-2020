@@ -29,10 +29,10 @@ public final class Trip {
   private ArrayList<String> interests;
   private ArrayList<String> route;
 
-  public Trip(String id, ArrayList<String> destinations,
+  public Trip(String id, String start, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
     this.id = id;
-    this.start = destinations.get(0);
+    this.start = start;
     this.destinations = destinations;
     this.interests = interests;
     this.route = route;
