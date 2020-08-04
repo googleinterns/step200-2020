@@ -14,9 +14,11 @@
 
 package com.google.sps.data;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.google.appengine.api.datastore.Entity;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * A class to make a User type, containing an optional 
@@ -28,12 +30,26 @@ public final class User {
   private String email;
   private String userId;
   private ArrayList<String> tripIds;
+  private final static String KIND = "user";
 
   public User(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
     this.userId = checkNotNull(userId, "userId");
     Collection<String> validTripIds = checkNotNull(tripIds, "tripIds");
     this.tripIds = new ArrayList<>(validTripIds);
+  }
+
+  public User createUserFromEntity(Entity userEntity) {
+    checkArgument(userEntity.getKind().equals(KIND),
+      "Wrong entity kind. Expected %s, received %s", KIND, userEntity.getKind());
+    String email = checkNotNull((String) userEntity.getProperty("email"),
+      "User entity does not contain an email");
+    String userId = checkNotNull((String) userEntity.getProperty("userId"),
+      "User entity does not contain a user Id");
+    ArrayList<String> tripIds =
+      checkNotNull((ArrayList<String>) userEntity.getProperty("tripIds"),
+        "User entity does not contain trip Ids");
+    return new User(email, userId, tripIds);
   }
 
   public String getEmail() {
