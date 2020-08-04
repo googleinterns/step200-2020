@@ -29,24 +29,10 @@ public final class Trip {
   private ArrayList<String> interests;
   private ArrayList<String> route;
 
-  public Trip(String id, ArrayList<String> destinations) {
-    configureTrip(id, destinations.get(0), destinations, null, null);
-  }
-
   public Trip(String id, ArrayList<String> destinations,
-              ArrayList<String> interests) {
-    configureTrip(id, destinations.get(0), destinations, interests, null);
-  }
-
-  public Trip(String id, ArrayList<String> destinations,
-              ArrayList<String> interests, ArrayList<String> route) {
-    configureTrip(id, destinations.get(0), destinations, interests, route);
-  }
-
-  private void configureTrip(String id, String start, ArrayList<String> destinations,
               ArrayList<String> interests, ArrayList<String> route) {
     this.id = id;
-    this.start = start;
+    this.start = destinations.get(0);
     this.destinations = destinations;
     this.interests = interests;
     this.route = route;
