@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let interestsChosen = new Set();
+let tripId;
+
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadContent);
 } else {
@@ -23,8 +26,16 @@ if(document.readyState === 'loading') {
  * and the form tracking buttons selected.
  */
 function loadContent() {
+  loadId();
   loadButtons();
   loadForm();
+}
+
+/* Parse url to retrieve the trip id. */
+function loadId() {
+  let queryString = location.search.substring(1);
+  let separatedData = queryString.split("&");
+  tripId = separatedData[0];
 }
 
 /**
@@ -34,15 +45,15 @@ function loadContent() {
  */
 function loadForm() {
   let interestsForm = document.getElementById('interests-form');
-  interestsForm.addEventListener('submit', () => {
+  interestsForm.addEventListener('submit', (event) => {
+    event.preventDefault();
     let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
     let params = new URLSearchParams();
     params.append("interests", interestsAsJSONString);
+    params.append("tripId", tripId);
     fetch('/api/places', {method: 'POST', body: params});
   })
 }
-
-let interestsChosen = new Set();
 
 /** 
  * Track the interests chosen in an array according to their current
