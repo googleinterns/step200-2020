@@ -46,22 +46,18 @@ public final class StopsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
-  /* Method which retrieves the Stop KIND from datastore */
+
+  /* Passes saved destinations stops (if any) to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      /**
-    Query query = new Query(Stop.KIND); 
-    PreparedQuery results = datastore.prepare(query);
-    List<Stop> stops= new ArrayList<>();
-    for (Entity entity: results.asIterable()){
-      stops.add(Stop.fromEntity(entity));
-    } **/
+    // TODO: Replace ID filtering with .get(Key)
+    // Duplicate code was just kept for this reason
     Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, 1234);
     Query query = new Query(Trip.KIND).setFilter(propertyFilter);
     PreparedQuery results = datastore.prepare(query);
     List<String> stops= new ArrayList<>();
-    // should only be one 
-    System.out.println("filtered get");
+
+    // Should only be one entity with this ID
     for(Entity entity: results.asIterable()){
        stops = (ArrayList<String>) entity.getProperty("destinations");
     }
@@ -69,63 +65,19 @@ public final class StopsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(stops));
   }
 
-  /* Method which modifies the Stop KIND in datastore */
-  
+  /* Modifies the destinations array of Trip entity in datastore */
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-    // System.out.println("test" + test);
-    // String stop = request.getParameter("text");
-    // String action = request.getParameter("action");
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
     String stopsAsJSON = request.getParameter("stops");
+
     ArrayList<String> stops = gson.fromJson(stopsAsJSON, ARRAYLIST_STRING);
-    System.out.println("in doPost for stops");
-    for(int i = 0; i < stops.size(); i++){
-        System.out.println("i" + stops.get(i));
-    }
     Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, 1234);
     Query query = new Query(Trip.KIND).setFilter(propertyFilter);
     PreparedQuery results = datastore.prepare(query);
-    // should only be one 
-    System.out.println("filtered");
+
     for(Entity entity: results.asIterable()){
-      System.out.println("changing entity");
-       entity.setProperty("destinations", stops);
-       datastore.put(entity);
+      entity.setProperty("destinations", stops);
+      datastore.put(entity);
     }
-    
-    /**
-    if(action.equals("remove")){
-      Query query = new Query(Stop.KIND);
-      PreparedQuery results = datastore.prepare(query);
-      // Note: A more proper solution is to use Filter
-      // but I noticed it was not working as intended 
-      for(Entity entity: results.asIterable()){
-        if(entity.getProperty("placename").equals(stop)){
-          datastore.delete(entity.getKey());
-        }
-      }
-    }
-    else if(action.equals("add")){
-      Entity stopEntity = new Entity(Stop.KIND);
-      stopEntity.setProperty("placename", stop);
-      datastore.put(stopEntity);
-      /**
-      TODO: use filter as a check for duplication
-      Filter propertyFilter = new FilterPredicate("placename", FilterOperator.EQUAL, stop);
-      Query query = new Query(Stop.KIND).setFilter(propertyFilter);
-      PreparedQuery results = datastore.prepare(query);
-      Entity stopEntity = new Entity(Stop.KIND);
-      List<Stop> stops= new ArrayList<>();
-      for(Entity entity: results.asIterable()){
-        stops.add(Stop.fromEntity(entity));
-      }
-      if(stops.size() == 0){
-        System.out.println("not duplicate");
-        stopEntity.setProperty("placename", stop);
-        datastore.put(stopEntity);
-      }
-      **/
-     
-    } 
-  }
+  } 
+}

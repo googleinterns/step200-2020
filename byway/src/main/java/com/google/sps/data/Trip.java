@@ -18,7 +18,9 @@ import com.google.appengine.api.datastore.Entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import java.util.ArrayList;
 
-/** A simplified version of the Trip.java class **/ 
+/* A simplified version of the Trip.java class 
+ * TODO: Replace with actual Trip.java class
+ */ 
 public final class Trip{
   private final long id;
   private final ArrayList<String> destinations;
