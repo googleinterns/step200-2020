@@ -14,29 +14,25 @@
 
 package com.google.sps.data;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import com.google.appengine.api.datastore.Entity;
+import static com.google.common.base.Preconditions.checkArgument;
+import java.util.ArrayList;
 
-/** A sample class to mock data received from another datastore table*/
-// TODO: Make a parent class that Rec and Stop can extend 
-public final class Recommendation{
-  /** We may need to add more fields later, so making a class seemed reasonable. */
+/** A simplified version of the Trip.java class **/ 
+public final class Trip{
   private final long id;
-  private final String placename; 
- 
-  public static final String KIND = "Recommendation";
+  private final ArrayList<String> destinations;
+  public static final String KIND = "Trip";
   
-  public Recommendation(long id, String placename) {
+  public Trip(long id, ArrayList<String> destinations) {
     this.id = id;
-    this.placename = placename;
-   
+    this.destinations = destinations;
   }
 
-  public static Recommendation fromEntity(Entity entity){
+  public static Trip fromEntity(Entity entity){
     checkArgument(entity.getKind().equals(KIND), "Wrong Entity kind, expected %s, got %s", KIND, entity.getKind());
     long id = entity.getKey().getId();
-    String placename = (String) entity.getProperty("placename");
-
-    return new Recommendation(id, placename);
+    ArrayList destinations = (ArrayList<String>) entity.getProperty("destinations");
+    return new Trip(id, destinations);
   }
 }

@@ -20,10 +20,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-
 import com.google.gson.Gson;
 import com.google.sps.data.Recommendation;
+import com.google.sps.data.Trip;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -39,11 +40,13 @@ public final class RecsServlet extends HttpServlet {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   
   /** Fills datastore with hardcoded values for Recommendation objects,
-  values will be from another datastore later **/
+  values will be from another datastore later =
+  =
   @Override
   public void init(){
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
+    /**
     Entity recEntity1 = new Entity(Recommendation.KIND);
     Entity recEntity2 = new Entity(Recommendation.KIND);
     Entity recEntity3 = new Entity(Recommendation.KIND);
@@ -52,11 +55,16 @@ public final class RecsServlet extends HttpServlet {
     recEntity2.setProperty("placename", "MOMA");
     datastore.put(recEntity2);
     recEntity3.setProperty("placename", "Central Park");
-    datastore.put(recEntity3);
+    datastore.put(recEntity3);=
+    Entity tripEntity = new Entity(Trip.KIND);
+    tripEntity.setProperty("id", 1234);
+    // tripEntity.setProperty("recommendations", new ArrayList<String>(Arrays.asList("Times Square", "MOMA", "Central Park" )));
+    datastore.put(tripEntity);
   }
-
+  **/
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /**
     Query query = new Query(Recommendation.KIND); 
     PreparedQuery results = datastore.prepare(query);
     List<Recommendation> recs = new ArrayList<>();
@@ -64,6 +72,8 @@ public final class RecsServlet extends HttpServlet {
     for (Entity entity: results.asIterable()){
       recs.add(Recommendation.fromEntity(entity));
     }
+    **/
+    List<String> recs = new ArrayList<String>(Arrays.asList("Times Square", "MOMA", "Central Park" ));
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(recs));
   }
