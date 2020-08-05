@@ -80,21 +80,6 @@ function clearStops(){
   }
 }
 
-/** Render stop list  */
-function renderStop(stop){
-  const stopList = document.getElementById('stop-list');
-  // add to stop array in the js 
-  
-  let btn = document.createElement('button');
-  btn.id = stop.id;
-  btn.innerText = stop.placename;
-  btn.className =  "btn rec-btn";
-  btn.addEventListener("click", function() {
-    deleteFromStops(stop); 
-  });
-  stopList.appendChild(btn);
-}
-
 /** Get the new list of stops from datastore onload */
 function getStopsOnload(){
   console.log("getstopsOnloda");
@@ -103,8 +88,8 @@ function getStopsOnload(){
   .then(response => response.json())
   .then((stopsResponse) => {
     stopsResponse.forEach((stop)=>{
+      console.log("pushed into stops " + stop);
       stops.push(stop);
-      // renderStops(stop);
     });
     renderStopsList();
   });
@@ -121,7 +106,23 @@ function renderStopsList(){
   })
 }
 
-/** Add stop locally and to datastore */
+/** Render stop list  */
+function renderStop(stop){
+  console.log("render stop");
+  const stopList = document.getElementById('stop-list');
+  // add to stop array in the js 
+  let btn = document.createElement('button');
+  btn.innerText = stop;
+  btn.className =  "btn rec-btn";
+  btn.addEventListener("click", function() {
+    // deleteFromStops(stop); 
+    updateStops(stop, "remove");
+  });
+  stopList.appendChild(btn);
+}
+
+/** 
+/** Add stop locally and to datastore 
 function addToStops(stop){
   deleteFromRecs(stop); 
   // add to stops array locally in js
@@ -134,24 +135,43 @@ function addToStops(stop){
   params.append("action", "add");
   fetch('/api/stop', {method: 'POST', body: params});
 }
+*/
 
-/** Delete stop locally and from datastore*/
+function updateStops(stop, action){
+  if(action === "add"){
+    // TODO: delete from recs later for better visuals on html
+    stops.push(stop);
+  } else{
+    // TODO: add to recs later for better visuals on html
+    stops = stops.filter(function(stopObj){
+    return stopObj != stop;
+    })
+  }
+  renderStopsList();
+  let stopsAsJSONString = JSON.stringify(stops);
+  console.log("JSON:" + stopsAsJSONString);
+  let params = new URLSearchParams();
+  params.append("stops", stopsAsJSONString);
+  fetch('/api/stop', {method: 'POST', body:params});
+}
+
+/** Delete stop locally and from datastore
 function deleteFromStops(stop){
   addToRecs(stop); 
-  console.log("delete " + stop.placename);
+  console.log("delete " + stop);
   // delete from stops array locally in js
   stops = stops.filter(function(stopObj){
-    return stopObj.placename != stop.placename;
+    return stopObj != stopsResponse;
   })
   renderStopsList();
 
   // delete from datastore
   const params = new URLSearchParams();
-  params.append("text", stop.placename);
+  params.append("text", stop);
   params.append("action", "remove");
   fetch('/api/stop', {method: 'POST', body: params});
 }
-
+*/
 /** Clear the recommendations panel in the html */
 function clearRecs(){
   const recList = document.getElementById('rec-list');
@@ -160,19 +180,7 @@ function clearRecs(){
   }
 }
 
-/** Render recommendations list */
-function renderRec(rec){
-  console.log("renderrec");
-  const recsList = document.getElementById('rec-list');
-  let btn = document.createElement('button');
-  btn.id = rec.id;
-  btn.innerText = rec.placename;
-  btn.className =  "btn rec-btn";
-  btn.addEventListener("click", function() {
-    addToStops(rec); 
-  });
-  recsList.appendChild(btn);
-}
+
 
 /** Get the new list of recommendations from servlet onload */
 function getRecsOnload() {
@@ -183,7 +191,7 @@ function getRecsOnload() {
   .then((recommendations) => {
     recommendations.forEach((rec)=>{
       recs.push(rec);
-      console.log("pushed")
+      console.log("pushed" + rec);
       // renderRecs(rec);
     })
     renderRecsList();
@@ -198,9 +206,23 @@ function renderRecsList(){
   // re-render list synchronously
   console.log(recs);
   recs.forEach((rec)=>{
-    console.log("in foreach");
+    // console.log("in foreach");
     renderRec(rec);
   })
+}
+
+/** Render recommendations list */
+function renderRec(rec){
+  console.log("renderrec");
+  const recsList = document.getElementById('rec-list');
+  let btn = document.createElement('button');
+  btn.innerText = rec;
+  btn.className =  "btn rec-btn";
+  btn.addEventListener("click", function() {
+    // addToStops(rec); 
+    updateStops(rec, "add");
+  });
+  recsList.appendChild(btn);
 }
 
 /** Add recommendation locally*/
