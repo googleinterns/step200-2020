@@ -74,9 +74,6 @@ public final class PlacesServlet extends HttpServlet {
     return place;
   }
 
-  /**
-   * Temporary setup to find entity with hard-coded id value. Set their interests.
-   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String tripIdString = request.getParameter("tripId");
@@ -86,7 +83,8 @@ public final class PlacesServlet extends HttpServlet {
     Entity trip;
     try {
       trip = datastore.get(specificTripKey);
-      addInterestsToTrip(interests, trip);
+      trip.setProperty("interests", interests);
+      datastore.put(trip);
     } catch(EntityNotFoundException e) {
       //thrown automatically
     }
@@ -101,16 +99,5 @@ public final class PlacesServlet extends HttpServlet {
     String interestsAsJSON = request.getParameter("interests");
     ArrayList<String> interests = gson.fromJson(interestsAsJSON, ARRAYLIST_STRING);
     return interests;
-  }
-
-
-  /**
-   * Adds list of interests to the Trip entity and save in datastore.
-   * @param interests list of interests
-   * @param trip      Entity with Trip information
-   */
-  private void addInterestsToTrip(ArrayList<String> interests, Entity trip) throws IOException {
-    trip.setProperty("interests", interests);
-    datastore.put(trip);
   }
 }
