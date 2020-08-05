@@ -24,7 +24,8 @@ let map;
 let placesService;
 let randomLocation;
 let RADIUS = 1000; // Measured in meters
-let interests = ["bank", "groceries", "park"]
+let interests = ["bank", "park"];
+let destinations = [];
 
 /**
  * Initializes the webpage with a map and a random location.
@@ -36,8 +37,9 @@ function initialize() {
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
   var start = new google.maps.LatLng(37.7699298, -122.4469157);
-  randomLocation = start;
   var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  destinations.push(start);
+  destinations.push(end);
   var mapOptions = {
     zoom: 14,
     center: start
@@ -47,7 +49,7 @@ function initialize() {
   document.getElementById("route").addEventListener("click", () =>
     calcRoute(directionsService, directionsRenderer, start, end)
   );
-  service = new google.maps.places.PlacesService(map);
+  placesService = new google.maps.places.PlacesService(map);
   loadRecommendations();
 }
 
@@ -74,12 +76,14 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 function loadRecommendations() {
   interests.forEach(placeType => {
       console.log(placeType);
-      let request = {
-        location: randomLocation,
-        radius: RADIUS,
-        query: placeType
-      };
-      placesService.textSearch(request, addRecommendations);
+      destinations.forEach((destination) => {
+        let request = {
+          location: destination,
+          radius: RADIUS,
+          query: placeType
+        };
+        placesService.textSearch(request, addRecommendations);
+      });
   });
 }
 
