@@ -25,7 +25,6 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
-import com.google.sps.data.Stop;
 import com.google.sps.data.Trip;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
