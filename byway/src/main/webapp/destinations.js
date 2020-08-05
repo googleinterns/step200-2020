@@ -160,7 +160,9 @@ function updateStartDestination(locationData){
 * fetches data from servlet
 */
 function fetchDestinations(){
-  let promise= fetch('/api/destinations').then(response => response.json());
+  const urlParams = new URLSearchParams(window.location.search);
+  const tripId = urlParams.get('id');
+  let promise= fetch('/api/destinations?id=' + tripId).then(response => response.json());
   return promise;
 }
 

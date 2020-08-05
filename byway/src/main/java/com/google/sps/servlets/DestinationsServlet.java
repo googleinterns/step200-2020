@@ -33,16 +33,15 @@ public class DestinationsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserService userService = UserServiceFactory.getUserService();
-  private Key tripKey;
-  
+  Key tripKey;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Entity tripEntity = new Entity("Trips");
+    /*Entity tripEntity = new Entity("Trips");
     tripEntity.setProperty("start", "");
     tripEntity.setProperty("destinations", new ArrayList<String>());
-    datastore.put(tripEntity);
-    tripKey = tripEntity.getKey();
-
+    datastore.put(tripEntity);*/
+    tripKey = KeyFactory.stringToKey(request.getParameter("id"));
+    addUserEntity(tripKey);
     Entity entity; 
     try{ 
       entity = datastore.get(tripKey) ;
@@ -58,8 +57,6 @@ public class DestinationsServlet extends HttpServlet {
     Trip trip = new Trip(KeyFactory.keyToString(tripKey),start, destinations, null, null); 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
-    
-    addUserEntity();
   }
 
   @Override
@@ -99,7 +96,7 @@ public class DestinationsServlet extends HttpServlet {
   * Adds new user entity if user has not logged in before
   * Adds tripKey to the user's array of trips
   **/
-  public void addUserEntity(){
+  public void addUserEntity(Key tripKey){
     boolean userExists = false;
     String userId = userService.getCurrentUser().getUserId();
     String userEmail = userService.getCurrentUser().getEmail();
@@ -110,8 +107,9 @@ public class DestinationsServlet extends HttpServlet {
         if (entityId.equals(userId)){
           userExists = true; 
           ArrayList<Key> trips = (ArrayList<Key>) currentEntity.getProperty("trips");
-          System.out.println(trips);
-          trips.add(tripKey);
+          if (!trips.contains(tripKey)){
+            trips.add(tripKey);
+          }
           currentEntity.setProperty("trips",trips);
           datastore.put(currentEntity);   
         }
