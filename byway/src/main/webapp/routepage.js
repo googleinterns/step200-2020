@@ -53,7 +53,7 @@ function initMap() {
    placesService = new google.maps.places.PlacesService(map);
   loadRecommendations();
 }
-
+// seems like it should just be called at the initial load w init()... how do we constrain this
 function loadRecommendations() {
   console.log("loadrecs()");
   randomLocation = new google.maps.LatLng(33.4806, -112.1864);
@@ -89,7 +89,8 @@ function addRecommendations(results, status) {
     let maxRecommendations = 3;
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
-      if(fitsInRadius(results[i], RADIUS)) {
+      if(fitsInRadius(results[i], 100000)) {
+        console.log(results[i].name);
         placeMarker(results[i]);
         numRecommendations++;
       }
@@ -111,9 +112,8 @@ function addRecommendations(results, status) {
  * @returns boolean
  */
 function fitsInRadius(result, radius) {
-  console.log("firsinRadius");
+  
   let currentLocation = result.geometry.location;
-  console.log(currentLocation);
   let distanceBetweenEnds =
     google.maps.geometry.spherical.computeDistanceBetween(currentLocation, randomLocation);
   return distanceBetweenEnds < radius;
@@ -124,7 +124,7 @@ function fitsInRadius(result, radius) {
  * @param {Request place} holds information about the found query.
  */
 function placeMarker(place) {
-  console.log("placemarker");
+  
   new google.maps.Marker({
     position: place.geometry.location,
     map: map,
@@ -284,4 +284,3 @@ function deleteFromRecs(rec){
 
 /* exported initMap*/
 /* global google */
-

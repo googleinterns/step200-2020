@@ -49,7 +49,7 @@ public class GeneratorServlet extends HttpServlet {
     if(userEntity != null) {
         System.out.println("userEntity not null");
       // ArrayList<String> interestsSelected = (ArrayList) userEntity.getProperty("interests");
-      ArrayList<String> interestsSelected = new ArrayList<>(Arrays.asList("Park", "Art"));
+      ArrayList<String> interestsSelected = new ArrayList<>(Arrays.asList("Park", "Art", "Nature", "Coffee", "Museums", "Cafe"));
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(interestsSelected));
     } else {
