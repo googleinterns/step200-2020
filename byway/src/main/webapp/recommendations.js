@@ -56,7 +56,15 @@ function initialize() {
   loadRecommendations();
 }
 
-/* Creates a route between two points and loads onto map. */
+/**
+ * Creates a route between two points and loads onto map.
+ * Saves the polyline created from two points as the directions
+ * are made internally and computes the distance.
+ * @param {DirectionsService directionsService} handles finding
+ * the directions between points
+ * @param {LatLng start} starting point location
+ * @param {LatLng end} ending point location
+ */
 function calcRoute(directionsService, start, end) {
   var request = {
       origin:  start,
@@ -81,7 +89,11 @@ function calcRoute(directionsService, start, end) {
   });
 }
 
-
+/**
+ * Goes through the path returned from Maps JS API and
+ * saves the DirectionSteps object in the polyline's path.
+ * @param {DirectionsResult response} path of directions
+ */
 function savePathInPolyline(response) {
   polyline.setPath([]);
   let route = response.routes[0];
@@ -93,11 +105,15 @@ function savePathInPolyline(response) {
   console.log(polyline.getPath().getArray());
 }
 
+/**
+ * Finds the travel distance along the route.
+ * @param {DirectionsResult response} path of directions
+ */
 function computeTotalDistance(response) {
   let totalDist = 0;
   let route = response.routes[0];
   for (i = 0; i < route.legs.length; i++) {
-    totalDist += route.legs[i].distance.value; //in meters
+    totalDist += route.legs[i].distance.value; // Measured in meters
   }
   totalDist = totalDist / 1000;
   console.log("total distance is: " + totalDist + " km");
