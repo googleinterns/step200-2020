@@ -74,6 +74,7 @@ function calcRoute(directionsService, start, end) {
       });
       directionsRenderer.setDirections(response);
       savePathInPolyline(response);
+      computeTotalDistance(response);
     } else {
       window.alert("Could not calculate route due to: " + status);
     }
@@ -90,6 +91,16 @@ function savePathInPolyline(response) {
     polyline.getPath().push(steps);
   }
   console.log(polyline.getPath().getArray());
+}
+
+function computeTotalDistance(response) {
+  let totalDist = 0;
+  let route = response.routes[0];
+  for (i = 0; i < route.legs.length; i++) {
+    totalDist += route.legs[i].distance.value; //in meters
+  }
+  totalDist = totalDist / 1000;
+  console.log("total distance is: " + totalDist + " km");
 }
 
 /**
