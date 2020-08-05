@@ -32,7 +32,7 @@ public final class Trip {
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
-  private final static String KIND = "Trip";
+  public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   public Trip(String id, String start, Collection<String> destinations,
               Collection<String> interests, Collection<String> route) {
@@ -44,26 +44,6 @@ public final class Trip {
     this.destinations = new ArrayList<String>(validDestinations);
     this.interests = new ArrayList<String>(validInterests);
     this.route = new ArrayList<String>(validRoute);
-  }
-
-  public Trip createTripFromEntity(Entity tripEntity) {
-    Entity validEntity = checkNotNull(tripEntity, "Trip entity is null");
-    checkArgument(validEntity.getKind().equals(KIND),
-      "Wrong Entity kind. Expected %s, received %s", KIND, validEntity.getKind());
-    String id = checkNotNull((String) validEntity.getProperty("id"),
-      "Trip entity does not contain an id");
-    String start = checkNotNull((String) validEntity.getProperty("start"),
-      "Trip entity does not contain a start");
-    ArrayList<String> destinations =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("destinations"),
-        "Trip entity does not contain destinations");
-    ArrayList<String> interests =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("interests"),
-        "Trip entity does not contain interests");
-    ArrayList<String> route =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("route"),
-        "Trip entity does not contain route");
-    return new Trip(id, start, destinations, interests, route);
   }
 
   public ArrayList<String> getInterests() {
@@ -84,5 +64,25 @@ public final class Trip {
 
   public String getStart() {
     return this.start;
+  }
+
+  public static Trip createTripFromEntity(Entity tripEntity) {
+    Entity validEntity = checkNotNull(tripEntity, "Trip entity is null");
+    checkArgument(validEntity.getKind().equals(DATASTORE_ENTITY_KIND),
+      "Wrong Entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, validEntity.getKind());
+    String id = checkNotNull((String) validEntity.getProperty("id"),
+      "Trip entity does not contain an id");
+    String start = checkNotNull((String) validEntity.getProperty("start"),
+      "Trip entity does not contain a start");
+    ArrayList<String> destinations =
+      checkNotNull((ArrayList<String>) validEntity.getProperty("destinations"),
+        "Trip entity does not contain destinations");
+    ArrayList<String> interests =
+      checkNotNull((ArrayList<String>) validEntity.getProperty("interests"),
+        "Trip entity does not contain interests");
+    ArrayList<String> route =
+      checkNotNull((ArrayList<String>) validEntity.getProperty("route"),
+        "Trip entity does not contain route");
+    return new Trip(id, start, destinations, interests, route);
   }
 } 

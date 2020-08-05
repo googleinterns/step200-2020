@@ -30,27 +30,13 @@ public final class User {
   private String email;
   private String userId;
   private ArrayList<String> tripIds;
-  private final static String KIND = "user";
+  public static final String DATASTORE_ENTITY_KIND = "user";
 
   public User(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
     this.userId = checkNotNull(userId, "userId");
     Collection<String> validTripIds = checkNotNull(tripIds, "tripIds");
     this.tripIds = new ArrayList<>(validTripIds);
-  }
-
-  public User createUserFromEntity(Entity userEntity) {
-    Entity validEntity = checkNotNull(userEntity, "User entity is null");
-    checkArgument(validEntity.getKind().equals(KIND),
-      "Wrong entity kind. Expected %s, received %s", KIND, validEntity.getKind());
-    String email = checkNotNull((String) validEntity.getProperty("email"),
-      "User entity does not contain an email");
-    String userId = checkNotNull((String) validEntity.getProperty("userId"),
-      "User entity does not contain a user Id");
-    ArrayList<String> tripIds =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("tripIds"),
-        "User entity does not contain trip Ids");
-    return new User(email, userId, tripIds);
   }
 
   public String getEmail() {
@@ -63,5 +49,19 @@ public final class User {
 
   public String getUserId() {
     return this.userId;
+  }
+
+  public static User createUserFromEntity(Entity userEntity) {
+    Entity validEntity = checkNotNull(userEntity, "User entity is null");
+    checkArgument(validEntity.getKind().equals(DATASTORE_ENTITY_KIND),
+      "Wrong entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, validEntity.getKind());
+    String email = checkNotNull((String) validEntity.getProperty("email"),
+      "User entity does not contain an email");
+    String userId = checkNotNull((String) validEntity.getProperty("userId"),
+      "User entity does not contain a user Id");
+    ArrayList<String> tripIds =
+      checkNotNull((ArrayList<String>) validEntity.getProperty("tripIds"),
+        "User entity does not contain trip Ids");
+    return new User(email, userId, tripIds);
   }
 } 
