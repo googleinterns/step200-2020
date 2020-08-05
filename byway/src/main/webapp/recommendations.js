@@ -71,6 +71,7 @@ function addRecommendations(results, status) {
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
       console.log(results[i].formatted_address);
+      placeMarker(results[i]);
       numRecommendations++;
       if(numRecommendations == maxRecommendations) {
         break;
@@ -80,4 +81,17 @@ function addRecommendations(results, status) {
     alert("Status: " + status +
           "\nOur services are currently down. Oops!");
   }
+}
+
+/**
+ * Places a marker onto the map at the specified location.
+ * @param {PlaceResult place} Object containing information
+ * about a place
+ */
+function placeMarker(place) {
+  new google.maps.Marker({
+    position: place.geometry.location,
+    map: map,
+    title: place.name
+  });
 }
