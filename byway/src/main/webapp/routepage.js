@@ -109,25 +109,19 @@ function renderStop(stop){
   btn.innerText = stop;
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
-    updateStops(stop, "remove");
+    // TODO: delete from recs later for better visuals on html
+    stops = stops.filter(function(stopObj){
+    return stopObj != stop;
+    })
+    updateStops(stop);
   });
   stopList.appendChild(btn);
 }
 
 /** Add stop to or delete stop from the stoplist in javascript and in the datastore
  *  @param {String} stop a String to add or delete
- *  @param {String} action a String to determine what action to perform on the list
  */
-function updateStops(stop, action){
-  if(action === "add"){
-    // TODO: delete from recs later for better visuals on html
-    stops.push(stop);
-  } else{
-    // TODO: add to recs later for better visuals on html
-    stops = stops.filter(function(stopObj){
-    return stopObj != stop;
-    })
-  }
+function updateStops(stop){
   renderStopsList();
   let stopsAsJSONString = JSON.stringify(stops);
   let params = new URLSearchParams();
@@ -139,7 +133,8 @@ function updateStops(stop, action){
 function clearRecs(){
   const recList = document.getElementById('rec-list');
   if(recList != null){
-    recList.innerText = ""; // clear list
+    // clear list
+    recList.innerText = "";
   }
 }
 
@@ -173,7 +168,9 @@ function renderRec(rec){
   btn.innerText = rec;
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
-    updateStops(rec, "add");
+    // TODO: add to recs later for better visuals on html
+    stops.push(rec);
+    updateStops(rec);
   });
   recsList.appendChild(btn);
 }
