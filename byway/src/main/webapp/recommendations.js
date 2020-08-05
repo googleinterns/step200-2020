@@ -27,17 +27,44 @@ let RADIUS = 1000; // Measured in meters
 let interests = ["bank", "groceries", "park"]
 
 /**
- * Initializes the webpage with a map, random location
- * and recommendations based on user interest.
+ * Initializes the webpage with a map and a random location.
+ * Sets up Directions services and loads recommendations
+ * based on user interests.
  */
 function initialize() {
-  randomLocation = new google.maps.LatLng(33.4806, -112.1864);
-  map = new google.maps.Map(document.getElementById('map'), {
-      center: randomLocation,
-      zoom: 15
-  });
-  placesService = new google.maps.places.PlacesService(map);
+  // Modified version of Justine's implementation
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
+  var start = new google.maps.LatLng(37.7699298, -122.4469157);
+  randomLocation = start;
+  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  var mapOptions = {
+    zoom: 14,
+    center: start
+  }
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  directionsRenderer.setMap(map);
+  document.getElementById("route").addEventListener("click", () =>
+    calcRoute(directionsService, directionsRenderer, start, end)
+  );
+  service = new google.maps.places.PlacesService(map);
   loadRecommendations();
+}
+
+/* Creates a route between two points and loads onto map. */
+function calcRoute(directionsService, directionsRenderer, start, end) {
+  var request = {
+      origin:  start,
+      destination: end,
+      travelMode: 'DRIVING'
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == 'OK') {
+      directionsRenderer.setDirections(response);
+    } else {
+      window.alert("Could not calculate route due to: " + status);
+    }
+  });
 }
 
 /**
