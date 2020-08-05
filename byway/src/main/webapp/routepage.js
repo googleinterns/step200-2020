@@ -121,7 +121,7 @@ function renderStop(stop){
 /** Add stop to or delete stop from the stoplist in javascript and in the datastore
  *  @param {String} stop a String to add or delete
  */
-function updateStops(stop){
+function updateStops(){
   renderStopsList();
   let stopsAsJSONString = JSON.stringify(stops);
   let params = new URLSearchParams();
