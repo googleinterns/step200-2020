@@ -30,6 +30,7 @@ import com.google.maps.model.PlaceType;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * Stores which placeTypes, or interests, user selects
  * in datastore with their specific Trip Entity.
  */
+@MultipartConfig
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
 

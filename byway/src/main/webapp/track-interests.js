@@ -13,7 +13,7 @@
 // limitations under the License.
 
 let interestsChosen = new Set();
-let params;
+let tripQuery;
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadContent);
@@ -33,8 +33,9 @@ function loadContent() {
 
 /* Parse url to retrieve the trip id. */
 function loadId() {
-  const url = new URL(location.href);
-  params = new URLSearchParams(url.search);
+  let queryString = location.search.substring(1);
+  let separatedData = queryString.split("&");
+  tripQuery = separatedData[0];
 }
 
 /**
@@ -47,8 +48,10 @@ function loadForm() {
   interestsForm.addEventListener('submit', (event) => {
     event.preventDefault();
     let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
-    params.append("interests", interestsAsJSONString);
-    fetch('/api/places', {method: 'POST', body: params});
+    let formData = new FormData();
+    formData.append("interests", interestsAsJSONString);
+    fetch('/api/places?' + tripQuery,
+      {method: 'POST', body: formData});
   })
 }
 
