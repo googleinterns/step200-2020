@@ -22,9 +22,9 @@ if(document.readyState === 'loading') {
 
 let map;
 let placesService;
-let randomLocation;
+let polyline;
 let RADIUS = 1000; // Measured in meters
-let interests = ["bank", "park"];
+let interests = ["park"];
 let destinations = [];
 
 /**
@@ -35,7 +35,6 @@ let destinations = [];
 function initialize() {
   // Modified version of Justine's implementation
   var directionsService = new google.maps.DirectionsService();
-  var directionsRenderer = new google.maps.DirectionsRenderer();
   var start = new google.maps.LatLng(37.7699298, -122.4469157);
   var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
   destinations.push(start);
@@ -45,16 +44,20 @@ function initialize() {
     center: start
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsRenderer.setMap(map);
   document.getElementById("route").addEventListener("click", () =>
-    calcRoute(directionsService, directionsRenderer, start, end)
+    calcRoute(directionsService, start, end)
   );
   placesService = new google.maps.places.PlacesService(map);
+  polyline = new google.maps.Polyline({
+    path: [],
+    strokeColor: '#FF0000',
+    strokeWeight: 3
+  });
   loadRecommendations();
 }
 
 /* Creates a route between two points and loads onto map. */
-function calcRoute(directionsService, directionsRenderer, start, end) {
+function calcRoute(directionsService, start, end) {
   var request = {
       origin:  start,
       destination: end,
@@ -62,11 +65,31 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+          strokeColor: "#00FF00"
+        },
+        suppressMarkers: true,
+        map: map
+      });
       directionsRenderer.setDirections(response);
+      savePathInPolyline(response);
     } else {
       window.alert("Could not calculate route due to: " + status);
     }
   });
+}
+
+
+function savePathInPolyline(response) {
+  polyline.setPath([]);
+  let route = response.routes[0];
+  let legs = route.legs;
+  for (i = 0; i < legs.length; i++) {
+    let steps = legs[i].steps;
+    polyline.getPath().push(steps);
+  }
+  console.log(polyline.getPath().getArray());
 }
 
 /**
