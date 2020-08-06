@@ -77,13 +77,10 @@ public class DestinationsServlet extends HttpServlet {
     ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
     if(destinations == null){
       destinations = new ArrayList<String>();
-      destinations.add(destination);
-      entity.setProperty("destinations", destinations);
     }
-    else{
-      destinations.add(destination);
-      entity.setProperty("destinations", destinations);
-    }
+    destinations.add(destination);
+    entity.setProperty("destinations", destinations);
+
     datastore.put(entity);
     UserLocations userLocations = new UserLocations(start, destinations);    
     response.setContentType("application/json;");

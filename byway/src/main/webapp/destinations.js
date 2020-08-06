@@ -75,7 +75,7 @@ function createSearchBox(container){
   });
   
   searchBox.addListener("places_changed", () => {
-    addMarker(searchBox,map);
+    addMarker(searchBox);
   });
 }
 
@@ -152,7 +152,7 @@ function updateLocations(locationData){
 /** 
 * adds Users Input Destinations to DOM with image and address
 */
-function addLocationtoDOM(results,container){
+function addLocationToDom(results,container){
   let destinationToAdd = document.createElement('div');
   destinationToAdd.className = 'location';
   
