@@ -22,7 +22,6 @@ if(document.readyState === 'loading') {
 
 let map;
 let placesService;
-let polyline;
 let RADIUS = 1000; // Measured in meters
 let interests = ["park"];
 let regions = [];
@@ -35,6 +34,7 @@ let regions = [];
 function initialize() {
   // Modified version of Justine's implementation
   var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
   var start = new google.maps.LatLng(37.7699298, -122.4469157);
   var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
   var mapOptions = {
@@ -42,27 +42,24 @@ function initialize() {
     center: start
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  directionsRenderer.setMap(map);
   document.getElementById("route").addEventListener("click", () => {
-    calcRoute(directionsService, start, end);
+    calcRoute(directionsService, directionsRenderer, start, end);
   });
   placesService = new google.maps.places.PlacesService(map);
-  polyline = new google.maps.Polyline({
-    path: [],
-    strokeColor: '#FF0000',
-    strokeWeight: 3
-  });
 }
 
 /**
  * Creates a route between two points and loads onto map.
- * Saves the polyline created from two points as the directions
- * are made internally and computes the distance.
+ * Shows markers at the starting point of a step. Loads
+ * recommendations centered around these points.
  * @param {DirectionsService directionsService} handles finding
  * the directions between points
+ * @param {DirectionsRenderer directionsRenderer} renders the route
  * @param {LatLng start} starting point location
  * @param {LatLng end} ending point location
  */
-function calcRoute(directionsService, start, end) {
+function calcRoute(directionsService, directionsRenderer, start, end) {
   var request = {
       origin:  start,
       destination: end,
@@ -70,15 +67,7 @@ function calcRoute(directionsService, start, end) {
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
-      directionsRenderer = new google.maps.DirectionsRenderer({
-        polylineOptions: {
-          strokeColor: "#00FF00"
-        },
-        suppressMarkers: true,
-        map: map
-      });
       directionsRenderer.setDirections(response);
-      //savePathInPolyline(response);
       //computeTotalDistance(response);
       showSteps(response);
       loadRecommendations();
@@ -88,6 +77,12 @@ function calcRoute(directionsService, start, end) {
   });
 }
 
+/**
+ * Creates a marker at the starting point of a step
+ * along the route.
+ * @param {DirectionsResult directionResult} contains data
+ * on directions from one step to another
+ */
 function showSteps(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
   for(let i = 0; i < myRoute.steps.length; i++) {
@@ -96,22 +91,6 @@ function showSteps(directionResult) {
     marker.setPosition(myRoute.steps[i].start_location);
     regions.push(myRoute.steps[i].start_location);
   }
-}
-
-/**
- * Goes through the path returned from Maps JS API and
- * saves the DirectionSteps object in the polyline's path.
- * @param {DirectionsResult response} path of directions
- */
-function savePathInPolyline(response) {
-  polyline.setPath([]);
-  let route = response.routes[0];
-  let legs = route.legs;
-  for (i = 0; i < legs.length; i++) {
-    let steps = legs[i].steps;
-    polyline.getPath().push(steps);
-  }
-  console.log(polyline.getPath().getArray());
 }
 
 /**
