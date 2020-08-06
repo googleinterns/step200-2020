@@ -85,9 +85,9 @@ function getStopsOnload(){
   fetch('/api/stop')
   .then(response => response.json())
   .then((stopsResponse) => {
-    stopsResponse.forEach((stop)=>{
-      stops.push(stop);
-    });
+    if(stopsResponse != null){
+      stops.push(...stopsResponse);
+    }
     renderStopsList();
   });
 }
@@ -95,38 +95,34 @@ function getStopsOnload(){
 /** Re-render stop list synchronously */
 function renderStopsList(){
   clearStops();
+  const stopList = document.getElementById('stop-list');
   stops.forEach((stop)=>{
-    renderStop(stop);
+    stopList.appendChild(createStopButton(stop));
   })
 }
 
 /** Render stop list  
  *  @param {String} stop a String to add as a button in the schedule panel in the html
+ *  @return {button} stopBtn a button showing a selected stop
  */
-function renderStop(stop){
-  const stopList = document.getElementById('stop-list');
-  let btn = document.createElement('button');
-  btn.innerText = stop;
-  btn.className =  "btn rec-btn";
-  btn.addEventListener("click", function() {
+function createStopButton(stop){
+  let stopBtn = document.createElement('button');
+  stopBtn.innerText = stop;
+  stopBtn.className =  "btn rec-btn";
+  stopBtn.addEventListener("click", function() {
     // TODO: delete from recs later for better visuals on html
     stops = stops.filter(function(stopObj){
-    return stopObj != stop;
+      return stopObj != stop;
     })
-    updateStops(stop);
+    updateStops();
   });
-  stopList.appendChild(btn);
+  return stopBtn;
 }
 
-/** Add stop to or delete stop from the stoplist in javascript and in the datastore
- *  @param {String} stop a String to add or delete
- */
+/** Add stop to or delete stop from the stoplist in javascript and in the datastore */
 function updateStops(){
   renderStopsList();
-  let stopsAsJSONString = JSON.stringify(stops);
-  let params = new URLSearchParams();
-  params.append("stops", stopsAsJSONString);
-  fetch('/api/stop', {method: 'POST', body:params});
+  fetch('/api/stop', {method: 'POST', body: JSON.stringify(stops)});
 }
 
 /** Clear the recommendations panel in the html */
@@ -144,9 +140,7 @@ function getRecsOnload() {
   fetch('/api/recs')
   .then(response => response.json())
   .then((recommendations) => {
-    recommendations.forEach((rec)=>{
-      recs.push(rec);
-    })
+    recs.push(...recommendations);
     renderRecsList();
   })
 }
@@ -154,26 +148,27 @@ function getRecsOnload() {
 /** Re-render recs list synchronously */
 function renderRecsList(){
   clearRecs();
+  const recsList = document.getElementById('rec-list');
   recs.forEach((rec)=>{
-    renderRec(rec);
+     recsList.appendChild(createRecButton(rec));
   })
 }
 
 /** Render stop list  
  *  @param {String} rec a String to add as a button in the recommendations panel in the html
+ *  @return {button} recBtn a button showing a recommended place
  */
-function renderRec(rec){
-  const recsList = document.getElementById('rec-list');
-  let btn = document.createElement('button');
-  btn.innerText = rec;
-  btn.className =  "btn rec-btn";
-  btn.addEventListener("click", function() {
+function createRecButton(rec){
+  let recBtn = document.createElement('button');
+  recBtn.innerText = rec;
+  recBtn.className =  "btn rec-btn";
+  recBtn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.push(rec);
-    updateStops(rec);
+    updateStops();
   });
-  recsList.appendChild(btn);
-}
+  return recBtn;
+ }
 
 /* exported initMap */
 /* global google */
