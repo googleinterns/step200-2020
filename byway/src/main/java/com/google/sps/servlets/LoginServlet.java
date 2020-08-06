@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private final Gson gson = new Gson();
@@ -36,11 +37,10 @@ public class LoginServlet extends HttpServlet {
             this.url = url;
         }
     }
+  private static final String URL_TO_REDIRECT_TO_AFTER_LOGSIN = "/destinations.html";
+  private static final String URL_TO_REDIRECT_TO_AFTER_LOGSOUT = "/index.html";
 
-    private static final String URL_TO_REDIRECT_TO_AFTER_LOGSIN = "/destinations.html";
-    private static final String URL_TO_REDIRECT_TO_AFTER_LOGSOUT = "/index.html";
-
-    private Key tripKey;
+  private Key tripKey;
     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -64,11 +64,16 @@ public class LoginServlet extends HttpServlet {
       response.getWriter().println(json);
     }
   }
-
+  
+  /*
+  * Adds new Trip entity with empty properties
+  **/
   public void createTripEntity(){
-    Entity tripEntity = new Entity("Trips");
+    Entity tripEntity = new Entity("Trip");
     tripEntity.setProperty("start", "");
     tripEntity.setProperty("destinations", new ArrayList<String>());
+    tripEntity.setProperty("interests", new ArrayList<String>());
+    tripEntity.setProperty("route", new ArrayList<String>());
     datastore.put(tripEntity);
     tripKey = tripEntity.getKey();
   }

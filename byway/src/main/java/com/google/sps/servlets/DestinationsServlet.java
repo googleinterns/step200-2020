@@ -34,27 +34,31 @@ public class DestinationsServlet extends HttpServlet {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserService userService = UserServiceFactory.getUserService();
   Key tripKey;
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    /*Entity tripEntity = new Entity("Trips");
-    tripEntity.setProperty("start", "");
-    tripEntity.setProperty("destinations", new ArrayList<String>());
-    datastore.put(tripEntity);*/
     tripKey = KeyFactory.stringToKey(request.getParameter("id"));
     addUserEntity(tripKey);
+
     Entity entity; 
     try{ 
       entity = datastore.get(tripKey) ;
     } catch(EntityNotFoundException e){
-      Trip trip = new Trip("","", new ArrayList<String>(), null, null); 
+      Trip trip = new Trip("","", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>()); 
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(trip)); 
       logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
       return;
     }
     String start = (String) entity.getProperty("start");
-    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    Trip trip = new Trip(KeyFactory.keyToString(tripKey),start, destinations, null, null); 
+    ArrayList<String>  destinations;
+    if (entity.getProperty("destinations")!= null){
+      destinations = (ArrayList<String>) entity.getProperty("destinations");
+    }
+    else{
+      destinations = new ArrayList<String>();
+    }
+    Trip trip = new Trip(KeyFactory.keyToString(tripKey),start, destinations, new ArrayList<String>(), new ArrayList<String>()); 
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }
@@ -67,7 +71,7 @@ public class DestinationsServlet extends HttpServlet {
     try{ 
       entity = datastore.get(tripKey) ;
     } catch(EntityNotFoundException e){
-      Trip trip = new Trip("","", new ArrayList<String>(), null, null); 
+      Trip trip = new Trip("","", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());
       response.setContentType("application/json;");
       response.getWriter().println(gson.toJson(trip)); 
       logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
@@ -86,7 +90,7 @@ public class DestinationsServlet extends HttpServlet {
     }
     datastore.put(entity);
     ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    Trip trip = new Trip(KeyFactory.keyToString(tripKey), start, destinations, null, null);    
+    Trip trip = new Trip(KeyFactory.keyToString(tripKey), start, destinations, new ArrayList<String>(), new ArrayList<String>());    
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }

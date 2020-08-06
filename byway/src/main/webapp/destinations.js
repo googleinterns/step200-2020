@@ -189,6 +189,12 @@ function getCurrentAddress(){
 * add event listener for submit button
 */
 window.onload = function(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const tripId = urlParams.get('id');
+  let nextButton = document.getElementById('next-button');
+  nextButton.addEventListener('click', () => {
+      nextButton.href = "/interests.html?id=" + tripId;
+  });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new  FormData(document.getElementById("user-input-form"));
