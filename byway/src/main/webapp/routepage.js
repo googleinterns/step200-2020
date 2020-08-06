@@ -18,7 +18,7 @@ let recs = new Set;
 let stops = new Set;
 
 // location representations of stops array
-let waypoints = [];
+let waypoints = new Set;
 
 // object that communicates with the GMaps API service
 let directionsService;
@@ -65,7 +65,7 @@ function calcRoute() {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints
+    waypoints: Array.from(waypoints)
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
@@ -93,7 +93,7 @@ function getStopsOnload(){
     if(stopsResponse != null){
       stopsResponse.forEach((stop)=>{
         stops.add(stop);
-        waypoints.push({location:stop});
+        waypoints.add({location:stop});
       });
     }
     calcRoute();
@@ -128,12 +128,15 @@ function renderStop(stop){
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
     stops = new Set([...stops].filter(stopObj => stopObj!= stop));
+    waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != {location:stop}));
+    /** 
     let index = indexOfWaypoint(stop);
     if (index > -1) {
       waypoints.splice(index, 1);
-    }
-    updateStops(stop);
+    }*/
     calcRoute();
+    updateStops();
+    
   });
   stopList.appendChild(btn);
 }
@@ -191,11 +194,18 @@ function renderRec(rec){
   btn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
+    waypoints.add({location:rec});
+    if(!waypoints.location.has(rec)){
+      console.log("new!");
+      updateStops();
+      calcRoute();
+    }
+    /** 
     if(indexOfWaypoint(rec) === -1){
       waypoints.push({location:rec});
       updateStops(rec);
       calcRoute();
-    } 
+    }*/ 
   });
   recsList.appendChild(btn);
 }
