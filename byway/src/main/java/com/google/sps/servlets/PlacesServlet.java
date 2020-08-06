@@ -77,7 +77,7 @@ public final class PlacesServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String tripKeyString = request.getParameter("id");
+    String tripKeyString = request.getParameter("tripId");
     Key tripKey = KeyFactory.stringToKey(tripKeyString);
     ArrayList<String> interests = findInterests(request);
     Entity trip;
