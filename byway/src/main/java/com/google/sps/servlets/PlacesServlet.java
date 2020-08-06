@@ -46,10 +46,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
 
-  private final Gson gson = new Gson();
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
+
+  private final Gson gson = new Gson();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -76,13 +77,12 @@ public final class PlacesServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String tripIdString = request.getParameter("tripId");
-    Long tripId = Long.parseLong(tripIdString);
-    Key specificTripKey = KeyFactory.createKey("trip", tripId);
+    String tripKeyString = request.getParameter("id");
+    Key tripKey = KeyFactory.stringToKey(tripKeyString);
     ArrayList<String> interests = findInterests(request);
     Entity trip;
     try {
-      trip = datastore.get(specificTripKey);
+      trip = datastore.get(tripKey);
       trip.setProperty("interests", interests);
       datastore.put(trip);
     } catch(EntityNotFoundException e) {
