@@ -33,15 +33,15 @@ public final class Trip {
 
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
-  private final String tripKeyString;
+  private final String keyString;
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
-  public Trip(String tripKeyString, String start, Collection<String> destinations,
+  public Trip(String keyString, String start, Collection<String> destinations,
               Collection<String> interests, Collection<String> route) {
-    this.tripKeyString = checkNotNull(tripKeyString, "tripKeyString");
+    this.keyString = checkNotNull(keyString, "keyString");
     this.start = checkNotNull(start, "start");
     checkNotNull(destinations, "destinations");
     checkNotNull(interests, "interests");
@@ -63,8 +63,8 @@ public final class Trip {
     return Collections.unmodifiableList(this.destinations);
   }
 
-  public String getTripId() {
-    return this.tripId;
+  public String getKeyString() {
+    return this.keyString;
   }
 
   public String getStart() {
@@ -72,7 +72,7 @@ public final class Trip {
   }
 
   public Key getKey() {
-    return KeyFactory.stringToKey(tripKeyString);
+    return KeyFactory.stringToKey(keyString);
   }
 
   public static Trip fromEntity(Entity tripEntity) {
