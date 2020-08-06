@@ -6,6 +6,8 @@ name: Auto-format master with Google Java Format
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   formatting:
