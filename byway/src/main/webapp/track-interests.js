@@ -46,12 +46,8 @@ function loadForm() {
   let interestsForm = document.getElementById('interests-form');
   interestsForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    let interestsAsJSONString = JSON.stringify(Array.from(interestsChosen));
-    let formData = new FormData();
-    formData.append("interests", interestsAsJSONString);
-    fetch('/api/places?tripId=' + tripId,
-      {method: 'POST', body: formData});
-  })
+    fetchPlaces(tripId, interestsChosen);
+  });
 }
 
 /** 
@@ -71,8 +67,7 @@ function updateStatus(place, elem) {
 
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
-  fetch('/api/places')
-  .then(response => response.json())
+  fetchPlaces(tripId)
   .then((places) => {
     let buttonSection = document.getElementById("interests-section");
     places.forEach((place) => {
@@ -95,4 +90,20 @@ function createButtonForPlace(place) {
   button.addEventListener('click', () => updateStatus(place, button));
   button.className = "interestBtn";
   return button;
+}
+
+/**
+ * Gets all potential interests from server to load or sets the user's
+ * specific interests for their specific trip with tripId. userInterests
+ * may be any type that is convertible to an array via Array.from. It will
+ * be sent to the server as JSON in the post body.
+ */
+function fetchPlaces(tripId, /* optional */ userInterests) {
+  const url = '/api/places?' + new URLSearchParams({tripId}).toString();
+  const fetchArgs = {method: 'GET'};
+  if (newInterests !== undefined) {
+    fetchArgs.method = 'POST';
+    fetchArgs.body = JSON.stringify(Array.from(userInterests));
+  }
+  return fetch(url, fetchArgs).then(response => response.json());
 }

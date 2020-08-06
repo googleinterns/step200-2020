@@ -79,25 +79,16 @@ public final class PlacesServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String tripKeyString = request.getParameter("tripId");
     Key tripKey = KeyFactory.stringToKey(tripKeyString);
-    ArrayList<String> interests = findInterests(request);
+    ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Entity trip;
     try {
       trip = datastore.get(tripKey);
       trip.setProperty("interests", interests);
       datastore.put(trip);
+      response.setContentType("application/json;");
+      response.getWriter().println("{\"results\": \"success\"}");
     } catch(EntityNotFoundException e) {
       //thrown automatically
     }
-  }
-
-  /**
-   * Converts the JSON of interests selected and parses it into an ArrayList of Strings.
-   * @param  request servlet request
-   * @return list of interests
-   */
-  private ArrayList<String> findInterests(HttpServletRequest request) {
-    String interestsAsJSON = request.getParameter("interests");
-    ArrayList<String> interests = gson.fromJson(interestsAsJSON, ARRAYLIST_STRING);
-    return interests;
   }
 }
