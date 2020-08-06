@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
     boolean loginStatus = userService.isUserLoggedIn();
     String url;
     if (!loginStatus) {
-      url = userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGSIN +"?tripId=" + KeyFactory.keyToString(tripKey));
+      url = userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGSIN +"?tripKey=" + KeyFactory.keyToString(tripKey));
     }
    
     else {
