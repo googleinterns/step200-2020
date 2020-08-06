@@ -76,6 +76,7 @@ public final class Trip {
   }
 
   public static Trip fromEntity(Entity tripEntity) {
+    checkNotNull(tripEntity, "tripEntity");
     checkArgument(tripEntity.getKind().equals(DATASTORE_ENTITY_KIND),
       "Wrong Entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, tripEntity.getKind());
     String id = checkNotNull((String) tripEntity.getProperty("id"),

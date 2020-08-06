@@ -54,16 +54,16 @@ public final class User {
     return this.userId;
   }
 
-  public static User FromEntity(Entity userEntity) {
-    Entity validEntity = checkNotNull(userEntity, "User entity is null");
-    checkArgument(validEntity.getKind().equals(DATASTORE_ENTITY_KIND),
-      "Wrong entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, validEntity.getKind());
-    String email = checkNotNull((String) validEntity.getProperty("email"),
+  public static User fromEntity(Entity userEntity) {
+    checkNotNull(userEntity, "User entity is null");
+    checkArgument(userEntity.getKind().equals(DATASTORE_ENTITY_KIND),
+      "Wrong entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, userEntity.getKind());
+    String email = checkNotNull((String) userEntity.getProperty("email"),
       "User entity does not contain an email");
-    String userId = checkNotNull((String) validEntity.getProperty("userId"),
+    String userId = checkNotNull((String) userEntity.getProperty("userId"),
       "User entity does not contain a user Id");
     ArrayList<String> tripIds =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("tripIds"),
+      checkNotNull((ArrayList<String>) userEntity.getProperty("tripIds"),
         "User entity does not contain trip Ids");
     return new User(email, userId, tripIds);
   }
