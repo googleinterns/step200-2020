@@ -16,10 +16,17 @@
 // copies of recommendations and selected stops, stored as sets for synchronous updating
 let recs = new Set;
 let stops = new Set;
+
 // location representations of stops array
 let waypoints = [];
+
+// object that communicates with the GMaps API service
 let directionsService;
+
+// object that renders display results on the map
 let directionsRenderer;
+
+// TODO: get from Trip key
 let start;
 let end;
 
@@ -47,23 +54,12 @@ function initMap() {
   }
   let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-  /** 
-  document.getElementById("stop-list").addEventListener("focus", function() {
-    calcRoute(directionsService, directionsRenderer, start, end);
-  });*/
 }
 
 /** 
- * Displays route containing waypoints overtop the map.
- * TODO: Add in code from routeDir to change route in real-time
- * based on what's in the schedule panel
- * @param {DirectionsService} directionsService object that communicates with the GMaps API service
- * @param {DirectionsRenderer} directionsRenderer object that renders display results on the map
- * @param {String} start starting point of route
- * @param {String} end ending point of route. TODO: In the final implementation, just have 
- * start as start and end are the same
+ * Displays route containing waypoints of places the user wants to visit, 
+ * as shown in the schedule panel
  */
-// function calcRoute(directionsService, directionsRenderer, start, end) {
 function calcRoute() {
   let request = {
     origin:  start,
@@ -94,7 +90,7 @@ function getStopsOnload(){
   fetch('/api/stop')
   .then(response => response.json())
   .then((stopsResponse) => {
-    if(stopsResponse == null){
+    if(stopsResponse != null){
       stopsResponse.forEach((stop)=>{
         stops.add(stop);
         waypoints.push({location:stop});
@@ -113,6 +109,15 @@ function renderStopsList(){
   })
 }
 
+/** Get the index of a waypoint in the array
+ *  @return {int} index of target waypoint. If -1, then waypoint is not
+ *  in the waypoints array
+ */
+function indexOfWaypoint(stop){
+  let targetWaypoint = waypoints.find(waypoint => waypoint.location === stop);
+  return waypoints.indexOf(targetWaypoint);
+}
+
 /** Render stop list  
  *  @param {String} stop a String to add as a button in the schedule panel in the html
  */
@@ -122,21 +127,13 @@ function renderStop(stop){
   btn.innerText = stop;
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
-    // TODO: delete from recs later for better visuals on html
-    /** 
-    stops = stops.filter(function(stopObj){
-    return stopObj != stop;
-    })*/
     stops = new Set([...stops].filter(stopObj => stopObj!= stop));
-    let obj = waypoints.find(x => x.location === stop);
-    let index = waypoints.indexOf(obj);
+    let index = indexOfWaypoint(stop);
     if (index > -1) {
       waypoints.splice(index, 1);
     }
-    console.log(waypoints);
     updateStops(stop);
     calcRoute();
-
   });
   stopList.appendChild(btn);
 }
@@ -194,20 +191,11 @@ function renderRec(rec){
   btn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
-    let obj = waypoints.find(x => x.location === rec);
-    let index = waypoints.indexOf(obj);
-    console.log("index " + index);
-    console.log(waypoints);
-
-    if(index === -1){
-      console.log("not already in waypoints");
+    if(indexOfWaypoint(rec) === -1){
       waypoints.push({location:rec});
       updateStops(rec);
       calcRoute();
-    } else{
-      console.log("already in wy");
-    }
-    
+    } 
   });
   recsList.appendChild(btn);
 }
