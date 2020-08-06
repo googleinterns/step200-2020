@@ -25,7 +25,7 @@ let placesService;
 let polyline;
 let RADIUS = 1000; // Measured in meters
 let interests = ["park"];
-let destinations = [];
+let regions = [];
 
 /**
  * Initializes the webpage with a map and a random location.
@@ -37,23 +37,20 @@ function initialize() {
   var directionsService = new google.maps.DirectionsService();
   var start = new google.maps.LatLng(37.7699298, -122.4469157);
   var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-  destinations.push(start);
-  destinations.push(end);
   var mapOptions = {
     zoom: 14,
     center: start
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  document.getElementById("route").addEventListener("click", () =>
-    calcRoute(directionsService, start, end)
-  );
+  document.getElementById("route").addEventListener("click", () => {
+    calcRoute(directionsService, start, end);
+  });
   placesService = new google.maps.places.PlacesService(map);
   polyline = new google.maps.Polyline({
     path: [],
     strokeColor: '#FF0000',
     strokeWeight: 3
   });
-  loadRecommendations();
 }
 
 /**
@@ -81,12 +78,24 @@ function calcRoute(directionsService, start, end) {
         map: map
       });
       directionsRenderer.setDirections(response);
-      savePathInPolyline(response);
-      computeTotalDistance(response);
+      //savePathInPolyline(response);
+      //computeTotalDistance(response);
+      showSteps(response);
+      loadRecommendations();
     } else {
       window.alert("Could not calculate route due to: " + status);
     }
   });
+}
+
+function showSteps(directionResult) {
+  const myRoute = directionResult.routes[0].legs[0];
+  for(let i = 0; i < myRoute.steps.length; i++) {
+    const marker = new google.maps.Marker();
+    marker.setMap(map);
+    marker.setPosition(myRoute.steps[i].start_location);
+    regions.push(myRoute.steps[i].start_location);
+  }
 }
 
 /**
@@ -126,9 +135,9 @@ function computeTotalDistance(response) {
 function loadRecommendations() {
   interests.forEach(placeType => {
       console.log(placeType);
-      destinations.forEach((destination) => {
+      regions.forEach((corner) => {
         let request = {
-          location: destination,
+          location: corner,
           radius: RADIUS,
           query: placeType
         };
@@ -148,7 +157,7 @@ function loadRecommendations() {
  */
 function addRecommendations(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    let maxRecommendations = 3;
+    let maxRecommendations = 1;
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
       console.log(results[i].formatted_address);
