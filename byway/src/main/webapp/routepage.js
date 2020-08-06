@@ -14,8 +14,13 @@
 
 
 // copies of recommendations and selected stops, stored as arrays for synchronous updating
-let recs = [];
-let stops = new Set; // TODO: Make set to avoid duplicates
+let recs = [];// make set
+let stops = new Set;
+let waypoint
+let directionsService;
+let directionsRenderer;
+let start;
+let end;
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
@@ -31,19 +36,20 @@ function loadData(){
 
 /** Initializes map on the page */
 function initMap() {
-  let directionsService = new google.maps.DirectionsService();
-  let directionsRenderer = new google.maps.DirectionsRenderer();
-  let start = new google.maps.LatLng(37.7699298, -122.4469157);
-  let end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
+  start = "111 8th Ave, New York, NY";
+  end = "Yonkers, NY";
   let mapOptions = {
     zoom: 14,
-    center: start
+    center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
   }
   let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-  document.getElementById("route").addEventListener("click", function() {
+  /** 
+  document.getElementById("stop-list").addEventListener("focus", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
-  });
+  });*/
 }
 
 /** 
@@ -56,11 +62,20 @@ function initMap() {
  * @param {String} end ending point of route. TODO: In the final implementation, just have 
  * start as start and end are the same
  */
-function calcRoute(directionsService, directionsRenderer, start, end) {
+// function calcRoute(directionsService, directionsRenderer, start, end) {
+function calcRoute() {
+  console.log("calc route");
+  waypoints = Array.from(stops);
+  waypoints.forEach((place, index) =>
+    // console.log( "{location:" + place + "}");
+    waypoints[index]={location: + place + }
+  );
+  console.log(waypoints);
   let request = {
     origin:  start,
     destination: end,
-    travelMode: 'DRIVING'
+    travelMode: 'DRIVING',
+    waypoints: waypoints
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
@@ -150,6 +165,7 @@ function getRecsOnload() {
       recs.push(rec);
     })
     renderRecsList();
+    calcRoute();
   })
 }
 
@@ -173,6 +189,7 @@ function renderRec(rec){
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
     updateStops(rec);
+    calcRoute();
   });
   recsList.appendChild(btn);
 }
