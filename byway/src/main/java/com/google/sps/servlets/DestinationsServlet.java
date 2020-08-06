@@ -33,11 +33,11 @@ public class DestinationsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserService userService = UserServiceFactory.getUserService();
-  Key tripKey;
+  private Key tripKey;
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    tripKey = KeyFactory.stringToKey(request.getParameter("id"));
+    tripKey = KeyFactory.stringToKey(request.getParameter("tripId"));
     addUserEntity(tripKey);
 
     Entity entity; 
@@ -78,7 +78,7 @@ public class DestinationsServlet extends HttpServlet {
       return;
     }
     entity.setProperty("start", start);
-    if((ArrayList<String>) entity.getProperty("destinations") == null){
+    if(entity.getProperty("destinations") == null){
       ArrayList<String> destinations = new ArrayList<String>();
       destinations.add(destination);
       entity.setProperty("destinations", destinations);

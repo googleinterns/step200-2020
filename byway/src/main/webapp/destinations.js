@@ -32,6 +32,9 @@ function initializeDestinationsPage(){
     });
     
 }
+
+const urlParams = new URLSearchParams(window.location.search);
+const tripId = urlParams.get('tripId');
 /**
 * Creates map and search boxes with autocomplete
 */
@@ -160,10 +163,7 @@ function updateStartDestination(locationData){
 * fetches data from servlet
 */
 function fetchDestinations(){
-  const urlParams = new URLSearchParams(window.location.search);
-  const tripId = urlParams.get('id');
-  let promise= fetch('/api/destinations?id=' + tripId).then(response => response.json());
-  return promise;
+  return promise= fetch('/api/destinations?tripId=' + tripId).then(response => response.json());
 }
 
 /** 
@@ -189,11 +189,9 @@ function getCurrentAddress(){
 * add event listener for submit button
 */
 window.onload = function(){
-  const urlParams = new URLSearchParams(window.location.search);
-  const tripId = urlParams.get('id');
   let nextButton = document.getElementById('next-button');
   nextButton.addEventListener('click', () => {
-      nextButton.href = "/interests.html?id=" + tripId;
+      nextButton.href = "/interests.html?tripId=" + tripId;
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();

@@ -5,11 +5,6 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.common.flogger.FluentLogger;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
@@ -46,23 +41,19 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     createTripEntity();
     boolean loginStatus = userService.isUserLoggedIn();
-    if (!userService.isUserLoggedIn()) {
-      String loginUrl = userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGSIN +"?id=" + KeyFactory.keyToString(tripKey));
-      Login login = new Login(loginStatus,loginUrl);
-      String json = gson.toJson(login);
-      response.setContentType("application/json;");
-      response.getWriter().println(json);
-      return;
+    String url;
+    if (!loginStatus) {
+      url = userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGSIN +"?tripId=" + KeyFactory.keyToString(tripKey));
     }
    
-    if (userService.isUserLoggedIn()){
-      String userEmail = userService.getCurrentUser().getEmail();
-      String logoutUrl = userService.createLogoutURL(URL_TO_REDIRECT_TO_AFTER_LOGSOUT);
-      Login login = new Login(loginStatus,logoutUrl);
-      String json = gson.toJson(login);
-      response.setContentType("application/json;");
-      response.getWriter().println(json);
+    else {
+      url = userService.createLogoutURL(URL_TO_REDIRECT_TO_AFTER_LOGSOUT);
     }
+    Login login = new Login(loginStatus,url);
+    String json = gson.toJson(login);
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+    return;
   }
   
   /*
