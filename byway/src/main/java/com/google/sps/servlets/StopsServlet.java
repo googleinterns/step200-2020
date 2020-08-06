@@ -68,7 +68,7 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
     String stopsAsJSON = request.getParameter("stops");
-
+    System.out.println("stops dopost");
     ArrayList<String> stops = gson.fromJson(stopsAsJSON, ARRAYLIST_STRING);
     Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, 1234);
     Query query = new Query(Trip.KIND).setFilter(propertyFilter);

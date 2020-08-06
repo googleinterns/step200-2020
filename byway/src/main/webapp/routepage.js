@@ -16,7 +16,7 @@
 // copies of recommendations and selected stops, stored as arrays for synchronous updating
 let recs = [];// make set
 let stops = new Set;
-let waypoint
+let waypoints = [];
 let directionsService;
 let directionsRenderer;
 let start;
@@ -64,18 +64,13 @@ function initMap() {
  */
 // function calcRoute(directionsService, directionsRenderer, start, end) {
 function calcRoute() {
-  console.log("calc route");
-  waypoints = Array.from(stops);
-  waypoints.forEach((place, index) =>
-    // console.log( "{location:" + place + "}");
-    waypoints[index]={location: + place + }
-  );
+
   console.log(waypoints);
   let request = {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints: waypoints
+    waypoints
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
@@ -188,8 +183,20 @@ function renderRec(rec){
   btn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
-    updateStops(rec);
-    calcRoute();
+    let obj = waypoints.find(x => x.location === stop);
+    let index = waypoints.indexOf(obj);
+    console.log("index " + index);
+    console.log(waypoints);
+
+    if(index === -1){
+      console.log("not already in waypoints");
+      waypoints.push({location:rec});
+      updateStops(rec);
+      calcRoute();
+    } else{
+      console.log("already in wy");
+    }
+    
   });
   recsList.appendChild(btn);
 }
