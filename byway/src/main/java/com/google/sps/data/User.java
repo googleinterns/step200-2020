@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ArrayList;
 
 /**
@@ -27,9 +28,10 @@ import java.util.ArrayList;
  */
 public final class User {
 
-  private String email;
-  private String userId;
-  private ArrayList<String> tripIds;
+  private final String email;
+  private final String userId;
+  private final ArrayList<String> tripIds;
+
   public static final String DATASTORE_ENTITY_KIND = "user";
 
   public User(String email, String userId, Collection<String> tripIds) {
@@ -44,14 +46,14 @@ public final class User {
   }
 
   public ArrayList<String> getTripIds() {
-    return new ArrayList<String>(this.tripIds);
+    return (ArrayList<String>) Collections.unmodifiableList(this.tripIds);
   }
 
   public String getUserId() {
     return this.userId;
   }
 
-  public static User createUserFromEntity(Entity userEntity) {
+  public static User FromEntity(Entity userEntity) {
     Entity validEntity = checkNotNull(userEntity, "User entity is null");
     checkArgument(validEntity.getKind().equals(DATASTORE_ENTITY_KIND),
       "Wrong entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, validEntity.getKind());

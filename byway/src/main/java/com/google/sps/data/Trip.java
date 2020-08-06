@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ArrayList;
 
 /**
@@ -27,12 +28,13 @@ import java.util.ArrayList;
  */
 public final class Trip {
 
+  public static final String DATASTORE_ENTITY_KIND = "Trip";
+
   private final String id;
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
-  public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   public Trip(String id, String start, Collection<String> destinations,
               Collection<String> interests, Collection<String> route) {
@@ -47,15 +49,15 @@ public final class Trip {
   }
 
   public ArrayList<String> getInterests() {
-    return new ArrayList<String>(this.interests);
+    return (ArrayList<String>) Collections.unmodifiableList(this.interests);
   }
 
   public ArrayList<String> getRoute() {
-    return new ArrayList<String>(this.route);
+    return (ArrayList<String>) Collections.unmodifiableList(this.route);
   }
 
   public ArrayList<String> getDestinations() {
-    return new ArrayList<String>(this.destinations);
+    return (ArrayList<String>) Collections.unmodifiableList(this.destinations);
   }
 
   public String getTripId() {
@@ -66,22 +68,21 @@ public final class Trip {
     return this.start;
   }
 
-  public static Trip createTripFromEntity(Entity tripEntity) {
-    Entity validEntity = checkNotNull(tripEntity, "Trip entity is null");
-    checkArgument(validEntity.getKind().equals(DATASTORE_ENTITY_KIND),
-      "Wrong Entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, validEntity.getKind());
-    String id = checkNotNull((String) validEntity.getProperty("id"),
+  public static Trip FromEntity(Entity tripEntity) {
+    checkArgument(tripEntity.getKind().equals(DATASTORE_ENTITY_KIND),
+      "Wrong Entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, tripEntity.getKind());
+    String id = checkNotNull((String) tripEntity.getProperty("id"),
       "Trip entity does not contain an id");
-    String start = checkNotNull((String) validEntity.getProperty("start"),
+    String start = checkNotNull((String) tripEntity.getProperty("start"),
       "Trip entity does not contain a start");
     ArrayList<String> destinations =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("destinations"),
+      checkNotNull((ArrayList<String>) tripEntity.getProperty("destinations"),
         "Trip entity does not contain destinations");
     ArrayList<String> interests =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("interests"),
+      checkNotNull((ArrayList<String>) tripEntity.getProperty("interests"),
         "Trip entity does not contain interests");
     ArrayList<String> route =
-      checkNotNull((ArrayList<String>) validEntity.getProperty("route"),
+      checkNotNull((ArrayList<String>) tripEntity.getProperty("route"),
         "Trip entity does not contain route");
     return new Trip(id, start, destinations, interests, route);
   }
