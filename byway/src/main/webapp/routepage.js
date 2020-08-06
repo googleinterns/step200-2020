@@ -13,9 +13,10 @@
 // limitations under the License.
 
 
-// copies of recommendations and selected stops, stored as arrays for synchronous updating
-let recs = [];// make set
+// copies of recommendations and selected stops, stored as sets for synchronous updating
+let recs = new Set;
 let stops = new Set;
+// location representations of stops array
 let waypoints = [];
 let directionsService;
 let directionsRenderer;
@@ -64,8 +65,6 @@ function initMap() {
  */
 // function calcRoute(directionsService, directionsRenderer, start, end) {
 function calcRoute() {
-
-  console.log(waypoints);
   let request = {
     origin:  start,
     destination: end,
@@ -95,9 +94,13 @@ function getStopsOnload(){
   fetch('/api/stop')
   .then(response => response.json())
   .then((stopsResponse) => {
-    stopsResponse.forEach((stop)=>{
-      stops.add(stop);
-    });
+    if(stopsResponse == null){
+      stopsResponse.forEach((stop)=>{
+        stops.add(stop);
+        waypoints.push({location:stop});
+      });
+    }
+    calcRoute();
     renderStopsList();
   });
 }
@@ -125,7 +128,15 @@ function renderStop(stop){
     return stopObj != stop;
     })*/
     stops = new Set([...stops].filter(stopObj => stopObj!= stop));
+    let obj = waypoints.find(x => x.location === stop);
+    let index = waypoints.indexOf(obj);
+    if (index > -1) {
+      waypoints.splice(index, 1);
+    }
+    console.log(waypoints);
     updateStops(stop);
+    calcRoute();
+
   });
   stopList.appendChild(btn);
 }
@@ -157,7 +168,7 @@ function getRecsOnload() {
   .then(response => response.json())
   .then((recommendations) => {
     recommendations.forEach((rec)=>{
-      recs.push(rec);
+      recs.add(rec);
     })
     renderRecsList();
     calcRoute();
@@ -183,7 +194,7 @@ function renderRec(rec){
   btn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
-    let obj = waypoints.find(x => x.location === stop);
+    let obj = waypoints.find(x => x.location === rec);
     let index = waypoints.indexOf(obj);
     console.log("index " + index);
     console.log(waypoints);
