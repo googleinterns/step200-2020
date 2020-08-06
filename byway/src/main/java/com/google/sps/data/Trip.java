@@ -15,11 +15,14 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class to make a Trip type, containing
@@ -30,45 +33,49 @@ public final class Trip {
 
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
-  private final String id;
+  private final String tripKeyString;
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
-  public Trip(String id, String start, Collection<String> destinations,
+  public Trip(String tripKeyString, String start, Collection<String> destinations,
               Collection<String> interests, Collection<String> route) {
-    this.id = checkNotNull(id, "id");
+    this.tripKeyString = checkNotNull(tripKeyString, "tripKeyString");
     this.start = checkNotNull(start, "start");
-    Collection<String> validDestinations = checkNotNull(destinations, "destinations");
-    Collection<String> validInterests = checkNotNull(interests, "interests");
-    Collection<String> validRoute = checkNotNull(route, "route");
-    this.destinations = new ArrayList<String>(validDestinations);
-    this.interests = new ArrayList<String>(validInterests);
-    this.route = new ArrayList<String>(validRoute);
+    checkNotNull(destinations, "destinations");
+    checkNotNull(interests, "interests");
+    checkNotNull(route, "route");
+    this.destinations = new ArrayList<String>(destinations);
+    this.interests = new ArrayList<String>(interests);
+    this.route = new ArrayList<String>(route);
   }
 
-  public ArrayList<String> getInterests() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.interests);
+  public List<String> getInterests() {
+    return Collections.unmodifiableList(this.interests);
   }
 
-  public ArrayList<String> getRoute() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.route);
+  public List<String> getRoute() {
+    return Collections.unmodifiableList(this.route);
   }
 
-  public ArrayList<String> getDestinations() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.destinations);
+  public List<String> getDestinations() {
+    return Collections.unmodifiableList(this.destinations);
   }
 
   public String getTripId() {
-    return this.id;
+    return this.tripId;
   }
 
   public String getStart() {
     return this.start;
   }
 
-  public static Trip FromEntity(Entity tripEntity) {
+  public Key getKey() {
+    return KeyFactory.stringToKey(tripKeyString);
+  }
+
+  public static Trip fromEntity(Entity tripEntity) {
     checkArgument(tripEntity.getKind().equals(DATASTORE_ENTITY_KIND),
       "Wrong Entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, tripEntity.getKind());
     String id = checkNotNull((String) tripEntity.getProperty("id"),

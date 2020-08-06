@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class to make a User type, containing an optional 
@@ -37,16 +38,16 @@ public final class User {
   public User(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
     this.userId = checkNotNull(userId, "userId");
-    Collection<String> validTripIds = checkNotNull(tripIds, "tripIds");
-    this.tripIds = new ArrayList<>(validTripIds);
+    checkNotNull(tripIds, "tripIds");
+    this.tripIds = new ArrayList<>(tripIds);
   }
 
   public String getEmail() {
     return this.email;
   }
 
-  public ArrayList<String> getTripIds() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.tripIds);
+  public List<String> getTripIds() {
+    return Collections.unmodifiableList(this.tripIds);
   }
 
   public String getUserId() {
