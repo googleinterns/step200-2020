@@ -15,7 +15,7 @@
 
 // copies of recommendations and selected stops, stored as arrays for synchronous updating
 let recs = [];
-let stops = []; // TODO: Make set to avoid duplicates
+let stops = new Set; // TODO: Make set to avoid duplicates
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
@@ -86,7 +86,7 @@ function getStopsOnload(){
   .then(response => response.json())
   .then((stopsResponse) => {
     stopsResponse.forEach((stop)=>{
-      stops.push(stop);
+      stops.add(stop);
     });
     renderStopsList();
   });
@@ -109,27 +109,23 @@ function renderStop(stop){
   btn.innerText = stop;
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
-    updateStops(stop, "remove");
+    // TODO: delete from recs later for better visuals on html
+    /** 
+    stops = stops.filter(function(stopObj){
+    return stopObj != stop;
+    })*/
+    stops = new Set([...stops].filter(stopObj => stopObj!= stop));
+    updateStops(stop);
   });
   stopList.appendChild(btn);
 }
 
 /** Add stop to or delete stop from the stoplist in javascript and in the datastore
  *  @param {String} stop a String to add or delete
- *  @param {String} action a String to determine what action to perform on the list
  */
-function updateStops(stop, action){
-  if(action === "add"){
-    // TODO: delete from recs later for better visuals on html
-    stops.push(stop);
-  } else{
-    // TODO: add to recs later for better visuals on html
-    stops = stops.filter(function(stopObj){
-    return stopObj != stop;
-    })
-  }
+function updateStops(){
   renderStopsList();
-  let stopsAsJSONString = JSON.stringify(stops);
+  let stopsAsJSONString = JSON.stringify(Array.from(stops));
   let params = new URLSearchParams();
   params.append("stops", stopsAsJSONString);
   fetch('/api/stop', {method: 'POST', body:params});
@@ -139,7 +135,8 @@ function updateStops(stop, action){
 function clearRecs(){
   const recList = document.getElementById('rec-list');
   if(recList != null){
-    recList.innerText = ""; // clear list
+    // clear list
+    recList.innerText = "";
   }
 }
 
@@ -173,11 +170,12 @@ function renderRec(rec){
   btn.innerText = rec;
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
-    updateStops(rec, "add");
+    // TODO: add to recs later for better visuals on html
+    stops.add(rec);
+    updateStops(rec);
   });
   recsList.appendChild(btn);
 }
 
 /* exported initMap */
 /* global google */
-
