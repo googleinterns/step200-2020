@@ -18,3 +18,6 @@ jobs:
       with:
         java-version: 1.8
     - uses: axel-op/googlejavaformat-action@v3
+      with:
+        args: --set-exit-if-changed --dry-run
+        skipCommit: true
