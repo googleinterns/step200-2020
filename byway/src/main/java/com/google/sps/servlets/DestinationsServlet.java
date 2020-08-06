@@ -12,7 +12,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.common.flogger.FluentLogger;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class DestinationsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     Entity entity;
-    String start= request.getParameter("start-location");
+    String start = request.getParameter("start-location");
     String destination = request.getParameter("destinations");
     try{ 
       entity = datastore.get(tripKey) ;

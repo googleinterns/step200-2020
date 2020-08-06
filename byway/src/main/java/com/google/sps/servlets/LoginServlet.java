@@ -15,23 +15,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.sps.data.Login;
 
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    private final Gson gson = new Gson();
-    private final UserService userService = UserServiceFactory.getUserService();
-    private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    public static class Login{ 
-        private final boolean status;
-        private final String url;
-  
-        public Login(boolean status, String url) {
-            this.status = status;
-            this.url = url;
-        }
-    }
+  private final Gson gson = new Gson();
+  private final UserService userService = UserServiceFactory.getUserService();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
   private static final String URL_TO_REDIRECT_TO_AFTER_LOGSIN = "/destinations.html";
   private static final String URL_TO_REDIRECT_TO_AFTER_LOGSOUT = "/index.html";
 
@@ -60,7 +52,7 @@ public class LoginServlet extends HttpServlet {
   * Adds new Trip entity with empty properties
   **/
   public void createTripEntity(){
-    Entity tripEntity = new Entity("Trip");
+    Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND);
     tripEntity.setProperty("start", "");
     tripEntity.setProperty("destinations", new ArrayList<String>());
     tripEntity.setProperty("interests", new ArrayList<String>());
