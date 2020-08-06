@@ -26,9 +26,9 @@ public final class Trip{
   private final ArrayList<String> destinations;
   public static final String KIND = "Trip";
   
-  public Trip(long id, ArrayList<String> destinations) {
+  public Trip(long id, ArrayList<String> destinations){
     this.id = id;
-    this.destinations = destinations;
+    this.destinations = new ArrayList<>(destinations);
   }
 
   public static Trip fromEntity(Entity entity){

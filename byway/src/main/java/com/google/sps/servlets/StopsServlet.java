@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /** Servlet that handles data for stops */
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
@@ -49,16 +51,12 @@ public final class StopsServlet extends HttpServlet {
   /* Passes saved destinations stops (if any) to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: Replace ID filtering with .get(Key)
-    // Duplicate code was just kept for this reason
-    Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, 1234);
-    Query query = new Query(Trip.KIND).setFilter(propertyFilter);
-    PreparedQuery results = datastore.prepare(query);
     List<String> stops= new ArrayList<>();
-
-    // Should only be one entity with this ID
-    for(Entity entity: results.asIterable()){
-       stops = (ArrayList<String>) entity.getProperty("destinations");
+    try{
+      Entity entity = datastore.get(KeyFactory.createKey(Trip.KIND, 5910974510923776L));
+      stops = (ArrayList<String>) entity.getProperty("destinations");
+    } catch (EntityNotFoundException e){
+      System.out.println("Could not retrieve stops due to faulty key " + e);
     }
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(stops));
@@ -68,15 +66,14 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
     String stopsAsJSON = request.getParameter("stops");
-
     ArrayList<String> stops = gson.fromJson(stopsAsJSON, ARRAYLIST_STRING);
-    Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, 1234);
-    Query query = new Query(Trip.KIND).setFilter(propertyFilter);
-    PreparedQuery results = datastore.prepare(query);
-
-    for(Entity entity: results.asIterable()){
+    
+    try{
+      Entity entity = datastore.get(KeyFactory.createKey(Trip.KIND, 5910974510923776L));
       entity.setProperty("destinations", stops);
       datastore.put(entity);
+    } catch (EntityNotFoundException e){
+      System.out.println("Could not retrieve stops due to faulty key " + e);
     }
   } 
 }
