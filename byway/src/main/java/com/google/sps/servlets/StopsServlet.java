@@ -27,24 +27,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
   @GuardedBy("this")
-  private ArrayList<String> stops = new ArrayList<String>();
-
-  private final Gson gson = new Gson();
+  private ArrayList<String> stops= new ArrayList<String>();
+  private final Gson gson = new Gson(); 
   // Implement datastore in routepage branch
 
   @Override
-  public synchronized void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public synchronized void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     String json = gson.toJson(stops);
-
+    
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
 
   @Override
-  public synchronized void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public synchronized void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String stop = request.getParameter("text");
     stops.add(stop);
   }

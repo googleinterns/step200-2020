@@ -15,29 +15,23 @@
 package com.google.sps.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.appengine.api.datastore.Entity;
 
-/** A sample class to mock data received from another datastore table */
-// TODO: Make a parent class that Rec and Stop can extend
-public final class Recommendation {
+/** A sample class to mock data received from another datastore table*/
+// TODO: Make a parent class that Rec and Stop can extend 
+public final class Recommendation{
   /** We may need to add more fields later, so making a class seemed reasonable. */
   private final long id;
-
-  private final String placename;
+  private final String placename; 
   public static final String KIND = "Recommendation";
-
+  
   public Recommendation(long id, String placename) {
     this.id = id;
     this.placename = placename;
   }
 
-  public static Recommendation fromEntity(Entity entity) {
-    checkArgument(
-        entity.getKind().equals(KIND),
-        "Wrong Entity kind, expected %s, got %s",
-        KIND,
-        entity.getKind());
+  public static Recommendation fromEntity(Entity entity){
+    checkArgument(entity.getKind().equals(KIND), "Wrong Entity kind, expected %s, got %s", KIND, entity.getKind());
     long id = entity.getKey().getId();
     String placename = (String) entity.getProperty("placename");
     return new Recommendation(id, placename);
