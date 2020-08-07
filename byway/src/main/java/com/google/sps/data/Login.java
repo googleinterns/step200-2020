@@ -14,6 +14,7 @@
 
 package com.google.sps.data;
 
+@Immutable
 public final class Login{ 
   private final boolean status;
   private final String url;
