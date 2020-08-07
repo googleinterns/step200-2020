@@ -14,20 +14,18 @@
 
 package com.google.sps.data;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A class to make a UserInfo type, containing an
- * email, id and a list of trip IDs per user.
- */
+/** A class to make a UserInfo type, containing an email, id and a list of trip IDs per user. */
 public final class UserInfo {
 
   public static final String DATASTORE_ENTITY_KIND = "user";
@@ -61,15 +59,21 @@ public final class UserInfo {
 
   public static UserInfo fromEntity(Entity userEntity) {
     checkNotNull(userEntity, "User entity is null");
-    checkArgument(userEntity.getKind().equals(DATASTORE_ENTITY_KIND),
-      "Wrong entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, userEntity.getKind());
-    String email = checkNotNull((String) userEntity.getProperty("email"),
-      "User entity does not contain an email");
-    String id = checkNotNull((String) userEntity.getProperty("id"),
-      "User entity does not contain a key string");
+    checkArgument(
+        userEntity.getKind().equals(DATASTORE_ENTITY_KIND),
+        "Wrong entity kind. Expected %s, received %s",
+        DATASTORE_ENTITY_KIND,
+        userEntity.getKind());
+    String email =
+        checkNotNull(
+            (String) userEntity.getProperty("email"), "User entity does not contain an email");
+    String id =
+        checkNotNull(
+            (String) userEntity.getProperty("id"), "User entity does not contain a key string");
     ArrayList<Key> tripIds =
-      checkNotNull((ArrayList<Key>) userEntity.getProperty("tripIds"),
-        "User entity does not contain trip Ids");
+        checkNotNull(
+            (ArrayList<Key>) userEntity.getProperty("tripIds"),
+            "User entity does not contain trip Ids");
     return new UserInfo(email, id, tripIds);
   }
-} 
+}
