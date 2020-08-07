@@ -13,9 +13,22 @@
 // limitations under the License.
 
 
-// copies of recommendations and selected stops, stored as arrays for synchronous updating
-let recs = [];
-let stops = []; // TODO: Make set to avoid duplicates
+// copies of recommendations and selected stops, stored as sets for synchronous updating
+let recs = new Set;
+let stops = new Set;
+
+// location representations of stops array
+let waypoints = new Set;
+
+// object that communicates with the GMaps API service
+let directionsService;
+
+// object that renders display results on the map
+let directionsRenderer;
+
+// TODO: get from Trip key
+let start;
+let end;
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
@@ -31,36 +44,30 @@ function loadData(){
 
 /** Initializes map on the page */
 function initMap() {
-  const directionsService = new google.maps.DirectionsService();
-  const directionsRenderer = new google.maps.DirectionsRenderer();
-  let start = new google.maps.LatLng(37.7699298, -122.4469157);
-  let end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
+  start = "111 8th Ave, New York, NY";
+  end = "Yonkers, NY";
+
   let mapOptions = {
     zoom: 14,
-    center: start
+    center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
   }
   const map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-  document.getElementById("route").addEventListener("click", function() {
-    calcRoute(directionsService, directionsRenderer, start, end);
-  });
 }
 
 /** 
- * Displays route containing waypoints overtop the map.
- * TODO: Add in code from routeDir to change route in real-time
- * based on what's in the schedule panel
- * @param {DirectionsService} directionsService object that communicates with the GMaps API service
- * @param {DirectionsRenderer} directionsRenderer object that renders display results on the map
- * @param {String} start starting point of route
- * @param {String} end ending point of route. TODO: In the final implementation, just have 
- * start as start and end are the same
+ * Displays route containing waypoints of places the user wants to visit, 
+ * as shown in the schedule panel
  */
-function calcRoute(directionsService, directionsRenderer, start, end) {
+function calcRoute() {
+  console.log(waypoints);
   let request = {
     origin:  start,
     destination: end,
-    travelMode: 'DRIVING'
+    travelMode: 'DRIVING',
+    waypoints: Array.from(waypoints)
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
@@ -87,7 +94,11 @@ function getStopsOnload(){
   .then((stopsResponse) => {
     if(stopsResponse != null){
       stops.push(...stopsResponse);
+      stopsResponse.forEach((stop)=>{
+        waypoints.add({location:stop});
+      });
     }
+    calcRoute();
     renderStopsList();
   });
 }
@@ -101,6 +112,15 @@ function renderStopsList(){
   })
 }
 
+/** Get the index of a waypoint in the array
+ *  @return {int} index of target waypoint. If -1, then waypoint is not
+ *  in the waypoints array
+ */
+function indexOfWaypoint(stop){
+  let targetWaypoint = waypoints.find(waypoint => waypoint.location === stop);
+  return waypoints.indexOf(targetWaypoint);
+}
+
 /** Render stop list  
  *  @param {String} stop a String to add as a button in the schedule panel in the html
  *  @return {button} stopBtn a button showing a selected stop
@@ -111,19 +131,55 @@ function createStopButton(stop){
   stopBtn.className =  "btn rec-btn";
   stopBtn.addEventListener("click", function() {
     // TODO: delete from recs later for better visuals on html
-    stops = stops.filter(function(stopObj){
-      return stopObj != stop;
-    })
+    // stops = stops.filter(function(stopObj){
+    //  return stopObj != stop;
+    // })
+    stops = new Set([...stops].filter(stopObj => stopObj!= stop));
+    waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
+    calcRoute();
     updateStops();
   });
   return stopBtn;
 }
 
-/** Add stop to or delete stop from the stoplist in javascript and in the datastore */
+/** Add stop to or delete stop from the stoplist in javascript and in the datastore 
 function updateStops(){
   renderStopsList();
   console.log(JSON.stringify(stops));
   fetch('/api/stop', {method: "POST", body: JSON.stringify(stops)});
+} **/
+/** 
+function renderStop(stop){
+  const stopList = document.getElementById('stop-list');
+  let btn = document.createElement('button');
+  btn.innerText = stop;
+  btn.className =  "btn rec-btn";
+  btn.addEventListener("click", function() {
+    stops = new Set([...stops].filter(stopObj => stopObj!= stop));
+    waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
+    console.log("delete stops");
+    console.log(stops);
+    /** 
+    let index = indexOfWaypoint(stop);
+    if (index > -1) {
+      waypoints.splice(index, 1);
+    }
+    calcRoute();
+    updateStops();
+    
+  });
+  stopList.appendChild(btn);
+}
+*/
+
+/** Add stop to or delete stop from the stoplist in javascript and in the datastore
+ *  @param {String} stop a String to add or delete
+ */
+function updateStops(){
+  renderStopsList();
+  // let stopsAsJSONString = JSON.stringify(Array.from(stops));
+  // console.log(stopsAsJSONString);
+  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(stops)});
 }
 
 /** Clear the recommendations panel in the html */
@@ -143,6 +199,7 @@ function getRecsOnload() {
   .then((recommendations) => {
     recs.push(...recommendations);
     renderRecsList();
+    // calcRoute();
   })
 }
 
@@ -151,8 +208,8 @@ function renderRecsList(){
   clearRecs();
   const recsList = document.getElementById('rec-list');
   recs.forEach((rec)=>{
-     recsList.appendChild(createRecButton(rec));
-  })
+    recsList.appendChild(createRecButton(rec));
+  });
 }
 
 /** Render stop list  
@@ -166,10 +223,40 @@ function createRecButton(rec){
   recBtn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.push(rec);
-    updateStops();
+    if(!Array.from(waypoints).find(waypoint => waypoint.location === rec)){
+      console.log("new!");
+      waypoints.add({location:rec});
+      calcRoute();
+      updateStops();
+    } 
+    // updateStops();
+  });
+    return recBtn;
+}
+/** 
+function renderRec(rec){
+  const recsList = document.getElementById('rec-list');
+  let btn = document.createElement('button');
+  btn.innerText = rec;
+  btn.className =  "btn rec-btn";
+  btn.addEventListener("click", function() {
+    // TODO: add to recs later for better visuals on html
+    stops.add(rec);
+    if(!Array.from(waypoints).find(waypoint => waypoint.location === rec)){
+      console.log("new!");
+      waypoints.add({location:rec});
+      calcRoute();
+      updateStops();
+      
+    } else{
+        console.log("dsdsd");
+    }
+   
+
   });
   return recBtn;
  }
+*/
 
 /* exported initMap */
 /* global google */
