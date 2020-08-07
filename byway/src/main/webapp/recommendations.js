@@ -89,7 +89,6 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
  */
 function showSteps(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
-  console.log("showSteps: \n");
   for(let i = 0; i < myRoute.steps.length; i++) {
     let avgLat = (myRoute.steps[i].start_location.lat() + myRoute.steps[i].end_location.lat()) / 2;
     let avgLng = (myRoute.steps[i].start_location.lng() + myRoute.steps[i].end_location.lng()) / 2;
@@ -98,6 +97,7 @@ function showSteps(directionResult) {
       regions.push(myRoute.steps[i].start_location);
     }
   }
+  console.log("size of regions: " + regions.length);
 }
 
 /**
@@ -118,18 +118,28 @@ function computeTotalDistance(response) {
  * Go through a user's interests and find places
  * fitting the interests with the textSearch method.
  */
-function loadRecommendations() {
-  interests.forEach(placeType => {
-      console.log(placeType);
-      regions.forEach((corner) => {
-        let request = {
-          location: corner,
-          radius: RADIUS,
-          query: placeType
-        };
-        placesService.textSearch(request, addRecommendations);
+async function loadRecommendations() {
+  for(interest of interests) {
+    for(region of regions) {
+      let request = {
+        location: region,
+        map: map,
+        query: interest
+      }
+      const results = await new Promise(resolve => {
+        placesService.textSearch(request, (result, status) => {
+          if(status == "OK") {
+            resolve(result);
+          } else if(status == "OVER_QUERY_LIMIT") {
+            alert("Showing limited results");
+          } else {
+            alert("Status: " + status);
+          }
+        });
       });
-  });
+      addRecommendations(results);
+    }
+  }
 }
 
 /**
@@ -141,21 +151,16 @@ function loadRecommendations() {
  * @param {PlaceResults[] results} places found with PlaceResult type.
  * @param {PlacesServiceStatus status} status of PlacesService request.
  */
-function addRecommendations(results, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    let maxRecommendations = 1;
-    let numRecommendations = 0;
-    for (let i = 0; i < results.length; i++) {
-      console.log(results[i].formatted_address);
-      placeMarker(results[i]);
-      numRecommendations++;
-      if(numRecommendations == maxRecommendations) {
-        break;
-      }
+function addRecommendations(results) {
+  let maxRecommendations = 1;
+  let numRecommendations = 0;
+  for (let i = 0; i < results.length; i++) {
+    console.log(results[i].name);
+    placeMarker(results[i]);
+    numRecommendations++;
+    if(numRecommendations == maxRecommendations) {
+      break;
     }
-  } else {
-    alert("Status: " + status +
-          "\nOur services are currently down. Oops!");
   }
 }
 
