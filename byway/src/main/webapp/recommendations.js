@@ -22,7 +22,11 @@ if(document.readyState === 'loading') {
 
 let map;
 let placesService;
-let RADIUS = 1000; // Measured in meters
+
+// Measured in meters
+let RADIUS = 1000;
+let MIN_DISTANCE = 5000;
+
 let interests = ["park"];
 let regions = [];
 
@@ -87,13 +91,13 @@ function showSteps(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
   console.log("showSteps: \n");
   for(let i = 0; i < myRoute.steps.length; i++) {
-    const marker = new google.maps.Marker();
-    marker.setMap(map);
-    marker.setPosition(myRoute.steps[i].start_location);
-    console.log("\t\t" + myRoute.steps[i].start_location);
-    regions.push(myRoute.steps[i].start_location);
+    let avgLat = (myRoute.steps[i].start_location.lat() + myRoute.steps[i].end_location.lat()) / 2;
+    let avgLng = (myRoute.steps[i].start_location.lng() + myRoute.steps[i].end_location.lng()) / 2;
+    let avgLoc = {lat: avgLat, lng: avgLng};
+    if(myRoute.steps[i].distance.value > MIN_DISTANCE) {
+      regions.push(myRoute.steps[i].start_location);
+    }
   }
-  console.log("size: " + regions.length + "\n\n\n");
 }
 
 /**
@@ -143,7 +147,7 @@ function addRecommendations(results, status) {
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
       console.log(results[i].formatted_address);
-      //placeMarker(results[i]);
+      placeMarker(results[i]);
       numRecommendations++;
       if(numRecommendations == maxRecommendations) {
         break;
