@@ -31,15 +31,15 @@ function loadData(){
 
 /** Initializes map on the page */
 function initMap() {
-  let directionsService = new google.maps.DirectionsService();
-  let directionsRenderer = new google.maps.DirectionsRenderer();
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
   let start = new google.maps.LatLng(37.7699298, -122.4469157);
   let end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
   let mapOptions = {
     zoom: 14,
     center: start
   }
-  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  const map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   document.getElementById("route").addEventListener("click", function() {
     calcRoute(directionsService, directionsRenderer, start, end);
@@ -106,7 +106,7 @@ function renderStopsList(){
  *  @return {button} stopBtn a button showing a selected stop
  */
 function createStopButton(stop){
-  let stopBtn = document.createElement('button');
+  const stopBtn = document.createElement('button');
   stopBtn.innerText = stop;
   stopBtn.className =  "btn rec-btn";
   stopBtn.addEventListener("click", function() {
@@ -159,7 +159,7 @@ function renderRecsList(){
  *  @return {button} recBtn a button showing a recommended place
  */
 function createRecButton(rec){
-  let recBtn = document.createElement('button');
+  const recBtn = document.createElement('button');
   recBtn.innerText = rec;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
