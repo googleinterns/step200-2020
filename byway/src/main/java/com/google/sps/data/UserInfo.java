@@ -31,12 +31,12 @@ public final class UserInfo {
   public static final String DATASTORE_ENTITY_KIND = "user";
 
   private final String email;
-  private final String id;
-  private final ArrayList<Key> tripIds;
+  private final String userId;
+  private final ArrayList<String> tripIds;
 
-  public UserInfo(String email, String id, Collection<Key> tripIds) {
+  public UserInfo(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
-    this.id = checkNotNull(id, "id");
+    this.userId = checkNotNull(userId, "userId");
     checkNotNull(tripIds, "tripIds");
     this.tripIds = new ArrayList<>(tripIds);
   }
@@ -45,16 +45,16 @@ public final class UserInfo {
     return this.email;
   }
 
-  public List<Key> getTripIds() {
+  public List<String> getTripIds() {
     return Collections.unmodifiableList(this.tripIds);
   }
 
-  public String getId() {
-    return this.id;
+  public String getUserId() {
+    return this.userId;
   }
 
   public Key getKey() {
-    return KeyFactory.stringToKey(this.id);
+    return KeyFactory.stringToKey(this.userId);
   }
 
   public static UserInfo fromEntity(Entity userEntity) {
@@ -67,13 +67,13 @@ public final class UserInfo {
     String email =
         checkNotNull(
             (String) userEntity.getProperty("email"), "User entity does not contain an email");
-    String id =
+    String userId =
         checkNotNull(
-            (String) userEntity.getProperty("id"), "User entity does not contain a key string");
-    ArrayList<Key> tripIds =
+            (String) userEntity.getProperty("userId"), "User entity does not contain a userId");
+    ArrayList<String> tripIds =
         checkNotNull(
-            (ArrayList<Key>) userEntity.getProperty("tripIds"),
+            (ArrayList<String>) userEntity.getProperty("tripIds"),
             "User entity does not contain trip Ids");
-    return new UserInfo(email, id, tripIds);
+    return new UserInfo(email, userId, tripIds);
   }
 }

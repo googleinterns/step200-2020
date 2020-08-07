@@ -86,8 +86,8 @@ public final class Trip {
         "Wrong Entity kind. Expected %s, received %s",
         DATASTORE_ENTITY_KIND,
         tripEntity.getKind());
-    String id =
-        checkNotNull((String) tripEntity.getProperty("id"), "Trip entity does not contain an id");
+    String keyString =
+        checkNotNull((String) tripEntity.getProperty("keyString"), "Trip entity does not contain a key string");
     String start =
         checkNotNull(
             (String) tripEntity.getProperty("start"), "Trip entity does not contain a start");
@@ -103,6 +103,6 @@ public final class Trip {
         checkNotNull(
             (ArrayList<String>) tripEntity.getProperty("route"),
             "Trip entity does not contain route");
-    return new Trip(id, start, destinations, interests, route);
+    return new Trip(keyString, start, destinations, interests, route);
   }
 }
