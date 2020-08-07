@@ -87,7 +87,9 @@ public final class Trip {
         DATASTORE_ENTITY_KIND,
         tripEntity.getKind());
     String keyString =
-        checkNotNull((String) tripEntity.getProperty("keyString"), "Trip entity does not contain a key string");
+        checkNotNull(
+            (String) tripEntity.getProperty("keyString"),
+            "Trip entity does not contain a key string");
     String start =
         checkNotNull(
             (String) tripEntity.getProperty("start"), "Trip entity does not contain a start");
