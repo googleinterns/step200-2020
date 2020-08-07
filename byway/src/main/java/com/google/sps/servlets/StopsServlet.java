@@ -25,12 +25,14 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
-import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,16 +49,17 @@ public final class StopsServlet extends HttpServlet {
   private final Gson gson = new Gson(); 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   /* Passes saved destinations stops (if any) to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> stops= new ArrayList<>();
+    List<String> stops = Collections.emptyList();
     try{
       Entity entity = datastore.get(KeyFactory.createKey(Trip.KIND, 5910974510923776L));
       stops = (ArrayList<String>) entity.getProperty("destinations");
     } catch (EntityNotFoundException e){
-      System.out.println("Could not retrieve stops due to faulty key " + e);
+      logger.atInfo().withCause(e).log("Could not retrieve stops due to faulty key", e);
     }
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(stops));
@@ -73,7 +76,7 @@ public final class StopsServlet extends HttpServlet {
       entity.setProperty("destinations", stops);
       datastore.put(entity);
     } catch (EntityNotFoundException e){
-      System.out.println("Could not retrieve stops due to faulty key " + e);
+      logger.atInfo().withCause(e).log("Could not retrieve stops due to faulty key", e);
     }
   } 
 }
