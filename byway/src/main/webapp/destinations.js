@@ -140,7 +140,7 @@ function updateLocations(locationData){
       let service = new google.maps.places.PlacesService(map);
       service.findPlaceFromQuery(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          addLocationtoDOM(results, container);
+          addLocationToDom(results, container);
         }
         else{
           alert("Location Invalid");
