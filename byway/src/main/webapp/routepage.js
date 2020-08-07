@@ -61,6 +61,7 @@ function initMap() {
  * as shown in the schedule panel
  */
 function calcRoute() {
+  console.log(waypoints);
   let request = {
     origin:  start,
     destination: end,
@@ -128,7 +129,9 @@ function renderStop(stop){
   btn.className =  "btn rec-btn";
   btn.addEventListener("click", function() {
     stops = new Set([...stops].filter(stopObj => stopObj!= stop));
-    waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != {location:stop}));
+    waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
+    console.log("delete stops");
+    console.log(stops);
     /** 
     let index = indexOfWaypoint(stop);
     if (index > -1) {
@@ -147,9 +150,8 @@ function renderStop(stop){
 function updateStops(){
   renderStopsList();
   let stopsAsJSONString = JSON.stringify(Array.from(stops));
-  let params = new URLSearchParams();
-  params.append("stops", stopsAsJSONString);
-  fetch('/api/stop', {method: 'POST', body:params});
+  console.log(stopsAsJSONString);
+  fetch('/api/stop', {method: "POST", body:stopsAsJSONString});
 }
 
 /** Clear the recommendations panel in the html */
@@ -194,18 +196,16 @@ function renderRec(rec){
   btn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
-    waypoints.add({location:rec});
-    if(!waypoints.location.has(rec)){
+    if(!Array.from(waypoints).find(waypoint => waypoint.location === rec)){
       console.log("new!");
+      waypoints.add({location:rec});
+      calcRoute();
       updateStops();
-      calcRoute();
+      
+    } else{
+        console.log("dsdsd");
     }
-    /** 
-    if(indexOfWaypoint(rec) === -1){
-      waypoints.push({location:rec});
-      updateStops(rec);
-      calcRoute();
-    }*/ 
+   
   });
   recsList.appendChild(btn);
 }

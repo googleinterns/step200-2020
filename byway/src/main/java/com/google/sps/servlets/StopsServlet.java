@@ -67,9 +67,7 @@ public final class StopsServlet extends HttpServlet {
   /* Modifies the destinations array of Trip entity in datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
-    String stopsAsJSON = request.getParameter("stops");
-    System.out.println("stops dopost");
-    ArrayList<String> stops = gson.fromJson(stopsAsJSON, ARRAYLIST_STRING);
+    ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Filter propertyFilter = new FilterPredicate("id", FilterOperator.EQUAL, 1234);
     Query query = new Query(Trip.KIND).setFilter(propertyFilter);
     PreparedQuery results = datastore.prepare(query);
