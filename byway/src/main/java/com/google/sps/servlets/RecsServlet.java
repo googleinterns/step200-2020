@@ -17,10 +17,8 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-
 import com.google.gson.Gson;
 import com.google.sps.data.Recommendation;
 import java.io.IOException;
@@ -31,17 +29,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /** Servlet that handles data for recommended places */
 @WebServlet("/api/recs")
 public final class RecsServlet extends HttpServlet {
-  private final Gson gson = new Gson(); 
+  private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  
-  /** Fills datastore with hardcoded values for Recommendation objects,
-  values will be from another datastore later **/
+
+  /**
+   * Fills datastore with hardcoded values for Recommendation objects, values will be from another
+   * datastore later *
+   */
   @Override
-  public void init(){
+  public void init() {
     // when using actual values, there will only be one Entity object instantiated, not one per stop
     // loop through Rena and Leo's datastore entries for recommended stops
     Entity recEntity1 = new Entity(Recommendation.KIND);
@@ -57,15 +56,14 @@ public final class RecsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query(Recommendation.KIND); 
+    Query query = new Query(Recommendation.KIND);
     PreparedQuery results = datastore.prepare(query);
     List<Recommendation> recs = new ArrayList<>();
 
-    for (Entity entity: results.asIterable()){
+    for (Entity entity : results.asIterable()) {
       recs.add(Recommendation.fromEntity(entity));
     }
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(recs));
   }
-  
 }
