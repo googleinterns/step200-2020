@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/destinations")
 public class DestinationsServlet extends HttpServlet {
 
-  private static final FluentLogger logger = FluentLogger.forEnclosingClass();  
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -34,7 +34,7 @@ public class DestinationsServlet extends HttpServlet {
     datastore.put(userEntity);
     userKey = userEntity.getKey();
   }
-  
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Entity entity;
@@ -66,18 +66,19 @@ public class DestinationsServlet extends HttpServlet {
       logger.atInfo().withCause(e).log("Unable to find UserLocations Entity %s", userKey);
       return;
     }
-    String start = request.getParameter("start-location"); 
+    String start = request.getParameter("start-location");
     String destination = request.getParameter("destinations");
     entity.setProperty("start", start);
     ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    if(destinations == null){
+    if (destinations == null) {
       destinations = new ArrayList<String>();
     }
     destinations.add(destination);
     entity.setProperty("destinations", destinations);
 
     datastore.put(entity);
-    UserLocations userLocations = new UserLocations(start, destinations);    
+
+    UserLocations userLocations = new UserLocations(start, destinations);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(userLocations));
   }
