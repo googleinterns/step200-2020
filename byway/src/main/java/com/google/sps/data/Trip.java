@@ -14,25 +14,30 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Entity;
 import static com.google.common.base.Preconditions.checkArgument;
+
+import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
 
-/* A simplified version of the Trip.java class 
+/* A simplified version of the Trip.java class
  * TODO: Replace with actual Trip.java class
- */ 
-public final class Trip{
+ */
+public final class Trip {
   private final long id;
   private final ArrayList<String> destinations;
   public static final String KIND = "Trip";
-  
-  public Trip(long id, ArrayList<String> destinations){
+
+  public Trip(long id, ArrayList<String> destinations) {
     this.id = id;
     this.destinations = new ArrayList<>(destinations);
   }
 
-  public static Trip fromEntity(Entity entity){
-    checkArgument(entity.getKind().equals(KIND), "Wrong Entity kind, expected %s, got %s", KIND, entity.getKind());
+  public static Trip fromEntity(Entity entity) {
+    checkArgument(
+        entity.getKind().equals(KIND),
+        "Wrong Entity kind, expected %s, got %s",
+        KIND,
+        entity.getKind());
     long id = entity.getKey().getId();
     ArrayList destinations = (ArrayList<String>) entity.getProperty("destinations");
     return new Trip(id, destinations);
