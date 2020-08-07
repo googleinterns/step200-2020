@@ -15,6 +15,8 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
@@ -30,14 +32,14 @@ import java.util.List;
 public final class User {
 
   private final String email;
-  private final String userId;
+  private final String keyString;
   private final ArrayList<String> tripIds;
 
   public static final String DATASTORE_ENTITY_KIND = "user";
 
-  public User(String email, String userId, Collection<String> tripIds) {
+  public User(String email, String keyString, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
-    this.userId = checkNotNull(userId, "userId");
+    this.keyString = checkNotNull(keyString, "keyString");
     checkNotNull(tripIds, "tripIds");
     this.tripIds = new ArrayList<>(tripIds);
   }
@@ -50,8 +52,12 @@ public final class User {
     return Collections.unmodifiableList(this.tripIds);
   }
 
-  public String getUserId() {
-    return this.userId;
+  public String getkeyString() {
+    return this.keyString;
+  }
+
+  public Key getKey() {
+    return KeyFactory.stringToKey(this.keyString);
   }
 
   public static User fromEntity(Entity userEntity) {
@@ -60,11 +66,11 @@ public final class User {
       "Wrong entity kind. Expected %s, received %s", DATASTORE_ENTITY_KIND, userEntity.getKind());
     String email = checkNotNull((String) userEntity.getProperty("email"),
       "User entity does not contain an email");
-    String userId = checkNotNull((String) userEntity.getProperty("userId"),
-      "User entity does not contain a user Id");
+    String keyString = checkNotNull((String) userEntity.getProperty("keyString"),
+      "User entity does not contain a key string");
     ArrayList<String> tripIds =
       checkNotNull((ArrayList<String>) userEntity.getProperty("tripIds"),
         "User entity does not contain trip Ids");
-    return new User(email, userId, tripIds);
+    return new User(email, keyString, tripIds);
   }
 } 
