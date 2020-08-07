@@ -23,6 +23,7 @@ import com.google.appengine.api.datastore.Entity;
 public final class Recommendation {
   /** We may need to add more fields later, so making a class seemed reasonable. */
   private final long id;
+
   private final String placename;
 
   public static final String KIND = "Recommendation";
@@ -30,7 +31,6 @@ public final class Recommendation {
   public Recommendation(long id, String placename) {
     this.id = id;
     this.placename = placename;
-   
   }
 
   public static Recommendation fromEntity(Entity entity) {
