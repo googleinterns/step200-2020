@@ -89,7 +89,6 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
  */
 function showSteps(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
-  console.log("showSteps: \n");
   for(let i = 0; i < myRoute.steps.length; i++) {
     let avgLat = (myRoute.steps[i].start_location.lat() + myRoute.steps[i].end_location.lat()) / 2;
     let avgLng = (myRoute.steps[i].start_location.lng() + myRoute.steps[i].end_location.lng()) / 2;
@@ -142,17 +141,19 @@ function loadRecommendations() {
  * @param {PlacesServiceStatus status} status of PlacesService request.
  */
 function addRecommendations(results, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
+  if (status == "OK") {
     let maxRecommendations = 1;
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
-      console.log(results[i].formatted_address);
+      console.log(results[i].name);
       placeMarker(results[i]);
       numRecommendations++;
       if(numRecommendations == maxRecommendations) {
         break;
       }
     }
+  } else if (status == "OVER_QUERY_LIMIT"){
+    //alert("Showing limited results");
   } else {
     alert("Status: " + status +
           "\nOur services are currently down. Oops!");
