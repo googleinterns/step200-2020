@@ -59,6 +59,7 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
+    System.out.println("dopost");
     try {
       Entity entity = datastore.get(KeyFactory.createKey(Trip.KIND, 5910974510923776L));
       entity.setProperty("destinations", stops);
