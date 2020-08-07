@@ -35,8 +35,8 @@ function initialize() {
   // Modified version of Justine's implementation
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
-  var start = new google.maps.LatLng(37.7699298, -122.4469157);
-  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  var start = new google.maps.LatLng(33.451645, -112.063580);
+  var end = new google.maps.LatLng(34.165704, -118.288232);
   var mapOptions = {
     zoom: 14,
     center: start
@@ -85,12 +85,15 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
  */
 function showSteps(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
+  console.log("showSteps: \n");
   for(let i = 0; i < myRoute.steps.length; i++) {
     const marker = new google.maps.Marker();
     marker.setMap(map);
     marker.setPosition(myRoute.steps[i].start_location);
+    console.log("\t\t" + myRoute.steps[i].start_location);
     regions.push(myRoute.steps[i].start_location);
   }
+  console.log("size: " + regions.length + "\n\n\n");
 }
 
 /**
@@ -140,7 +143,7 @@ function addRecommendations(results, status) {
     let numRecommendations = 0;
     for (let i = 0; i < results.length; i++) {
       console.log(results[i].formatted_address);
-      placeMarker(results[i]);
+      //placeMarker(results[i]);
       numRecommendations++;
       if(numRecommendations == maxRecommendations) {
         break;
