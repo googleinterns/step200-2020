@@ -17,10 +17,10 @@ package com.google.sps.data;
 import com.google.errorprone.annotations.Immutable;
 
 @Immutable
-public final class Login{ 
+public final class Login {
   private final boolean status;
   private final String url;
-  
+
   public Login(boolean status, String url) {
     this.status = status;
     this.url = url;
