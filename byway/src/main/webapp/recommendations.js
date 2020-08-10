@@ -31,9 +31,8 @@ let interests = ["park"];
 let regions = [];
 
 /**
- * Initializes the webpage with a map and a random location.
- * Sets up Directions services and loads recommendations
- * based on user interests.
+ * Initializes the webpage with a map and other google
+ * services. Creates a route between two endpoints.
  */
 function initialize() {
   // Modified version of Justine's implementation
@@ -54,11 +53,10 @@ function initialize() {
 }
 
 /**
- * Creates a route between two points and loads onto map.
- * Shows markers at the starting point of a step. Loads
- * recommendations centered around these points.
- * @param {DirectionsService directionsService} handles finding
- * the directions between points
+ * Creates a route between two points and loads onto the map.
+ * Finds points along the path to load the regions Array.
+ * Loads recommendations centered around these points.
+ * @param {DirectionsService directionsService} finds directions
  * @param {DirectionsRenderer directionsRenderer} renders the route
  * @param {LatLng start} starting point location
  * @param {LatLng end} ending point location
@@ -72,22 +70,22 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
-      //computeTotalDistance(response);
-      showSteps(response);
+      findRegions(response);
       loadRecommendations();
     } else {
-      window.alert("Could not calculate route due to: " + status);
+      alert("Could not calculate route due to: " + status);
     }
   });
 }
 
 /**
- * Creates a marker at the starting point of a step
- * along the route.
- * @param {DirectionsResult directionResult} contains data
- * on directions from one step to another
+ * Goes through steps along route to find the average location
+ * between a step's start and end location. Store these points
+ * in the regions Array.
+ * @param {DirectionsResult directionResult} contains directions
+ * for the route made.
  */
-function showSteps(directionResult) {
+function findRegions(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
   for(let i = 0; i < myRoute.steps.length; i++) {
     let avgLat = (myRoute.steps[i].start_location.lat() + myRoute.steps[i].end_location.lat()) / 2;
@@ -101,20 +99,6 @@ function showSteps(directionResult) {
 }
 
 /**
- * Finds the travel distance along the route.
- * @param {DirectionsResult response} path of directions
- */
-function computeTotalDistance(response) {
-  let totalDist = 0;
-  let route = response.routes[0];
-  for (i = 0; i < route.legs.length; i++) {
-    totalDist += route.legs[i].distance.value; // Measured in meters
-  }
-  totalDist = totalDist / 1000;
-  console.log("total distance is: " + totalDist + " km");
-}
-
-/**
  * Set a timeout to delay the browser.
  * @param {Number delayMs} number of milliseconds
  */
@@ -124,8 +108,8 @@ function delayPromise(delayMs) {
 
 /**
  * Go through a user's interests and search for places
- * fitting those interests around the regions previously
- * made using textSearch.
+ * fitting those interests. Search around the regions
+ * previously found using textSearch.
  */
 async function loadRecommendations() {
   for(interest of interests) {
@@ -155,8 +139,7 @@ async function loadRecommendations() {
 /**
  * Places markers on the locations found from textSearch.
  * Temporarily limit the amount of suggestions.
- * TODO: Load all results, but have a list that limits the results
- * shown rather than limiting the results being loaded.
+ * TODO: Store more results and limit on UI with option to "show more"
  * @param {PlaceResults[] results} places found with PlaceResult type.
  */
 function addRecommendations(results) {
