@@ -115,12 +115,22 @@ function computeTotalDistance(response) {
 }
 
 /**
- * Go through a user's interests and find places
- * fitting the interests with the textSearch method.
+ * Set a timeout to delay the browser.
+ * @param {Number delayMs} number of milliseconds
+ */
+function delayPromise(delayMs) {
+  return new Promise(resolve => setTimeout(resolve, delayMs));
+}
+
+/**
+ * Go through a user's interests and search for places
+ * fitting those interests around the regions previously
+ * made using textSearch.
  */
 async function loadRecommendations() {
   for(interest of interests) {
     for(region of regions) {
+      await delayPromise(250);
       let request = {
         location: region,
         map: map,
@@ -143,13 +153,11 @@ async function loadRecommendations() {
 }
 
 /**
- * Checks the response from PlacesService and creates markers
- * on the locations found from the request. Temporarily limit
- * the amount of markers added.
+ * Places markers on the locations found from textSearch.
+ * Temporarily limit the amount of suggestions.
  * TODO: Load all results, but have a list that limits the results
  * shown rather than limiting the results being loaded.
  * @param {PlaceResults[] results} places found with PlaceResult type.
- * @param {PlacesServiceStatus status} status of PlacesService request.
  */
 function addRecommendations(results) {
   let maxRecommendations = 1;
