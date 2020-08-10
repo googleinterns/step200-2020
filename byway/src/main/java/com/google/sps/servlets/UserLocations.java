@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /** Stores users start location and destinaions as they add additional places */
 // TODO(renau06): add "fromEntity" method to create UserLocations from a datastore entity
 public class UserLocations {
+
   private String start;
   private ArrayList<String> destinations;
 
