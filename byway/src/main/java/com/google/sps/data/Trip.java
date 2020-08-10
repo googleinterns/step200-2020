@@ -88,7 +88,7 @@ public final class Trip {
         tripEntity.getKind());
     String keyString =
         checkNotNull(
-            (String) tripEntity.getProperty("keyString"),
+            KeyFactory.keyToString(tripEntity.getKey()),
             "Trip entity does not contain a key string");
     String start =
         checkNotNull(
