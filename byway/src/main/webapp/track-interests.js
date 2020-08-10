@@ -97,6 +97,8 @@ function createButtonForPlace(place) {
  * specific interests for their specific trip with tripQuery. userInterests
  * may be any type that is convertible to an array via Array.from. It will
  * be sent to the server as JSON in the post body.
+ * @param {String tripQuery} value for tripId
+ * @param {Array} [userInterests] interests selected by user
  */
 function fetchPlaces(tripQuery, /* optional */ userInterests) {
   const url = '/api/places?' + tripQuery;
@@ -104,6 +106,7 @@ function fetchPlaces(tripQuery, /* optional */ userInterests) {
   if (userInterests !== undefined) {
     fetchArgs.method = 'POST';
     fetchArgs.body = JSON.stringify(Array.from(userInterests));
+    return fetch(url, fetchArgs);
   }
   return fetch(url, fetchArgs).then(response => response.json());
 }

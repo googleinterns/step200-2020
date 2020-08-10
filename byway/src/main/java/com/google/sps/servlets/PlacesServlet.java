@@ -83,8 +83,6 @@ public final class PlacesServlet extends HttpServlet {
       trip = datastore.get(tripKey);
       trip.setProperty("interests", interests);
       datastore.put(trip);
-      response.setContentType("application/json;");
-      response.getWriter().println("{\"results\": \"success\"}");
     } catch(EntityNotFoundException e) {
       //thrown automatically
     }
