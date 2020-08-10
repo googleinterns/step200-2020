@@ -46,20 +46,21 @@ h3.box-outline{
   text-align: center;
 }
 
-.time-title{
-    float:left;
+.time-distance-title{
+  float:left;
+  text-align: center;
 }
 
-.time-outline{
+.time-distance-outline{
   border: solid 2px #c2edda;
   border-radius: 10px;
   background-color: #c2edda;
-  height: 80px;
+  height: 130px;
   width: 350px;
-  margin: 10px 0 0 30px;
+  margin: 10px 0 10px 30px;
 }
   
-.time-field{
+.time-distance-field{
   float: right;
   border: solid 2px #c2edda;
   border-radius: 10px;
