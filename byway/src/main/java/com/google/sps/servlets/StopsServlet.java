@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
@@ -36,20 +37,23 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles data for stops */
 @WebServlet("/api/stop")
 public final class StopsServlet extends HttpServlet {
-  private final Gson gson = new Gson();
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
+  private final Gson gson = new Gson();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final Key key = KeyFactory.createKey(Trip.KIND, 5910974510923776L);
 
   /* Passes saved destinations stops (if any) to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<String> stops = Collections.emptyList();
     try {
-      Entity entity = datastore.get(KeyFactory.createKey(Trip.KIND, 5910974510923776L));
+      Entity entity = datastore.get(key);
       stops = (ArrayList<String>) entity.getProperty("destinations");
     } catch (EntityNotFoundException e) {
-      logger.atInfo().withCause(e).log("Could not retrieve stops due to faulty key", e);
+      logger.atInfo().withCause(e).log(
+          "Could not retrieve Entity for Trip with key %s while trying to get the stops", key);
     }
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(stops));
@@ -59,13 +63,13 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    System.out.println("dopost");
     try {
-      Entity entity = datastore.get(KeyFactory.createKey(Trip.KIND, 5910974510923776L));
+      Entity entity = datastore.get(key);
       entity.setProperty("destinations", stops);
       datastore.put(entity);
     } catch (EntityNotFoundException e) {
-      logger.atInfo().withCause(e).log("Could not retrieve stops due to faulty key", e);
+      logger.atInfo().withCause(e).log(
+          "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
     }
   }
 }
