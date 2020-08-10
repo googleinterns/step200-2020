@@ -13,7 +13,8 @@
 // limitations under the License.
 
 package com.google.sps.data;
-com.google.errorprone.annotations.Immutable
+
+import com.google.errorprone.annotations.Immutable;
 
 @Immutable
 public final class Login{ 

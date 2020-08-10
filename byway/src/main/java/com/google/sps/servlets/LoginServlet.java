@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.sps.data.Login;
-import com.google.sps.data.Trip;
 
 
 @WebServlet("/login")
@@ -27,8 +26,6 @@ public class LoginServlet extends HttpServlet {
     
   private static final String URL_TO_REDIRECT_TO_AFTER_LOGSIN = "/destinations.html";
   private static final String URL_TO_REDIRECT_TO_AFTER_LOGSOUT = "/index.html";
-
-  private Key tripKey;
     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
