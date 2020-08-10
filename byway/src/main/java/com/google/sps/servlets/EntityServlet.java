@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.io.IOException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,9 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import com.google.sps.data.Login;
 import com.google.sps.data.Trip;
-
+import com.google.sps.data.UserInfo;
 
 @WebServlet("/entity")
 public class EntityServlet extends HttpServlet {
@@ -28,17 +28,15 @@ public class EntityServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Key tripKey = createTripEntity();
-    User user =  userService.getCurrentUser();
-    UserInfo userInfo = addUserEntity(user);
-    addTripForUser(tripKey, userInfo);
-    sendRedirect
+    com.google.appengine.api.users.User user =  userService.getCurrentUser();
+    UserInfo userInfo = addUserEntity(user, tripKey);
     
-  }
-} 
+    String json = gson.toJson(KeyFactory.keyToString(tripKey));
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+  } 
  
- 
- 
- /*
+  /*
   * Adds new Trip entity with empty properties
   **/
   public Key createTripEntity(){
@@ -48,62 +46,41 @@ public class EntityServlet extends HttpServlet {
     tripEntity.setProperty("interests", new ArrayList<String>());
     tripEntity.setProperty("route", new ArrayList<String>());
     datastore.put(tripEntity);
-    tripKey = tripEntity.getKey();
+    Key tripKey = tripEntity.getKey();
     return tripKey;
   }
 
-  /*
-  * Adds new user entity if user has not logged in before
-  * Adds tripKey to the user's array of trips
-  **/
-  /*public void addUserEntity(Key tripKey){
-    boolean userExists = false;
-    String userId = userService.getCurrentUser().getUserId();
-    String userEmail = userService.getCurrentUser().getEmail();
-    Query query = new Query("User");
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity currentEntity : results.asIterable()) {
-        String entityId = (String) currentEntity.getProperty("id");
-        if (entityId.equals(userId)){
-          userExists = true; 
-          ArrayList<Key> trips = (ArrayList<Key>) currentEntity.getProperty("trips");
-          if (!trips.contains(tripKey)){
-            trips.add(tripKey);
-          }
-          currentEntity.setProperty("trips",trips);
-          datastore.put(currentEntity);   
-        }
-    }
-    if (userExists == false){
-      Entity userEntity = new Entity("User");
-      userEntity.setProperty("id", userId);
-      userEntity.setProperty("email", userEmail); 
-      ArrayList<Key> trips = new ArrayList<Key>();
-      trips.add(tripKey);
-      userEntity.setProperty("trips", trips);
+  public UserInfo addUserEntity(com.google.appengine.api.users.User user, Key tripKey) {
+    // Create a key based on the user ID
+    Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
+    UserInfo userInfo;
+    try {
+      // try to retrieve the entity with the key 
+      Entity userEntity = datastore.get(userKey);
+      addTripForUser(userEntity, tripKey);
       datastore.put(userEntity);
+      userInfo = UserInfo.fromEntity(userEntity);
+    } catch (EntityNotFoundException exception) {
+      // If the user doesn't exist yet or is new, create a new user
+      Entity newUserEntity = new Entity(userKey);
+      newUserEntity.setProperty("email", user.getEmail());
+      newUserEntity.setProperty("userId", user.getUserId());
+      addTripForUser(newUserEntity, tripKey);
+      datastore.put(newUserEntity);
+      userInfo = UserInfo.fromEntity(newUserEntity);
     }
-  }*/
-
-
-  public UserInfo addUserEntity(User user) {
-  // Create a key based on the user ID
-  Key userKey = KeyFactory.createKey(UserInfo.KIND, user.getUserId());
-  UserInfo userInfo;
-  try {
-    // try to retrieve the entity with the key 
-    Entity userEntity = datastore.get(userKey);
-    userInfo = UserInfo.FromEntity(userEntity);
-  catch (EntityNotFoundException exception) {
-    // If the user doesn't exist yet or is new, create a new user
-    Entity newUserEntity = new Entity(userKey)
-    newUserEntity.setProperty("email", user.getEmail());
-    datastore.put(newUserEntity);
-    userInfo = UserInfo.FromEntity(newUserEntity)
+    return userInfo;
   }
-  return userInfo;
+
+  public void addTripForUser(Entity userEntity, Key tripKey) {
+    ArrayList<String> tripIds;
+    if (userEntity.getProperty("tripIds") == null){
+      tripIds =  new ArrayList<String>();
+    }
+    else{
+      tripIds = (ArrayList<String>) userEntity.getProperty("tripIds");
+    }
+    tripIds.add(KeyFactory.keyToString(tripKey));
+    userEntity.setProperty("tripIds", tripIds);
+  }
 }
-
-  public void addTripForUser(UserInfo user) {
-    //TODO
-  }
