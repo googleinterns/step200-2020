@@ -1,3 +1,4 @@
+
 .header {
   overflow: hidden;
   background-color: #ffc05f;
@@ -15,25 +16,9 @@
 .header img.logo {
   width:8vw;
   height:8vw;
-  margin-top:40px;
-  animation: move 4s linear infinite;
-}
-
-@keyframes move{
-  0%{
-    transform:translate(0);
-    opacity:0;
-  }
-  25%{
-    opacity:1
-  }
-  50%{
-    transform:translate(10vw);
-    opacity:0;
-  }
-  100%{
-    opacity:0;
-  }
+  background-color:white;
+  margin:2vw;
+  border-radius:25%;
 }
 
 .progress-bar-container{
@@ -93,4 +78,3 @@
 #progressbar li.active + li:after{
   background-color:#3196e2;
 }
-
