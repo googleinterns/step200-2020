@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import java.io.IOException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,30 +20,27 @@ import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
 
-
 @WebServlet("/entity")
 public class EntityServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  public static final java.lang.String DATASTORE_EMPTY_LIST_SUPPORT;
-  System.setProperty(DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
     
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Key tripKey = createTripEntity();
     com.google.appengine.api.users.User user =  userService.getCurrentUser();
     UserInfo userInfo = addUserEntity(user, tripKey);
-
     String json = gson.toJson(KeyFactory.keyToString(tripKey));
     response.setContentType("application/json;");
     response.getWriter().println(json);
   } 
  
-  /*
+ /*
   * Adds new Trip entity with empty properties
   **/
   public Key createTripEntity(){
+    System.setProperty(DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
     Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND);
     tripEntity.setProperty("start", "");
     tripEntity.setProperty("destinations", new ArrayList<String>());
@@ -50,6 +48,8 @@ public class EntityServlet extends HttpServlet {
     tripEntity.setProperty("route", new ArrayList<String>());
     datastore.put(tripEntity);
     Key tripKey = tripEntity.getKey();
+    tripEntity.setProperty("keyString", KeyFactory.keyToString(tripKey));
+    datastore.put(tripEntity);
     return tripKey;
   }
 
