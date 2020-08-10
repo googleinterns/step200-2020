@@ -111,15 +111,6 @@ function renderStopsList(){
   })
 }
  
-/** Get the index of a waypoint in the array
- *  @return {int} index of target waypoint. If -1, then waypoint is not
- *  in the waypoints array
- */
-function indexOfWaypoint(stop){
-  let targetWaypoint = waypoints.find(waypoint => waypoint.location === stop);
-  return waypoints.indexOf(targetWaypoint);
-}
- 
 /** Render stop list  
  *  @param {String} stop a String to add as a button in the schedule panel in the html
  *  @return {button} stopBtn a button showing a selected stop
