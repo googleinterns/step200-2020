@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  
+
   /* Passes hard-coded data to be shown in the recommendations panel
    * TODO: Replace with actual arraylist of recommended places based on TextSearch in
    * interests page
