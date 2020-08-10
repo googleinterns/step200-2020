@@ -27,12 +27,21 @@ public class EntityServlet extends HttpServlet {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
   @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    com.google.appengine.api.users.User user =  userService.getCurrentUser();
+    UserInfo userInfo = addUserEntity(user);
+    String json = gson.toJson(userInfo.getTripIds());
+    response.setContentType("application/json");
+    response.getWriter().println(json);
+  }
+
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Key tripKey = createTripEntity();
-    com.google.appengine.api.users.User user =  userService.getCurrentUser();
-    UserInfo userInfo = addUserEntity(user, tripKey);
+    String keyString = KeyFactory.keyToString(tripKey);
+    addTripForUser(keyString);
     String json = gson.toJson(KeyFactory.keyToString(tripKey));
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(json);
   } 
  
@@ -60,7 +69,6 @@ public class EntityServlet extends HttpServlet {
     try {
       // try to retrieve the entity with the key 
       Entity userEntity = datastore.get(userKey);
-      addTripForUser(userEntity, tripKey);
       datastore.put(userEntity);
       userInfo = UserInfo.fromEntity(userEntity);
     } catch (EntityNotFoundException exception) {
@@ -75,15 +83,16 @@ public class EntityServlet extends HttpServlet {
     return userInfo;
   }
 
-  public void addTripForUser(Entity userEntity, Key tripKey) {
-    ArrayList<String> tripIds;
-    if (userEntity.getProperty("tripIds") == null){
-      tripIds =  new ArrayList<String>();
+  public void addTripForUser(String tripKey) {
+    Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, userService.getCurrentUser().getUserId());  
+    try{
+      Entity userEntity = datastore.get(userKey);
+      ArrayList<String> tripIds = (ArrayList<String>) userEntity.getProperty("tripIds");
+      tripIds.add(tripKey);
+      userEntity.setProperty("tripIds", tripIds);
+    } catch (EntityNotFoundException exception) {
+      logger.atInfo().withCause(e).log("Unable to find User Entity %s", userKey);
+      return;
     }
-    else{
-      tripIds = (ArrayList<String>) userEntity.getProperty("tripIds");
-    }
-    tripIds.add(KeyFactory.keyToString(tripKey));
-    userEntity.setProperty("tripIds", tripIds);
   }
 }
