@@ -2,65 +2,66 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="destinations.css" >
-    <link rel="stylesheet" href= "style.css" >
+    <title>Select Destinations</title>
+    <link rel="stylesheet" href= "base.css">
+    <link rel="stylesheet" href="destinations.css">
     <script src="destinations.js"></script>
-    <script src="script.js"></script>
+    <script src="base.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&libraries=places&directions&v=weekly"
+      defer
     ></script>
-    <link href="https://fonts.googleapis.com/css2?family=Karla&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
+   
   </head>
-  <body id="destinations-page" >
+  <body id="destinations-page">
 
     <div class="header">
       <img src="/images/logo.png" alt="logo" class="logo">
       <div id="name">byway.</div>
     </div>
     
-      
     <div id="progressbar-container">
       <ul id="progressbar">
-          <li>Choose Destinations</li>
-          <li>choose interests</li>
-          <li>View route</li>
-        </ul>
+        <li>Choose Destinations</li>
+        <li>choose interests</li>
+        <li>View route</li>
+      </ul>
     </div>
     
     <div id="map-search-container">
-        <div id="map"></div>
-        <div id= "destination-input-form">
-        <form action="/api/destinations" method = "post" id="user-input-form" >
+      <div id="map"></div>
+      <div id= "destination-input-form">
+        <form action="/api/destinations" method="POST" id="user-input-form">
+          <p class="location-label"> Start Location</p>
+          <div class="input-and-button"> 
             <input
-                id="start-search-box"
-                name="start-location"
-                class="controls"
-                type="text"
-                placeholder="Enter current destination"
-                required
+              id="start-search-box"
+              name="start-location"
+              class="searchbox"
+              type="text"
+              placeholder="Enter roadtrip start location"
+              required
             />
-             
+          <button class="form-button" id="user-current-address-button" onclick= "getCurrentAddress()">Use current location</button>
+          </div>
+          <p class="location-label"> Your Stays</p>
+          <div class="input-and-button">
             <input
-                id="destinations-search-box"
-                name="destinations"
-                class="controls"
-                type="text"
-                placeholder="Enter roadtrip destinations"
-                required
+              id="destinations-search-box"
+              name="destinations"
+              class="searchbox"
+              type="text"
+              placeholder="Enter roadtrip stays"
+              required
             />
-            <input type="submit" value="add city" />
+            <input class="form-button" type="submit" value="add city"/>
+          </div>
         </form>
-        <button id="user-current-address-button" onclick= "getCurrentAddress()">Use current location</button>
-        </div>
-
-        <div id="cities-container">
-            <div id="start-location"></div>
-            <div id="destinations-container"> </div>
-        </div>
-
+        
+        <div id="destinations-container"> </div>
+      </div>
+      <a id='next-button' href = "/interests.html">Next</a>
     </div>
-    <a id='next-button' href = "/interests.html">Next</a>
   </body>
 </html>

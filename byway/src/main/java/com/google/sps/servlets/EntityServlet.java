@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
+import com.google.common.flogger.FluentLogger;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -22,6 +23,9 @@ import com.google.sps.data.UserInfo;
 
 @WebServlet("/entity")
 public class EntityServlet extends HttpServlet {
+
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -91,7 +95,7 @@ public class EntityServlet extends HttpServlet {
       tripIds.add(tripKey);
       userEntity.setProperty("tripIds", tripIds);
     } catch (EntityNotFoundException exception) {
-      logger.atInfo().withCause(e).log("Unable to find User Entity %s", userKey);
+      logger.atInfo().withCause(exception).log("Unable to find User Entity %s", userKey);
       return;
     }
   }

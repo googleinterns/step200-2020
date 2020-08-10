@@ -22,15 +22,15 @@ const defaultCenter = Object.freeze({
 });
 
 let userlatlng = {lat:null , lng: null};
+let map;
 
 function initializeDestinationsPage(){
-    initAutocomplete(); 
-    setProgressBar(1); 
-    fetchDestinations().then(response => {
-      updateLocations(response);
-      updateStartDestination(response);
-    });
-    
+  initAutocomplete(); 
+  setProgressBar(1); 
+  fetchDestinations().then(response => {
+    updateLocations(response);
+    updateStartDestination(response);
+  }); 
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -39,7 +39,7 @@ const tripKey = urlParams.get('tripKey');
 * Creates map and search boxes with autocomplete
 */
 function initAutocomplete() {   
-  const map = new google.maps.Map(document.getElementById("map"), {
+  map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: defaultCenter.lat, lng: defaultCenter.lng },
     zoom: 13,
     mapTypeId: "roadmap"
@@ -61,19 +61,15 @@ function initAutocomplete() {
     window.alert("Geolocation failed");
   }
   // Create the search boxes and link them to the UI elements.
-  const START_SEARCH_BOX = 'start-search-box';
-  const DESTINATIONS_SEARCH_BOX= 'destinations-search-box';
-  createSearchBox(map,START_SEARCH_BOX);
-  createSearchBox(map,DESTINATIONS_SEARCH_BOX);
-  
+  createSearchBox('start-search-box');
+  createSearchBox('destinations-search-box'); 
 }
 
 /** 
  * Creates a search box
- * @param {google.maps.Map} map
  * @param {string} container
  */
-function createSearchBox(map,container){
+function createSearchBox(container){
   const start = document.getElementById(container);
   const searchBox = new google.maps.places.SearchBox(start);
 
@@ -82,11 +78,11 @@ function createSearchBox(map,container){
   });
   
   searchBox.addListener("places_changed", () => {
-    addMarker(searchBox,map);
+    addMarker(searchBox);
   });
 }
 
-function addMarker(searchBox,map){
+function addMarker(searchBox){
     let markers = [];
     const places = searchBox.getPlaces();
 
@@ -136,15 +132,48 @@ function addMarker(searchBox,map){
 * fetches start location and destinations from DestinationsServlet and adds to DOM
 */
 function updateLocations(locationData){
-    document.getElementById('start-location').innerText = "Start Location :" + locationData.start;
     const container = document.getElementById('destinations-container');
-    container.innerText = "Destinations:";
+    container.innerText = "";
     let destinationArray= locationData.destinations;
     destinationArray.forEach((destination) => {
-      let destinationToAdd = document.createElement('p');
-      destinationToAdd.innerText = destination;
-      container.appendChild(destinationToAdd);
+      const request = {
+        query: destination,
+        fields: ["name", "photos", "formatted_address", "rating", "business_status"]
+      };
+      let service = new google.maps.places.PlacesService(map);
+      service.findPlaceFromQuery(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          addLocationToDom(results, container);
+        }
+        else{
+          alert("Location Invalid");
+        }
+      });  
     }) 
+}
+
+/** 
+* adds Users Input Destinations to DOM with image and address
+*/
+function addLocationToDom(results,container){
+  let destinationToAdd = document.createElement('div');
+  destinationToAdd.className = 'location';
+  
+  let destinationPhoto = document.createElement('img');
+  destinationPhoto.src = results[0].photos[0].getUrl();
+  let destinationInfo = document.createElement('p');
+  destinationInfo.className = 'destination-info';
+  let destinationName = document.createElement('p');
+  destinationName.innerText = results[0].name;
+  let destinationAddress= document.createElement('p');
+  destinationAddress.innerText = results[0].formatted_address;
+
+  destinationInfo.appendChild(destinationName);
+  destinationInfo.appendChild(destinationAddress);
+
+  container.append(destinationToAdd);
+  destinationToAdd.appendChild(destinationPhoto);
+  destinationToAdd.appendChild(destinationInfo);
 }
 
 /**  
@@ -184,7 +213,6 @@ function getCurrentAddress(){
       }
   });
 }
-
 /** 
 * add event listener for submit button
 */
