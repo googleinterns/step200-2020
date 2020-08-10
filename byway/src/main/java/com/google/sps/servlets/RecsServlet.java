@@ -16,7 +16,9 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,13 @@ import javax.servlet.http.HttpServletResponse;
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
+  /* Intializes a mock Trip entity **/
+  public void init(){
+    Entity tripEntity = new Entity(Trip.KIND, 1234);
+    // tripEntity.setProperty("id", 1234);
+    datastore.put(tripEntity);
+  }
 
   /* Passes hard-coded data to be shown in the recommendations panel
    * TODO: Replace with actual arraylist of recommended places based on TextSearch in
