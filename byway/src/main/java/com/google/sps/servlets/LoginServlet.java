@@ -32,11 +32,10 @@ public class LoginServlet extends HttpServlet {
     
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    createTripEntity();
     boolean loginStatus = userService.isUserLoggedIn();
     String url;
     if (!loginStatus) {
-      url = userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGSIN +"?tripKey=" + KeyFactory.keyToString(tripKey));
+      url = userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGSIN);
     }
    
     else {
@@ -47,18 +46,5 @@ public class LoginServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(json);
     return;
-  }
-  
-  /*
-  * Adds new Trip entity with empty properties
-  **/
-  public void createTripEntity(){
-    Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND);
-    tripEntity.setProperty("start", "");
-    tripEntity.setProperty("destinations", new ArrayList<String>());
-    tripEntity.setProperty("interests", new ArrayList<String>());
-    tripEntity.setProperty("route", new ArrayList<String>());
-    datastore.put(tripEntity);
-    tripKey = tripEntity.getKey();
   }
 }

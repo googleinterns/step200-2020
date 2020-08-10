@@ -37,8 +37,6 @@ public class DestinationsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     tripKey = KeyFactory.stringToKey(request.getParameter("tripKey"));
-    addUserEntity(tripKey);
-
     Entity entity; 
     try{ 
       entity = datastore.get(tripKey) ;
@@ -93,38 +91,5 @@ public class DestinationsServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }
-  
 
-  /*
-  * Adds new user entity if user has not logged in before
-  * Adds tripKey to the user's array of trips
-  **/
-  public void addUserEntity(Key tripKey){
-    boolean userExists = false;
-    String userId = userService.getCurrentUser().getUserId();
-    String userEmail = userService.getCurrentUser().getEmail();
-    Query query = new Query("User");
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity currentEntity : results.asIterable()) {
-        String entityId = (String) currentEntity.getProperty("id");
-        if (entityId.equals(userId)){
-          userExists = true; 
-          ArrayList<Key> trips = (ArrayList<Key>) currentEntity.getProperty("trips");
-          if (!trips.contains(tripKey)){
-            trips.add(tripKey);
-          }
-          currentEntity.setProperty("trips",trips);
-          datastore.put(currentEntity);   
-        }
-    }
-    if (userExists == false){
-      Entity userEntity = new Entity("User");
-      userEntity.setProperty("id", userId);
-      userEntity.setProperty("email", userEmail); 
-      ArrayList<Key> trips = new ArrayList<Key>();
-      trips.add(tripKey);
-      userEntity.setProperty("trips", trips);
-      datastore.put(userEntity);
-    }
-  }
 }
