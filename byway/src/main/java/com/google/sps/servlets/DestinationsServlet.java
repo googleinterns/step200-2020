@@ -32,11 +32,10 @@ public class DestinationsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserService userService = UserServiceFactory.getUserService();
-  private Key tripKey;
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    tripKey = KeyFactory.stringToKey(request.getParameter("tripKey"));
+    Key tripKey = KeyFactory.stringToKey(request.getParameter("tripKey"));
     Entity entity; 
     try{ 
       entity = datastore.get(tripKey) ;
@@ -62,6 +61,7 @@ public class DestinationsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    Key tripKey = KeyFactory.stringToKey(request.getParameter("tripKey"));
     Entity entity;
     String start = request.getParameter("start-location");
     String destination = request.getParameter("destinations");

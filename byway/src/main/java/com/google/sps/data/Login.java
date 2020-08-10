@@ -13,7 +13,9 @@
 // limitations under the License.
 
 package com.google.sps.data;
+com.google.errorprone.annotations.Immutable
 
+@Immutable
 public final class Login{ 
   private final boolean status;
   private final String url;
