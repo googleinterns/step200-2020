@@ -53,7 +53,7 @@ public class EntityServlet extends HttpServlet {
     return tripKey;
   }
 
-  public UserInfo addUserEntity(com.google.appengine.api.users.User user, Key tripKey) {
+  public UserInfo addUserEntity(com.google.appengine.api.users.User user) {
     // Create a key based on the user ID
     Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
     UserInfo userInfo;
@@ -68,7 +68,7 @@ public class EntityServlet extends HttpServlet {
       Entity newUserEntity = new Entity(userKey);
       newUserEntity.setProperty("email", user.getEmail());
       newUserEntity.setProperty("userId", user.getUserId());
-      addTripForUser(newUserEntity, tripKey);
+      newUserEntity.setProperty("tripIds", new ArrayList<String>());
       datastore.put(newUserEntity);
       userInfo = UserInfo.fromEntity(newUserEntity);
     }
