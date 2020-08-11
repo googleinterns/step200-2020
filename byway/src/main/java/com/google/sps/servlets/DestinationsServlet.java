@@ -49,7 +49,7 @@ public class DestinationsServlet extends HttpServlet {
     } else {
       destinations = new ArrayList<String>();
     }
-    Trip trip = Trip.FromEntity(entity);
+    Trip trip = Trip.fromEntity(entity);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }
@@ -81,7 +81,7 @@ public class DestinationsServlet extends HttpServlet {
     destinations.add(destination);
     entity.setProperty("destinations", destinations);
     datastore.put(entity);
-    Trip trip = Trip.FromEntity(entity);
+    Trip trip = Trip.fromEntity(entity);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }

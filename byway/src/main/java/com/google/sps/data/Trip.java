@@ -18,10 +18,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
+import java.util.List;
 /**
  * A class to make a Trip type, containing a specific id, destinations, interests and routes to be
  * used when updating a trip.
@@ -30,56 +32,90 @@ public final class Trip {
 
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
-  private final String id;
+  private final String keyString;
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
+  /**
+   * Constructor to make an instance of Trip.
+   *
+   * @param keyString string representation of Key for this entity
+   * @param start plain text of origin for this trip
+   * @param destinations list of destinations for this trip as plain text
+   * @param interests list of interests for this trip as plain text
+   * @param route list of destinations and stops for this trip as plain text
+   */
   public Trip(
-      String id,
+      String keyString,
       String start,
       Collection<String> destinations,
       Collection<String> interests,
       Collection<String> route) {
-    this.id = checkNotNull(id, "id");
+    this.keyString = keyString;
     this.start = checkNotNull(start, "start");
-    Collection<String> validDestinations = checkNotNull(destinations, "destinations");
-    Collection<String> validInterests = checkNotNull(interests, "interests");
-    Collection<String> validRoute = checkNotNull(route, "route");
-    this.destinations = new ArrayList<String>(validDestinations);
-    this.interests = new ArrayList<String>(validInterests);
-    this.route = new ArrayList<String>(validRoute);
+    checkNotNull(destinations, "destinations");
+    checkNotNull(interests, "interests");
+    checkNotNull(route, "route");
+    this.destinations = new ArrayList<String>(destinations);
+    this.interests = new ArrayList<String>(interests);
+    this.route = new ArrayList<String>(route);
   }
 
-  public ArrayList<String> getInterests() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.interests);
+  /* Retrieves interests for the trip as plain text. */
+  public List<String> getInterests() {
+    return Collections.unmodifiableList(this.interests);
   }
 
-  public ArrayList<String> getRoute() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.route);
+  /** Retrieves the route of the trip with a list of stops and destinations as plain text. */
+  public List<String> getRoute() {
+    return Collections.unmodifiableList(this.route);
   }
 
-  public ArrayList<String> getDestinations() {
-    return (ArrayList<String>) Collections.unmodifiableList(this.destinations);
+  /**
+   * Retrieves the destinations of the trip as a list with plain text containing the name of the
+   * destinations.
+   */
+  public List<String> getDestinations() {
+    return Collections.unmodifiableList(this.destinations);
   }
 
-  public String getTripId() {
-    return this.id;
+  /** Retrieves the converted string version of the key to reference this Trip in datastore. */
+  public String getKeyString() {
+    return this.keyString;
   }
 
+  /* Retrieves the starting point of the trip as plain text. */
   public String getStart() {
     return this.start;
   }
 
-  public static Trip FromEntity(Entity tripEntity) {
+  /**
+   * Converts the saved string representation of the Key back into a Key type to reference in
+   * datastore.
+   */
+  public Key getKey() {
+    return KeyFactory.stringToKey(keyString);
+  }
+
+  /**
+   * Creates a Trip instance from the entity passed in. Checks for valid properties of the entity to
+   * make a valid Trip instance.
+   *
+   * @param tripEntity entity from datastore
+   */
+  public static Trip fromEntity(Entity tripEntity) {
+    checkNotNull(tripEntity, "tripEntity");
     checkArgument(
         tripEntity.getKind().equals(DATASTORE_ENTITY_KIND),
         "Wrong Entity kind. Expected %s, received %s",
         DATASTORE_ENTITY_KIND,
         tripEntity.getKind());
-    String id =
-        checkNotNull((String) tripEntity.getProperty("id"), "Trip entity does not contain an id");
+    String keyString =
+        checkNotNull(
+            KeyFactory.keyToString(tripEntity.getKey()),
+            "Trip entity does not contain a key string");
     String start =
         checkNotNull(
             (String) tripEntity.getProperty("start"), "Trip entity does not contain a start");
@@ -95,6 +131,6 @@ public final class Trip {
         checkNotNull(
             (ArrayList<String>) tripEntity.getProperty("route"),
             "Trip entity does not contain route");
-    return new Trip(id, start, destinations, interests, route);
+    return new Trip(keyString, start, destinations, interests, route);
   }
 }

@@ -224,7 +224,7 @@ window.onload = function(){
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new  FormData(document.getElementById("user-input-form"));
-    fetch('/api/destinations', {method: 'POST', body:formData}).then((response)=>
+    fetch('/api/destinations?tripKey=' + tripKey, {method: 'POST', body:formData}).then((response)=>
         response.json()).then(locationData => {
         updateLocations(locationData);
         updateStartDestination(locationData);
