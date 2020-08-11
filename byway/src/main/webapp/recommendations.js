@@ -167,6 +167,9 @@ function addRecommendations(results) {
  * about a place
  */
 function placeMarker(place) {
+  let infoWindow = new google.maps.InfoWindow({
+    content: place.name
+  });
   const image = {
     url: './images/stopsMarker.png',
     scaledSize: new google.maps.Size(40,40)
@@ -176,5 +179,8 @@ function placeMarker(place) {
     map: map,
     title: place.name,
     icon: image
+  });
+  marker.addListener("click", () => {
+    infoWindow.open(map, marker);
   });
 }
