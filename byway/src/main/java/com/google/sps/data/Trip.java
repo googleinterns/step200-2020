@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * A class to make a Trip type, containing a specific id, destinations, interests and routes to be
  * used when updating a trip.

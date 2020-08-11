@@ -48,7 +48,6 @@ public final class UserInfo {
     this.tripIds = new ArrayList<>(tripIds);
   }
 
-
   /* Retrieves user email as a String. */
   public String getEmail() {
     return this.email;
