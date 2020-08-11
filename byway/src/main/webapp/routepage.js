@@ -65,15 +65,41 @@ function calcRoute() {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints: Array.from(waypoints)
+    waypoints: Array.from(waypoints),
+    optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
+      // let route = response.routes[0];
+      computeTotalDistance(response);
     } else {
       window.alert("Could not calculate route due to: " + status);
     }
   });
+}
+
+function computeTotalDistance(result) {
+  var totalDist = 0;
+  var totalTime = 0;
+  var myroute = result.routes[0];
+  for (i = 0; i < myroute.legs.length; i++) {
+    totalDist += myroute.legs[i].distance.value;
+    totalTime += myroute.legs[i].duration.value;
+  }
+
+  totalDist = (totalDist / 1000).toFixed(2);
+  hours = Math.floor(totalTime / 3600);
+  minutes = Math.round((totalTime - hours*3600) / 60);
+ 
+  document.getElementById("distance").innerText = totalDist + "km";
+  duration = "";
+  if(hours == 0){
+    duration = minutes + " mins";
+  } else{
+    duration = hours + " hr " + minutes + " mins";
+  }
+  document.getElementById("duration").innerText = duration;
 }
  
 /** Clear the stops panel in the html */
