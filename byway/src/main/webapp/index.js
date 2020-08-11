@@ -10,7 +10,7 @@ window.onload = function(){
     container.append(loginLink);
   }
   else{
-    window.location.href = "/destinations.html";
+    window.location.href = "/landing.html";
   }
   });
 }
