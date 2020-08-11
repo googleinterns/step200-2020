@@ -39,8 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 public final class StopsServlet extends HttpServlet {
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-  private static final int SC_NO_CONTENT = 204;
-  private static final int SC_NOT_FOUND = 404;
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -56,7 +54,7 @@ public final class StopsServlet extends HttpServlet {
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to get the stops", key);
-      response.setStatus(SC_NOT_FOUND);
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
     stops = (ArrayList<String>) entity.getProperty("destinations");
@@ -74,12 +72,12 @@ public final class StopsServlet extends HttpServlet {
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
-      response.setStatus(SC_NOT_FOUND);
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
     entity.setProperty("destinations", stops);
     datastore.put(entity);
-    response.setStatus(SC_NO_CONTENT);
+    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
   }
 }
