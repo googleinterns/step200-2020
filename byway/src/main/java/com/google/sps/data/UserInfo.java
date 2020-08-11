@@ -34,6 +34,7 @@ public final class UserInfo {
   private final String userId;
   private final ArrayList<String> tripIds;
 
+  /* Constructor to make an instance of UserInfo. */
   public UserInfo(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
     this.userId = checkNotNull(userId, "userId");
@@ -41,22 +42,32 @@ public final class UserInfo {
     this.tripIds = new ArrayList<>(tripIds);
   }
 
+  /* Retrieves user email as a String. */
   public String getEmail() {
     return this.email;
   }
 
+  /** Retrieves a list of trip IDs. Stored as strings which are convertible to Key types. */
   public List<String> getTripIds() {
     return Collections.unmodifiableList(this.tripIds);
   }
 
+  /* Retrieves the unique user ID as a String. */
   public String getUserId() {
     return this.userId;
   }
 
+  /**
+   * Creates a Key to reference this entity on datastore with the user id and the kind of UserInfo.
+   */
   public Key getKey() {
-    return KeyFactory.stringToKey(this.userId);
+    return KeyFactory.createKey(DATASTORE_ENTITY_KIND, this.userId);
   }
 
+  /**
+   * Creates an instance of this class from the provided Entity. Checks for valid properties of the
+   * entity to make a valid UserInfo instance.
+   */
   public static UserInfo fromEntity(Entity userEntity) {
     checkNotNull(userEntity, "User entity is null");
     checkArgument(

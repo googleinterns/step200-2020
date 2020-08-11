@@ -39,6 +39,7 @@ public final class Trip {
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
+  /* Constructor to make an instance of Trip. */
   public Trip(
       String keyString,
       String start,
@@ -55,30 +56,46 @@ public final class Trip {
     this.route = new ArrayList<String>(route);
   }
 
+  /* Retrieves interests for the trip as plain text. */
   public List<String> getInterests() {
     return Collections.unmodifiableList(this.interests);
   }
 
+  /** Retrieves the route of the trip with a list of stops and destinations as plain text. */
   public List<String> getRoute() {
     return Collections.unmodifiableList(this.route);
   }
 
+  /**
+   * Retrieves the destinations of the trip as a list with plain text containing the name of the
+   * destinations.
+   */
   public List<String> getDestinations() {
     return Collections.unmodifiableList(this.destinations);
   }
 
+  /** Retrieves the converted string version of the key to reference this Trip in datastore. */
   public String getKeyString() {
     return this.keyString;
   }
 
+  /* Retrieves the starting point of the trip as plain text. */
   public String getStart() {
     return this.start;
   }
 
+  /**
+   * Converts the saved string representation of the Key back into a Key type to reference in
+   * datastore.
+   */
   public Key getKey() {
     return KeyFactory.stringToKey(keyString);
   }
 
+  /* Creates a Trip instance from the entity passed in.
+   * Checks for valid properties of the entity to make a valid
+   * Trip instance.
+   */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");
     checkArgument(
