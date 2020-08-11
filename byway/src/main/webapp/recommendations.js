@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google */
+/* global google, destination, step, interest, region, result */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
@@ -131,7 +131,7 @@ async function loadRecommendations() {
       await delayPromise(250);
       let request = {
         location: region,
-        map: map,
+        radius: RADIUS,
         query: interest
       }
       const results = await new Promise(resolve => {
