@@ -120,7 +120,7 @@ function createStopButton(stop){
   stopBtn.className =  "btn rec-btn";
   stopBtn.addEventListener("click", function() {
     // remove place from stops and waypoints set
-    stops = new Set([...stops].filter(stopObj => stopObj!= stop));
+    stops = new Set([...stops].filter(stopObj => stopObj != stop));
     waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
     calcRoute();
     updateStops();
