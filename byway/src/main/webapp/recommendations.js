@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google, destination, step, interest, region, result */
+/* global google */
+/* global destination:writable, step:writable, interest:writable, region:writable, result:writable */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initialize);
