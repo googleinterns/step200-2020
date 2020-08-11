@@ -45,17 +45,25 @@ function initialize() {
     zoom: 14,
     center: start
   }
-  destinations.add(start);
-  destinations.add(end);
-  for(destination of destinations) {
-    regions.push(destination);
-  }
+  addDestinations(start, end);
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   document.getElementById("route").addEventListener("click", () => {
     calcRoute(directionsService, directionsRenderer, start, end);
   });
   placesService = new google.maps.places.PlacesService(map);
+}
+
+/**
+ * Add start and end points of the route to regions to search around.
+ * Temporary set up to mimic adding several endpoints between legs.
+ */
+function addDestinations(start, end) {
+  destinations.add(start);
+  destinations.add(end);
+  for(destination of destinations) {
+    regions.push(destination);
+  }
 }
 
 /**
