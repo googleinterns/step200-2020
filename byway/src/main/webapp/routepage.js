@@ -71,7 +71,6 @@ function calcRoute() {
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
-      // let route = response.routes[0];
       computeTotalDistance(response);
     } else {
       window.alert("Could not calculate route due to: " + status);
@@ -79,13 +78,18 @@ function calcRoute() {
   });
 }
 
+/**
+ * Calculates and sums up the distance and time duration between all destinations (legs)
+ * @param {response} result response from the directions service object
+ */
 function computeTotalDistance(result) {
   var totalDist = 0;
   var totalTime = 0;
-  var myroute = result.routes[0];
-  for (i = 0; i < myroute.legs.length; i++) {
-    totalDist += myroute.legs[i].distance.value;
-    totalTime += myroute.legs[i].duration.value;
+  // full route
+  var route = result.routes[0];
+  for (i = 0; i < route.legs.length; i++) {
+    totalDist += route.legs[i].distance.value;
+    totalTime += route.legs[i].duration.value;
   }
 
   totalDist = (totalDist / 1000).toFixed(2);
@@ -93,13 +97,8 @@ function computeTotalDistance(result) {
   minutes = Math.round((totalTime - hours*3600) / 60);
  
   document.getElementById("distance").innerText = totalDist + "km";
-  duration = "";
-  if(hours == 0){
-    duration = minutes + " mins";
-  } else{
-    duration = hours + " hr " + minutes + " mins";
-  }
-  document.getElementById("duration").innerText = duration;
+  document.getElementById("duration").innerText = 
+    (hours == 0) ? minutes + " mins" : hours + " hr " + minutes + " mins";
 }
  
 /** Clear the stops panel in the html */
