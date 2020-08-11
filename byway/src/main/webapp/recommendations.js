@@ -25,9 +25,10 @@ let placesService;
 
 // Measured in meters
 let RADIUS = 1000;
-let MIN_DISTANCE = 5000;
+let MIN_DISTANCE = 4000;
 
 let interests = ["park"];
+let destinations = new Set();
 let regions = [];
 
 /**
@@ -38,11 +39,16 @@ function initialize() {
   // Modified version of Justine's implementation
   var directionsService = new google.maps.DirectionsService();
   var directionsRenderer = new google.maps.DirectionsRenderer();
-  var start = new google.maps.LatLng(33.451645, -112.063580);
-  var end = new google.maps.LatLng(34.165704, -118.288232);
+  var start = new google.maps.LatLng(37.7699298, -122.4469157);
+  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
   var mapOptions = {
     zoom: 14,
     center: start
+  }
+  destinations.add(start);
+  destinations.add(end);
+  for(destination of destinations) {
+    regions.push(destination);
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
@@ -92,7 +98,7 @@ function findRegions(directionResult) {
     let avgLng = (myRoute.steps[i].start_location.lng() + myRoute.steps[i].end_location.lng()) / 2;
     let avgLoc = {lat: avgLat, lng: avgLng};
     if(myRoute.steps[i].distance.value > MIN_DISTANCE) {
-      regions.push(myRoute.steps[i].start_location);
+      regions.push(avgLoc);
     }
   }
   console.log("size of regions: " + regions.length);
@@ -161,9 +167,14 @@ function addRecommendations(results) {
  * about a place
  */
 function placeMarker(place) {
-  new google.maps.Marker({
+  const image = {
+    url: './images/stopsMarker.png',
+    scaledSize: new google.maps.Size(40,40)
+  };
+  let marker = new google.maps.Marker({
     position: place.geometry.location,
     map: map,
-    title: place.name
+    title: place.name,
+    icon: image
   });
 }
