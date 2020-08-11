@@ -14,9 +14,8 @@
 
 package com.google.maps;
 
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlaceType;
 import com.google.gson.Gson;
+import com.google.maps.model.PlaceType;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +32,7 @@ public final class PlacesServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> places = new ArrayList<>();
-    for(PlaceType location: PlaceType.values()) {
+    for (PlaceType location : PlaceType.values()) {
       String place = formatLocation(location);
       places.add(place);
     }
@@ -41,14 +40,15 @@ public final class PlacesServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(places));
   }
 
-  /** 
+  /**
    * Format string by capitalizing and adding spaces in-between words.
+   *
    * @param location is a PlaceType that indicates a type of location/interest.
    * @return is the modified location name.
    */
   private String formatLocation(PlaceType location) {
     String place = location.toString();
-    place = place.substring(0,1).toUpperCase() + place.substring(1);
+    place = place.substring(0, 1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
   }
