@@ -13,7 +13,7 @@
 // limitations under the License.
 
 let interestsChosen = new Set();
-let tripQuery;
+let tripId;
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadContent);
@@ -34,7 +34,7 @@ function loadContent() {
 /* Parse url to retrieve the trip id. */
 function loadId() {
   let params = new URLSearchParams(location.search);
-  tripQuery = "tripId=" + params.get('tripId');
+  tripId = params.get('tripId');
 }
 
 /**
@@ -46,7 +46,7 @@ function loadForm() {
   let interestsForm = document.getElementById('interests-form');
   interestsForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    fetchPlaces(tripQuery, interestsChosen);
+    fetchPlaces(tripId, interestsChosen);
   });
 }
 
@@ -67,7 +67,7 @@ function updateStatus(place, elem) {
 
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
-  fetchPlaces(tripQuery)
+  fetchPlaces(tripId)
   .then((places) => {
     let buttonSection = document.getElementById("interests-section");
     places.forEach((place) => {
@@ -94,14 +94,14 @@ function createButtonForPlace(place) {
 
 /**
  * Gets all potential interests from server to load or sets the user's
- * specific interests for their specific trip with tripQuery. userInterests
+ * specific interests for their specific trip with tripId. userInterests
  * may be any type that is convertible to an array via Array.from. It will
  * be sent to the server as JSON in the post body.
- * @param {String tripQuery} value for tripId
+ * @param {String tripId} value for tripId
  * @param {Array} [userInterests] interests selected by user
  */
-function fetchPlaces(tripQuery, /* optional */ userInterests) {
-  const url = '/api/places?' + tripQuery;
+function fetchPlaces(tripId, /* optional */ userInterests) {
+  const url = '/api/places?' + new URLSearchParams({tripId}).toString();
   const fetchArgs = {method: 'GET'};
   if (userInterests !== undefined) {
     fetchArgs.method = 'POST';
