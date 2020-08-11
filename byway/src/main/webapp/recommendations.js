@@ -93,11 +93,11 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
  */
 function findRegions(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
-  for(let i = 0; i < myRoute.steps.length; i++) {
-    let avgLat = (myRoute.steps[i].start_location.lat() + myRoute.steps[i].end_location.lat()) / 2;
-    let avgLng = (myRoute.steps[i].start_location.lng() + myRoute.steps[i].end_location.lng()) / 2;
+  for(step of myRoute.steps) {
+    let avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
+    let avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
     let avgLoc = {lat: avgLat, lng: avgLng};
-    if(myRoute.steps[i].distance.value > MIN_DISTANCE) {
+    if(step.distance.value > MIN_DISTANCE) {
       regions.push(avgLoc);
     }
   }
@@ -151,9 +151,9 @@ async function loadRecommendations() {
 function addRecommendations(results) {
   let maxRecommendations = 1;
   let numRecommendations = 0;
-  for (let i = 0; i < results.length; i++) {
-    console.log(results[i].name);
-    placeMarker(results[i]);
+  for (result of results) {
+    console.log(result.name);
+    placeMarker(result);
     numRecommendations++;
     if(numRecommendations == maxRecommendations) {
       break;
