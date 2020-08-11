@@ -36,6 +36,7 @@ public final class UserInfo {
 
   /**
    * Constructor to make an instance of UserInfo.
+   *
    * @param email user's email as plain text
    * @param userId unique String provided by UserService
    * @param tripIds list of trip IDs as string representations of Keys to a Trip Entity
@@ -72,6 +73,7 @@ public final class UserInfo {
   /**
    * Creates an instance of this class from the provided Entity. Checks for valid properties of the
    * entity to make a valid UserInfo instance.
+   *
    * @param userInfoEntity entity from datastore
    */
   public static UserInfo fromEntity(Entity userInfoEntity) {
@@ -85,8 +87,7 @@ public final class UserInfo {
         checkNotNull(
             (String) userInfoEntity.getProperty("email"), "User entity does not contain an email");
     String userId =
-        checkNotNull(
-            userInfoEntity.getKey().getName(), "User entity does not contain a userId");
+        checkNotNull(userInfoEntity.getKey().getName(), "User entity does not contain a userId");
     ArrayList<String> tripIds =
         checkNotNull(
             (ArrayList<String>) userInfoEntity.getProperty("tripIds"),

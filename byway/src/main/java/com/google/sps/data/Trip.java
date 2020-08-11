@@ -41,6 +41,7 @@ public final class Trip {
 
   /**
    * Constructor to make an instance of Trip.
+   *
    * @param keyString string representation of Key for this entity
    * @param start plain text of origin for this trip
    * @param destinations list of destinations for this trip as plain text
@@ -100,9 +101,9 @@ public final class Trip {
   }
 
   /**
-   * Creates a Trip instance from the entity passed in.
-   * Checks for valid properties of the entity to make a valid
-   * Trip instance.
+   * Creates a Trip instance from the entity passed in. Checks for valid properties of the entity to
+   * make a valid Trip instance.
+   *
    * @param tripEntity entity from datastore
    */
   public static Trip fromEntity(Entity tripEntity) {
