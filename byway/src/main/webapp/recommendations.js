@@ -30,6 +30,9 @@ let MIN_DISTANCE = 4000;
 
 let interests = ["park"];
 let destinations = new Set();
+
+// Contains google.maps.LatLng objects.
+// Used as a center point to search around a region.
 let regions = [];
 
 /**
@@ -62,9 +65,7 @@ function initialize() {
 function addDestinations(start, end) {
   destinations.add(start);
   destinations.add(end);
-  for(destination of destinations) {
-    regions.push(destination);
-  }
+  regions.push(...destinations);
 }
 
 /**
@@ -110,7 +111,6 @@ function findRegions(directionResult) {
       regions.push(avgLoc);
     }
   }
-  console.log("size of regions: " + regions.length);
 }
 
 /**
@@ -158,13 +158,12 @@ async function loadRecommendations() {
  * @param {PlaceResults[] results} places found with PlaceResult type.
  */
 function addRecommendations(results) {
-  let maxRecommendations = 1;
+  const MAX_RECOMMENDATIONS = 1;
   let numRecommendations = 0;
   for (result of results) {
-    console.log(result.name);
     placeMarker(result);
     numRecommendations++;
-    if(numRecommendations == maxRecommendations) {
+    if(numRecommendations == MAX_RECOMMENDATIONS) {
       break;
     }
   }
@@ -180,12 +179,12 @@ function placeMarker(place) {
     content: place.name
   });
   const image = {
-    url: './images/stopsMarker.png',
+    url: '/images/stopsMarker.png',
     scaledSize: new google.maps.Size(40,40)
   };
   let marker = new google.maps.Marker({
     position: place.geometry.location,
-    map: map,
+    map,
     title: place.name,
     icon: image
   });
