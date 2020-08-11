@@ -54,10 +54,10 @@ public final class StopsServlet extends HttpServlet {
     try {
       entity = datastore.get(key);
     } catch (EntityNotFoundException e) {
-        logger.atInfo().withCause(e).log(
+      logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to get the stops", key);
-        response.setStatus(SC_NOT_FOUND);
-        return;
+      response.setStatus(SC_NOT_FOUND);
+      return;
     }
     stops = (ArrayList<String>) entity.getProperty("destinations");
     response.setContentType("application/json;");
@@ -72,12 +72,12 @@ public final class StopsServlet extends HttpServlet {
     try {
       entity = datastore.get(key);
     } catch (EntityNotFoundException e) {
-        logger.atInfo().withCause(e).log(
+      logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
-        response.setStatus(SC_NOT_FOUND);
-        return;
+      response.setStatus(SC_NOT_FOUND);
+      return;
     }
-   
+
     entity.setProperty("destinations", stops);
     datastore.put(entity);
     response.setStatus(SC_NO_CONTENT);
