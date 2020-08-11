@@ -34,7 +34,12 @@ public final class UserInfo {
   private final String userId;
   private final ArrayList<String> tripIds;
 
-  /* Constructor to make an instance of UserInfo. */
+  /**
+   * Constructor to make an instance of UserInfo.
+   * @param email user's email as plain text
+   * @param userId unique String provided by UserService
+   * @param tripIds list of trip IDs as string representations of Keys to a Trip Entity
+   */
   public UserInfo(String email, String userId, Collection<String> tripIds) {
     this.email = checkNotNull(email, "email");
     this.userId = checkNotNull(userId, "userId");
@@ -67,23 +72,24 @@ public final class UserInfo {
   /**
    * Creates an instance of this class from the provided Entity. Checks for valid properties of the
    * entity to make a valid UserInfo instance.
+   * @param userInfoEntity entity from datastore
    */
-  public static UserInfo fromEntity(Entity userEntity) {
-    checkNotNull(userEntity, "User entity is null");
+  public static UserInfo fromEntity(Entity userInfoEntity) {
+    checkNotNull(userInfoEntity, "User entity is null");
     checkArgument(
-        userEntity.getKind().equals(DATASTORE_ENTITY_KIND),
+        userInfoEntity.getKind().equals(DATASTORE_ENTITY_KIND),
         "Wrong entity kind. Expected %s, received %s",
         DATASTORE_ENTITY_KIND,
-        userEntity.getKind());
+        userInfoEntity.getKind());
     String email =
         checkNotNull(
-            (String) userEntity.getProperty("email"), "User entity does not contain an email");
+            (String) userInfoEntity.getProperty("email"), "User entity does not contain an email");
     String userId =
         checkNotNull(
-            userEntity.getKey().getName(), "User entity does not contain a userId");
+            userInfoEntity.getKey().getName(), "User entity does not contain a userId");
     ArrayList<String> tripIds =
         checkNotNull(
-            (ArrayList<String>) userEntity.getProperty("tripIds"),
+            (ArrayList<String>) userInfoEntity.getProperty("tripIds"),
             "User entity does not contain trip Ids");
     return new UserInfo(email, userId, tripIds);
   }

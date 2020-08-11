@@ -39,7 +39,14 @@ public final class Trip {
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
-  /* Constructor to make an instance of Trip. */
+  /**
+   * Constructor to make an instance of Trip.
+   * @param keyString string representation of Key for this entity
+   * @param start plain text of origin for this trip
+   * @param destinations list of destinations for this trip as plain text
+   * @param interests list of interests for this trip as plain text
+   * @param route list of destinations and stops for this trip as plain text
+   */
   public Trip(
       String keyString,
       String start,
@@ -92,9 +99,11 @@ public final class Trip {
     return KeyFactory.stringToKey(keyString);
   }
 
-  /* Creates a Trip instance from the entity passed in.
+  /**
+   * Creates a Trip instance from the entity passed in.
    * Checks for valid properties of the entity to make a valid
    * Trip instance.
+   * @param tripEntity entity from datastore
    */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");
