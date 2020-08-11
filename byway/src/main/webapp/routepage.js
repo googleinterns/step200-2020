@@ -13,11 +13,11 @@
 // limitations under the License.
  
 // copies of recommendations and selected stops, stored as sets for synchronous updating
-let recs = new Set;
-let stops = new Set;
+let recs = new Set();
+let stops = new Set();
  
 // location representations of stops array
-let waypoints = new Set;
+let waypoints = new Set();
  
 // object that communicates with the GMaps API service
 let directionsService;
@@ -88,7 +88,9 @@ function computeTotalDistance(result) {
   // full route
   var route = result.routes[0];
   for (i = 0; i < route.legs.length; i++) {
+    // in meters
     totalDist += route.legs[i].distance.value;
+    // in seconds
     totalTime += route.legs[i].duration.value;
   }
 
@@ -135,8 +137,8 @@ function renderStopsList(){
   })
 }
  
-/** Render stop list  
- *  @param {String} stop a String to add as a button in the schedule panel in the html
+/** Creates a button in the schedule panel in the html
+ *  @param {String} stop a String to add as a button 
  *  @return {button} stopBtn a button showing a selected stop
  */
 function createStopButton(stop){
@@ -145,7 +147,7 @@ function createStopButton(stop){
   stopBtn.className =  "btn rec-btn";
   stopBtn.addEventListener("click", function() {
     // remove place from stops and waypoints set
-    stops = new Set([...stops].filter(stopObj => stopObj != stop));
+    stops.delete(stop);
     waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
     calcRoute();
     updateStops();
@@ -192,8 +194,8 @@ function renderRecsList(){
   });
 }
  
-/** Render stop list  
- *  @param {String} rec a String to add as a button in the recommendations panel in the html
+/** Creates a button in the recommendations panel in the html 
+ *  @param {String} rec a String to add as a button 
  *  @return {button} recBtn a button showing a recommended place
  */
 function createRecButton(rec){
@@ -203,7 +205,7 @@ function createRecButton(rec){
   recBtn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
     stops.add(rec);
-    //  if new place is add it to the selected stops and redraw route
+    //  if new place, add it to the selected stops and redraw route
     if(!Array.from(waypoints).find(waypoint => waypoint.location === rec)){
       waypoints.add({location:rec});
       calcRoute();
