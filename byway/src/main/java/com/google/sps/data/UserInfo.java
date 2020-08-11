@@ -80,7 +80,7 @@ public final class UserInfo {
             (String) userEntity.getProperty("email"), "User entity does not contain an email");
     String userId =
         checkNotNull(
-            (String) userEntity.getProperty("userId"), "User entity does not contain a userId");
+            userEntity.getKey().getName(), "User entity does not contain a userId");
     ArrayList<String> tripIds =
         checkNotNull(
             (ArrayList<String>) userEntity.getProperty("tripIds"),

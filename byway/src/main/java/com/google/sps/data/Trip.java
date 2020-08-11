@@ -46,7 +46,7 @@ public final class Trip {
       Collection<String> destinations,
       Collection<String> interests,
       Collection<String> route) {
-    this.keyString = checkNotNull(keyString, "keyString");
+    this.keyString = keyString;
     this.start = checkNotNull(start, "start");
     checkNotNull(destinations, "destinations");
     checkNotNull(interests, "interests");
