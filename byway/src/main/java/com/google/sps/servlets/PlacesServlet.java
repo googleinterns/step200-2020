@@ -20,10 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
@@ -46,6 +43,7 @@ public final class PlacesServlet extends HttpServlet {
 
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -81,10 +79,13 @@ public final class PlacesServlet extends HttpServlet {
     Entity trip;
     try {
       trip = datastore.get(tripKey);
-      trip.setProperty("interests", interests);
-      datastore.put(trip);
     } catch(EntityNotFoundException e) {
       //thrown automatically
+      logger.atInfo().withCause(e).log("Unable to find Trip Entity with key string %s", tripKeyString);
+      response.setStatus(response.SC_NOT_FOUND);
+      return;
     }
+    trip.setProperty("interests", interests);
+    datastore.put(trip);
   }
 }
