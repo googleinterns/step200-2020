@@ -42,7 +42,7 @@ public final class StopsServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final Key key = KeyFactory.createKey(Trip.KIND, 1234);
+  private final Key key = KeyFactory.createKey(Trip.DATASTORE_ENTITY_KIND, 1234);
 
   /* Passes saved destinations stops (if any) to be shown in the schedule panel */
   @Override
