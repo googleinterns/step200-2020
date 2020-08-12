@@ -54,7 +54,6 @@ public class DestinationsServlet extends HttpServlet {
     Entity entity;
     String start = request.getParameter("start-location");
     String destination = request.getParameter("destinations");
-    ArrayList<String> destinations;
     try {
       entity = datastore.get(tripKey);
     } catch (EntityNotFoundException e) {
