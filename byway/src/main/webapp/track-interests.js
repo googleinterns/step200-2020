@@ -22,13 +22,13 @@ if(document.readyState === 'loading') {
 }
 
 /**
- * Loads the content of the page by loading buttons
- * and the form tracking buttons selected.
+ * Loads the content of the page by loading the trip
+ * id of the user and the buttons with interests
+ * they can select.
  */
 function loadContent() {
   getTripIdFromUrl();
   loadButtonsWithInterests();
-  loadFormToSaveInterests();
 }
 
 /* Parse url to retrieve the trip id and load the next page with it. */
@@ -43,19 +43,6 @@ function getTripIdFromUrl() {
     let nextPage = document.getElementById("next-page");
     nextPage.href = "/generator.html?" + new URLSearchParams({tripId}).toString();
   }
-}
-
-/**
- * Sets properties to the interest form on the html
- * page. Handles submit event to keep user on the
- * same page and send information through a fetch request.
- */
-function loadFormToSaveInterests() {
-  let interestsForm = document.getElementById('interests-form');
-  interestsForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    fetchPlaces(tripId, interestsChosen);
-  });
 }
 
 /** 
@@ -100,7 +87,10 @@ function loadButtonsWithInterests() {
 function createButtonForPlace(place) {
   let button = document.createElement("button");
   button.innerText = place;
-  button.addEventListener('click', () => updateStatus(place, button));
+  button.addEventListener('click', () => {
+      updateStatus(place, button);
+      fetchPlaces(tripId, interestsChosen);
+  });
   button.className = "interestBtn";
   return button;
 }
