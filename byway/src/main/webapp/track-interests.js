@@ -35,8 +35,14 @@ function loadContent() {
 function getTripIdFromUrl() {
   let params = new URLSearchParams(location.search);
   tripId = params.get('tripId');
-  let nextPage = document.getElementById("next-page");
-  nextPage.href = "/generator.html?" + new URLSearchParams({tripId}).toString();
+  if(tripId === null) {
+    // Send back to page where a trip can be made
+    alert("tripId not created! Create a new trip.");
+    window.location.href = '/index.html';
+  } else {
+    let nextPage = document.getElementById("next-page");
+    nextPage.href = "/generator.html?" + new URLSearchParams({tripId}).toString();
+  }
 }
 
 /**
