@@ -62,7 +62,7 @@ public final class UserInfo {
     return Collections.unmodifiableList(this.tripIds);
   }
 
-  public void addTripId(String tripKey){
+  public void addTripId(String tripKey) {
     tripIds.add(tripKey);
   }
 
@@ -103,12 +103,12 @@ public final class UserInfo {
     return new UserInfo(email, userId, tripIds);
   }
 
-   public Entity toEntity(DatastoreService datastore) {
-     Entity userEntity;
-     try {
-       userEntity = datastore.get(this.getKey());
-       userEntity.setProperty("email", this.email);
-       userEntity.setProperty("tripIds", this.tripIds);
+  public Entity toEntity(DatastoreService datastore) {
+    Entity userEntity;
+    try {
+      userEntity = datastore.get(this.getKey());
+      userEntity.setProperty("email", this.email);
+      userEntity.setProperty("tripIds", this.tripIds);
     } catch (EntityNotFoundException exception) {
       userEntity = new Entity(this.getKey());
       userEntity.setProperty("email", this.email);
