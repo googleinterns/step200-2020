@@ -37,6 +37,8 @@ function updateStatus(place, elem) {
 
 /** Display all the buttons onscreen with independent onClick events. */
 function loadButtons() {
+  //Temp set-up: will call setProgressBar in appropriate function after store-interests PR
+  setProgressBar(2);
   fetch('/api/places')
   .then(response => response.json())
   .then((places) => {
