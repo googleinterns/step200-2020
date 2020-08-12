@@ -5,11 +5,9 @@ import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
@@ -28,9 +26,9 @@ public class GetTripsServlet extends HttpServlet {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
-  public void init(){
+  public void init() {
     System.setProperty(
-      DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
+        DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
   }
 
   @Override
@@ -47,8 +45,8 @@ public class GetTripsServlet extends HttpServlet {
         Trip trip = Trip.fromEntity(tripEntity);
         userTrips.add(trip);
       } catch (EntityNotFoundException exception) {
-          logger.atInfo().withCause(exception).log("Trip Entity not found: %s", tripId);
-          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        logger.atInfo().withCause(exception).log("Trip Entity not found: %s", tripId);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
       }
     }
@@ -56,5 +54,4 @@ public class GetTripsServlet extends HttpServlet {
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
-
 }

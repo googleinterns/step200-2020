@@ -15,7 +15,6 @@ import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,12 +26,13 @@ public class CreateTripServlet extends HttpServlet {
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
- 
+
   @Override
-  public void init(){
+  public void init() {
     System.setProperty(
-      DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
+        DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
   }
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Key tripKey = createTripEntity();
@@ -70,8 +70,8 @@ public class CreateTripServlet extends HttpServlet {
       userEntity.setProperty("tripIds", tripIds);
       datastore.put(userEntity);
     } catch (EntityNotFoundException exception) {
-        logger.atInfo().withCause(exception).log("User Entity not found: %s", userKey);
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      logger.atInfo().withCause(exception).log("User Entity not found: %s", userKey);
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
   }
