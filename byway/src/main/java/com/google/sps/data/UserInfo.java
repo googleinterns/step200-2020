@@ -62,6 +62,10 @@ public final class UserInfo {
     return Collections.unmodifiableList(this.tripIds);
   }
 
+  public void addTripId(String tripKey){
+    tripIds.add(tripKey);
+  }
+
   /* Retrieves the unique user ID as a String. */
   public String getUserId() {
     return this.userId;
@@ -97,6 +101,20 @@ public final class UserInfo {
             (ArrayList<String>) userInfoEntity.getProperty("tripIds"),
             "User entity does not contain trip Ids");
     return new UserInfo(email, userId, tripIds);
+  }
+
+   public Entity toEntity(DatastoreService datastore) {
+     Entity userEntity;
+     try {
+       userEntity = datastore.get(this.getKey());
+       userEntity.setProperty("email", this.email);
+       userEntity.setProperty("tripIds", this.tripIds);
+    } catch (EntityNotFoundException exception) {
+      userEntity = new Entity(this.getKey());
+      userEntity.setProperty("email", this.email);
+      userEntity.setProperty("tripIds", this.tripIds);
+    }
+    return userEntity;
   }
 
   /**

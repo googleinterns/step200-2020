@@ -60,7 +60,10 @@ public class CreateTripServlet extends HttpServlet {
   }
 
   public void addTripForUser(String tripKey) {
-    Key userKey =
+    UserInfo userInfo = UserInfo.findOrCreateUser(userService, datastore);
+    userInfo.addTripId(tripKey);
+    datastore.put(userInfo.toEntity(datastore));
+    /*Key userKey =
         KeyFactory.createKey(
             UserInfo.DATASTORE_ENTITY_KIND, userService.getCurrentUser().getUserId());
     try {
@@ -72,6 +75,7 @@ public class CreateTripServlet extends HttpServlet {
     } catch (EntityNotFoundException exception) {
       logger.atInfo().withCause(exception).log("User Entity not found: %s", userKey);
       return;
-    }
+    }*/
   }
 }
+
