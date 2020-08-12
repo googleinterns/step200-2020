@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
@@ -25,6 +26,7 @@ public class CreateTripServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
  
   @Override
   public void init(){
@@ -35,7 +37,6 @@ public class CreateTripServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Key tripKey = createTripEntity();
     String keyString = KeyFactory.keyToString(tripKey);
-    System.out.println(keyString);
     addTripForUser(keyString);
     String json = gson.toJson(KeyFactory.keyToString(tripKey));
     response.setContentType("application/json");
@@ -69,6 +70,8 @@ public class CreateTripServlet extends HttpServlet {
       userEntity.setProperty("tripIds", tripIds);
       datastore.put(userEntity);
     } catch (EntityNotFoundException exception) {
+        logger.atInfo().withCause(exception).log("User Entity not found: %s", userKey);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
   }

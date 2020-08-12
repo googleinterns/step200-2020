@@ -34,6 +34,7 @@ public class DestinationsServlet extends HttpServlet {
     try {
       entity = datastore.get(tripKey);
     } catch (EntityNotFoundException e) {
+      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
@@ -57,6 +58,7 @@ public class DestinationsServlet extends HttpServlet {
     try {
       entity = datastore.get(tripKey);
     } catch (EntityNotFoundException e) {
+      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }

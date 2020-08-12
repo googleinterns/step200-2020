@@ -47,6 +47,8 @@ public class GetTripsServlet extends HttpServlet {
         Trip trip = Trip.fromEntity(tripEntity);
         userTrips.add(trip);
       } catch (EntityNotFoundException exception) {
+          logger.atInfo().withCause(exception).log("Trip Entity not found: %s", tripId);
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
       }
     }
