@@ -109,11 +109,8 @@ function createButtonForPlace(place) {
  */
 function fetchPlaces(tripId, /* optional */ userInterests) {
   const url = '/api/places?' + new URLSearchParams({tripId}).toString();
-  const fetchArgs = {method: 'GET'};
-  if (userInterests !== undefined) {
-    fetchArgs.method = 'POST';
-    fetchArgs.body = JSON.stringify(Array.from(userInterests));
-    return fetch(url, fetchArgs);
+  if(userInterests === undefined) {
+      return fetch(url).then(response => response.json());
   }
-  return fetch(url, fetchArgs).then(response => response.json());
+  return fetch(url, {method: 'POST', body: JSON.stringify(Array.from(userInterests))});
 }
