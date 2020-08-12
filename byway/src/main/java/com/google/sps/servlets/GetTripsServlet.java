@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
@@ -27,9 +28,17 @@ public class GetTripsServlet extends HttpServlet {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
+  public void init(){
+    System.setProperty(
+      DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
+  }
+
+  @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    com.google.appengine.api.users.User user = userService.getCurrentUser();
-    UserInfo userInfo = addUserEntity(user);
+    UserInfo userInfo = UserInfo.findOrCreateUser(userService, datastore);
+    if (userInfo == null) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
     List<String> userTripIds = userInfo.getTripIds();
     ArrayList<Trip> userTrips = new ArrayList<Trip>();
     for (String tripId : userTripIds) {
@@ -46,26 +55,4 @@ public class GetTripsServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
-  public UserInfo addUserEntity(com.google.appengine.api.users.User user) {
-    System.setProperty(
-        DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
-    // Create a key based on the user ID
-    Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
-    UserInfo userInfo;
-    try {
-      // try to retrieve the entity with the key
-      Entity userEntity = datastore.get(userKey);
-      datastore.put(userEntity);
-      userInfo = UserInfo.fromEntity(userEntity);
-    } catch (EntityNotFoundException exception) {
-      // If the user doesn't exist yet or is new, create a new user
-      Entity newUserEntity = new Entity(userKey);
-      newUserEntity.setProperty("email", user.getEmail());
-      newUserEntity.setProperty("userId", user.getUserId());
-      newUserEntity.setProperty("tripIds", new ArrayList<String>());
-      datastore.put(newUserEntity);
-      userInfo = UserInfo.fromEntity(newUserEntity);
-    }
-    return userInfo;
-  }
 }

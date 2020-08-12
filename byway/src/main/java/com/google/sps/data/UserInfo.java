@@ -24,6 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 
 /** A class to make a UserInfo type, containing an email, id and a list of trip IDs per user. */
 public final class UserInfo {
@@ -94,4 +101,36 @@ public final class UserInfo {
             "User entity does not contain trip Ids");
     return new UserInfo(email, userId, tripIds);
   }
+
+  /**
+   * Finds a User or creates User if User doesnt exist
+   *
+   * @param userService UserServiceFactory.getUserService()
+   * @param datastore DatastoreServiceFactory.getDatastoreService()
+   */
+   public static UserInfo findOrCreateUser(UserService userService, DatastoreService datastore) {
+    User user = userService.getCurrentUser();
+    // Create a key based on the user ID
+    if (userService.getCurrentUser() == null){
+        return null;
+    }
+    Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
+    UserInfo userInfo;
+    try {
+      // try to retrieve the entity with the key
+      Entity userEntity = datastore.get(userKey);
+      userInfo = UserInfo.fromEntity(userEntity);
+    } catch (EntityNotFoundException exception) {
+      // If the user doesn't exist yet or is new, create a new user
+      Entity newUserEntity = new Entity(userKey);
+      newUserEntity.setProperty("email", user.getEmail());
+      newUserEntity.setProperty("tripIds", new ArrayList<String>());
+      datastore.put(newUserEntity);
+      userInfo = UserInfo.fromEntity(newUserEntity);
+    }
+    return userInfo;
+  }
+
 }
+
+ 
