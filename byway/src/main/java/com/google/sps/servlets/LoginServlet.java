@@ -5,7 +5,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
-import com.google.sps.data.Login;
+import com.google.sps.data.LoginState;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,8 +30,8 @@ public class LoginServlet extends HttpServlet {
     } else {
       url = userService.createLogoutURL(URL_TO_REDIRECT_TO_AFTER_LOGSOUT);
     }
-    Login login = new Login(loginStatus, url);
-    String json = gson.toJson(login);
+    LoginState loginState = new LoginState(loginStatus, url);
+    String json = gson.toJson(loginState);
     response.setContentType("application/json;");
     response.getWriter().println(json);
     return;

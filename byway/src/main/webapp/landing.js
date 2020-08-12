@@ -1,7 +1,7 @@
 window.onload = function(){
-  fetch('/entity');
+  fetch('/api/getttrips');
   document.getElementById('create-trip').addEventListener('click', () => {
-    fetch('/entity', {method: 'POST'}).then((response) => response.json()).then((tripKey) =>{
+    fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((tripKey) =>{
       window.location.href = '/destinations.html?tripKey=' + tripKey;  
     });
   });
