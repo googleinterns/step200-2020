@@ -48,11 +48,15 @@ public final class UserInfo {
   public List<String> getTripIds() {
     return Collections.unmodifiableList(this.tripIds);
   }
+  
+  public void addTripId(String tripKey){
+    tripIds.add(tripKey);
+  }
 
   public String getUserId() {
     return this.userId;
   }
-
+  
   public Key getKey() {
     return KeyFactory.stringToKey(this.userId);
   }
@@ -75,5 +79,14 @@ public final class UserInfo {
             (ArrayList<String>) userEntity.getProperty("tripIds"),
             "User entity does not contain trip Ids");
     return new UserInfo(email, userId, tripIds);
+  }
+
+  public static Entity toEntity() {
+    Entity userEntity = datastore.get(getKey());
+    userEntity.setProperty("email", email);
+    userEntity.setPropert("userId", userId);
+    userEntity.setProperty("tripIds", tripIds);
+   
+    return userEntity;
   }
 }
