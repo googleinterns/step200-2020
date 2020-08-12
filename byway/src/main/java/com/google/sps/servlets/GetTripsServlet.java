@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
@@ -24,6 +25,7 @@ public class GetTripsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   @Override
   public void init() {

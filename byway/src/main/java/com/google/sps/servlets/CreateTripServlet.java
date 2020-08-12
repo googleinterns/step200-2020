@@ -71,7 +71,6 @@ public class CreateTripServlet extends HttpServlet {
       datastore.put(userEntity);
     } catch (EntityNotFoundException exception) {
       logger.atInfo().withCause(exception).log("User Entity not found: %s", userKey);
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
   }
