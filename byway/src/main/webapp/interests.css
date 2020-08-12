@@ -1,14 +1,10 @@
-#header {
-    padding: 5vh;
-    text-align: center;
-}
-
 #interests {
-    margin: 5vh 25vw 5vh 25vw;
-    overflow-y: scroll;
-    height: 50vh;
-    padding: 50px;
-    outline: thin solid #000000;
+  margin: 5vh 25vw 5vh 25vw;
+  overflow-y: scroll;
+  height: 50vh;
+  padding: 50px;
+  border: 2px solid #ff826c;
+  border-radius: 10%;
 }
 
 .btn {
@@ -17,7 +13,7 @@
   background-color: rgba(222,222,222, 0.4);
   border-color: rgba(0,0,0,0.5);
   border-radius: 50px;
-  border-width: 1px;
+  border-width: 2px;
   padding: 20px;
   outline: none;
   font-size: 20px;
@@ -25,10 +21,10 @@
 
 .btn.active {
   background-color: #53D2DC;
-  border-color: #3196E2;
+  border: 2px solid #3196E2;
 }
 
 p {
-    text-align: center;
-    font-size: 20px;
+  text-align: center;
+  font-size: 20px;
 }
