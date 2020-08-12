@@ -27,20 +27,19 @@ if(document.readyState === 'loading') {
  * they can select.
  */
 function loadContent() {
-  getTripIdFromUrl();
+  setTripId();
   loadButtonsWithInterests();
 }
 
-/* Parse url to retrieve the trip id and load the next page with it. */
-function getTripIdFromUrl() {
-  let params = new URLSearchParams(location.search);
-  tripId = params.get('tripId');
+/* Get the Trip id from the url and  */
+function setTripId() {
+  tripId = getTripIdFromUrl();
   if(tripId === null) {
     // Send back to page where a trip can be made
     alert("tripId not created! Create a new trip.");
     window.location.href = '/index.html';
   } else {
-    let nextPage = document.getElementById("next-page");
+    let nextPage = document.getElementById("next-button");
     nextPage.href = "/generator.html?" + new URLSearchParams({tripId}).toString();
   }
 }
