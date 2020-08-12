@@ -63,10 +63,9 @@ public class DestinationsServlet extends HttpServlet {
       return;
     }
     entity.setProperty("start", start);
-    if (entity.getProperty("destinations") == null) {
+    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
+    if (destinations == null) {
       destinations = new ArrayList<String>();
-    } else {
-      destinations = (ArrayList<String>) entity.getProperty("destinations");
     }
     destinations.add(destination);
     entity.setProperty("destinations", destinations);
