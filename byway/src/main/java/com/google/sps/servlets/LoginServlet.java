@@ -18,7 +18,7 @@ public class LoginServlet extends HttpServlet {
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  private static final String URL_TO_REDIRECT_TO_AFTER_LOGSIN = "/landing.html";
+  private static final String URL_TO_REDIRECT_TO_AFTER_LOGSIN = "/home.html";
   private static final String URL_TO_REDIRECT_TO_AFTER_LOGSOUT = "/index.html";
 
   @Override
