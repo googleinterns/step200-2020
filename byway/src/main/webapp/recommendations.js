@@ -16,19 +16,19 @@
 /* global step:writable, interest:writable, region:writable, result:writable */
 
 if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initialize);
+  document.addEventListener('DOMContentLoaded', initServices);
 } else {
-  initialize();
+  initServices();
 }
 
 let map;
 let placesService;
 
 // Measured in meters
-let RADIUS = 1000;
-let MIN_DISTANCE = 4000;
+const RADIUS = 1000;
+const MIN_DISTANCE = 4000;
 
-let interests = ["park"];
+const interests = ["park"];
 let destinations = new Set();
 
 // Contains google.maps.LatLng objects.
@@ -38,14 +38,17 @@ let regions = [];
 /**
  * Initializes the webpage with a map and other google
  * services. Creates a route between two endpoints.
+ * Note: Temp setup to mimic a route between two endpoints.
+ * TODO: Link/adapt with Justine's third page, which handles
+ * initializing the map and other google services.
  */
-function initialize() {
+function initServices() {
   // Modified version of Justine's implementation
-  var directionsService = new google.maps.DirectionsService();
-  var directionsRenderer = new google.maps.DirectionsRenderer();
-  var start = new google.maps.LatLng(37.7699298, -122.4469157);
-  var end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-  var mapOptions = {
+  let directionsService = new google.maps.DirectionsService();
+  let directionsRenderer = new google.maps.DirectionsRenderer();
+  const start = new google.maps.LatLng(37.7699298, -122.4469157);
+  const end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
+  const mapOptions = {
     zoom: 14,
     center: start
   }
@@ -78,7 +81,7 @@ function addDestinations(start, end) {
  * @param {LatLng end} ending point location
  */
 function calcRoute(directionsService, directionsRenderer, start, end) {
-  var request = {
+  const request = {
       origin:  start,
       destination: end,
       travelMode: 'DRIVING'
@@ -104,9 +107,9 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 function findRegions(directionResult) {
   const myRoute = directionResult.routes[0].legs[0];
   for(step of myRoute.steps) {
-    let avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
-    let avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
-    let avgLoc = {lat: avgLat, lng: avgLng};
+    const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
+    const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
+    const avgLoc = {lat: avgLat, lng: avgLng};
     if(step.distance.value > MIN_DISTANCE) {
       regions.push(avgLoc);
     }
@@ -130,7 +133,7 @@ async function loadRecommendations() {
   for(interest of interests) {
     for(region of regions) {
       await delayPromise(250);
-      let request = {
+      const request = {
         location: region,
         radius: RADIUS,
         query: interest
