@@ -26,23 +26,25 @@ if(document.readyState === 'loading') {
  * and the form tracking buttons selected.
  */
 function loadContent() {
-  loadId();
-  loadButtons();
-  loadForm();
+  getTripIdFromUrl();
+  loadButtonsWithInterests();
+  loadFormToSaveInterests();
 }
 
-/* Parse url to retrieve the trip id. */
-function loadId() {
+/* Parse url to retrieve the trip id and load the next page with it. */
+function getTripIdFromUrl() {
   let params = new URLSearchParams(location.search);
   tripId = params.get('tripId');
+  let nextPage = document.getElementById("next-page");
+  nextPage.href = "/generator.html?" + new URLSearchParams({tripId}).toString();
 }
 
 /**
  * Sets properties to the interest form on the html
  * page. Handles submit event to keep user on the
- * same page and send information.
+ * same page and send information through a fetch request.
  */
-function loadForm() {
+function loadFormToSaveInterests() {
   let interestsForm = document.getElementById('interests-form');
   interestsForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -51,8 +53,10 @@ function loadForm() {
 }
 
 /** 
- * Track the interests chosen in an array according to their current
- * status. Toggle their status afterwards.
+ * Check if a button's value is stored in the set interestsChosen.
+ * Remove from the set and remove the active class if the interest
+ * was previously chosen and add if the interest was not included.
+ * @param {String place} text value of the button's interest
  * @param {Element elem} tracks the current button element chosen.
  */
 function updateStatus(place, elem) {
@@ -65,8 +69,11 @@ function updateStatus(place, elem) {
   }
 }
 
-/** Display all the buttons onscreen with independent onClick events. */
-function loadButtons() {
+/**
+ * Display all the buttons onscreen with independent onClick events.
+ * Load interest values through a fetch request.
+ */
+function loadButtonsWithInterests() {
   fetchPlaces(tripId)
   .then((places) => {
     let buttonSection = document.getElementById("interests-section");
@@ -78,10 +85,10 @@ function loadButtons() {
 }
 
 /**
- * Creates a button element that contains the place of
- * interest. When clicked, it switches status and indicates
- * to the user if selected or deselected.
- * @param {String place} contains the text of place of interest.
+ * Creates a button element that contains the text of an
+ * interest. When clicked, it updates the active status to indicate
+ * if it is currently selected or not.
+ * @param {String place} text value of the button's interest
  * @returns ButtonElement
  */
 function createButtonForPlace(place) {
