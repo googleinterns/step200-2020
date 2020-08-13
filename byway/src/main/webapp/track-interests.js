@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global getTripIdFromUrl, setTripIdFor */
+/* global getTripIdFromUrl, configureTripIdForNextPage */
 
 let interestsChosen = new Set();
 let tripId;
@@ -37,7 +37,7 @@ function loadContent() {
 
 function configureTripId() {
   tripId = getTripIdFromUrl();
-  setTripIdFor(tripId, "/generator.html");
+  configureTripIdForNextPage(tripId, "/generator.html");
 }
 
 /** 
