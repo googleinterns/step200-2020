@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* global google */
-/* global step:writable, interest:writable, region:writable, result:writable */
+/* global step:writable, interest:writable, region:writable, place: writable */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initServices);
@@ -64,6 +64,8 @@ function initServices() {
 /**
  * Add start and end points of the route to regions to search around.
  * Temporary set up to mimic adding several endpoints between legs.
+ * @param {google.maps.LatLng} start coordinate of route's startpoint
+ * @param {google.maps.LatLng} end coordinate of route's endpoint
  */
 function addDestinations(start, end) {
   destinations.add(start);
@@ -75,10 +77,10 @@ function addDestinations(start, end) {
  * Creates a route between two points and loads onto the map.
  * Finds points along the path to load the regions Array.
  * Loads recommendations centered around these points.
- * @param {DirectionsService directionsService} finds directions
- * @param {DirectionsRenderer directionsRenderer} renders the route
- * @param {LatLng start} starting point location
- * @param {LatLng end} ending point location
+ * @param {DirectionsService} directionsService finds directions
+ * @param {DirectionsRenderer} directionsRenderer renders the route
+ * @param {LatLng} start starting point location
+ * @param {LatLng} end ending point location
  */
 function calcRoute(directionsService, directionsRenderer, start, end) {
   const request = {
@@ -101,7 +103,7 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
  * Goes through steps along route to find the average location
  * between a step's start and end location. Store these points
  * in the regions Array.
- * @param {DirectionsResult directionResult} contains directions
+ * @param {DirectionsResult} directionResult contains directions
  * for the route made.
  */
 function findRegions(directionResult) {
@@ -118,7 +120,7 @@ function findRegions(directionResult) {
 
 /**
  * Set a timeout to delay the browser.
- * @param {Number delayMs} number of milliseconds
+ * @param {Number} delayMs number of milliseconds
  */
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
@@ -132,6 +134,7 @@ function delayPromise(delayMs) {
 async function loadRecommendations() {
   for(interest of interests) {
     for(region of regions) {
+      // Prevent hitting the query limit by setting a timeout in delayPromise
       await delayPromise(250);
       const request = {
         location: region,
@@ -143,8 +146,6 @@ async function loadRecommendations() {
           if(status === "OK") {
             resolve(result);
           } else {
-            if(status === "OVER_QUERY_LIMIT") {
-            }
             reject(new Error(status));
           }
         });
@@ -165,7 +166,7 @@ async function loadRecommendations() {
  * Places markers on the locations found from textSearch.
  * Temporarily limit the amount of suggestions.
  * TODO: Store more results and limit on UI with option to "show more"
- * @param {PlaceResults[] results} places found with PlaceResult type.
+ * @param {PlaceResults[]} results places found with PlaceResult type.
  */
 function addRecommendations(placesFound) {
   const MAX_RECOMMENDATIONS = 1;
@@ -181,8 +182,7 @@ function addRecommendations(placesFound) {
 
 /**
  * Places a marker onto the map at the specified location.
- * @param {PlaceResult place} Object containing information
- * about a place
+ * @param {PlaceResult} place contains information about a place
  */
 function placeMarker(place) {
   let infoWindow = new google.maps.InfoWindow({
