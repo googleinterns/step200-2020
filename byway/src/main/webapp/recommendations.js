@@ -130,7 +130,6 @@ function delayPromise(delayMs) {
  * previously found using textSearch.
  */
 async function loadRecommendations() {
-  let isLimited = false;
   for(interest of interests) {
     for(region of regions) {
       await delayPromise(250);
@@ -139,25 +138,26 @@ async function loadRecommendations() {
         radius: RADIUS,
         query: interest
       }
-      const results = await new Promise((resolve, reject) => {
+      const placesFound = await new Promise((resolve, reject) => {
         placesService.textSearch(request, (result, status) => {
           if(status === "OK") {
             resolve(result);
           } else {
-            reject(new Error("Status: " + status));
             if(status === "OVER_QUERY_LIMIT") {
-              isLimited = true;
             }
+            reject(new Error(status));
           }
         });
+      }).catch((error) => {
+          if(error.message === "OVER_QUERY_LIMIT") {
+            alert("Showing limited results");
+          }
+          console.log("Status: " + error.message)
       });
-      if(results !== null) {
-        addRecommendations(results);
+      if(placesFound !== undefined) {
+        addRecommendations(placesFound);
       }
     }
-  }
-  if(isLimited) {
-    alert("Showing limited results");
   }
 }
 
@@ -167,11 +167,11 @@ async function loadRecommendations() {
  * TODO: Store more results and limit on UI with option to "show more"
  * @param {PlaceResults[] results} places found with PlaceResult type.
  */
-function addRecommendations(results) {
+function addRecommendations(placesFound) {
   const MAX_RECOMMENDATIONS = 1;
   let numRecommendations = 0;
-  for (result of results) {
-    placeMarker(result);
+  for (place of placesFound) {
+    placeMarker(place);
     numRecommendations++;
     if(numRecommendations == MAX_RECOMMENDATIONS) {
       break;
