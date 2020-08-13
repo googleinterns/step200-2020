@@ -130,6 +130,7 @@ function delayPromise(delayMs) {
  * previously found using textSearch.
  */
 async function loadRecommendations() {
+  let isLimited = false;
   for(interest of interests) {
     for(region of regions) {
       await delayPromise(250);
@@ -138,19 +139,25 @@ async function loadRecommendations() {
         radius: RADIUS,
         query: interest
       }
-      const results = await new Promise(resolve => {
+      const results = await new Promise((resolve, reject) => {
         placesService.textSearch(request, (result, status) => {
-          if(status == "OK") {
+          if(status === "OK") {
             resolve(result);
-          } else if(status == "OVER_QUERY_LIMIT") {
-            alert("Showing limited results");
           } else {
-            alert("Status: " + status);
+            reject(new Error("Status: " + status));
+            if(status === "OVER_QUERY_LIMIT") {
+              isLimited = true;
+            }
           }
         });
       });
-      addRecommendations(results);
+      if(results !== null) {
+        addRecommendations(results);
+      }
     }
+  }
+  if(isLimited) {
+    alert("Showing limited results");
   }
 }
 
