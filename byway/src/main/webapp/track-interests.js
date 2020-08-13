@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* global getTripIdFromUrl, setTripIdFor */
+
 let interestsChosen = new Set();
 let tripId;
 

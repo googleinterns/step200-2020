@@ -66,6 +66,9 @@ public final class Trip {
     this.route = new ArrayList<String>(route);
   }
 
+  /* Set the interests for the trip as plain text with the Collection passed in.
+   * @param interests 
+   */
   public void setInterests(Collection<String> interests) {
     this.interests = new ArrayList<>(interests);
   }
