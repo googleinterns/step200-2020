@@ -14,14 +14,9 @@
 
 package com.google.maps;
 
-import com.google.appengine.api.datastore.DatastoreServiceConfig;
-
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -35,17 +30,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
- * Servlet that returns all PlaceTypes from Places API.
- * Stores which placeTypes, or interests, user selects
- * in datastore with their specific Trip Entity.
+ * Servlet that returns all PlaceTypes from Places API. Stores which placeTypes, or interests, user
+ * selects in datastore with their specific Trip Entity.
  */
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
 
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
+
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   private final Gson gson = new Gson();
@@ -53,7 +47,8 @@ public final class PlacesServlet extends HttpServlet {
 
   @Override
   public void init() {
-    System.setProperty(DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
+    System.setProperty(
+        DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
   }
 
   @Override
