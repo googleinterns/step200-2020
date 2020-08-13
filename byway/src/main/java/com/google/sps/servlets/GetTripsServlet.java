@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/gettrips")
 public class GetTripsServlet extends HttpServlet {
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-  
+
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
