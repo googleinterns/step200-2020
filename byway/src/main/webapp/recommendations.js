@@ -150,16 +150,31 @@ async function loadRecommendations() {
           }
         });
       }).catch((error) => {
-          if(error.message === "OVER_QUERY_LIMIT") {
-            alert("Showing limited results");
-          }
-          console.log("Status: " + error.message)
+        alertUser(error.message);
       });
       if(placesFound !== undefined) {
         addRecommendations(placesFound);
       }
     }
   }
+}
+
+/**
+ * Provides a message to the user if there was an issue
+ * with their request.
+ * TODO: Make a class to indicate as a "warning" and make text red.
+ * Also, organize on front end.
+ * @param {String} msgFromService status String from placesService
+ */
+function alertUser(msgFromService) {
+  let messageContainer = document.getElementById("message-container");
+  let message = document.createElement('p');
+  if(msgFromService === "OVER_QUERY_LIMIT") {
+    message.innerText += "Showing limited results.\n"
+  } else if(msgFromService === "ZERO_RESULTS") {
+    message.innerText = "Some interests are not in the area.\n"
+  }
+  messageContainer.appendChild(message);
 }
 
 /**
