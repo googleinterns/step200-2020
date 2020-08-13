@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public final class Trip {
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   private final String keyString;
-  private final String start;
+  private String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
@@ -101,6 +102,16 @@ public final class Trip {
     return KeyFactory.stringToKey(keyString);
   }
 
+  /* Sets the starting point of the trip as plain text. */
+  public void setStart(String start) {
+    this.start = start;
+  }
+
+  /* Adds a destination point of the trip as plain text. */
+  public void addDestination(String destination) {
+    destinations.add(destination);
+  }
+
   /**
    * Creates a Trip instance from the entity passed in. Checks for valid properties of the entity to
    * make a valid Trip instance.
@@ -136,6 +147,16 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
+  public Entity toEntity(DatastoreService datastore) {
+    Entity tripEntity = new Entity(this.getKey());
+    tripEntity.setProperty("start", this.start);
+    tripEntity.setProperty("destinations", this.destinations);
+    tripEntity.setProperty("interests", this.interests);
+    tripEntity.setProperty("route", this.route);
+    return tripEntity;
+  }
+
+
     /**
    * Adds new Trip entity with empty properties
    */
@@ -147,5 +168,15 @@ public final class Trip {
     tripEntity.setProperty("route", new ArrayList<String>());
     datastore.put(tripEntity);
     return fromEntity(tripEntity);
+  }
+
+  public static Trip getTrip(DatastoreService datastore, String tripKeyString) {
+    Key tripKey = KeyFactory.stringToKey(tripKeyString);
+    try {
+      Entity tripEntity = datastore.get(tripKey);
+      return fromEntity(tripEntity);
+    } catch (EntityNotFoundException e) {
+      return null;
+    }
   }
 }

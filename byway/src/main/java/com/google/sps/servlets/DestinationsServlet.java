@@ -29,48 +29,28 @@ public class DestinationsServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Key tripKey = KeyFactory.stringToKey(request.getParameter("tripKey"));
-    Entity entity;
-    try {
-      entity = datastore.get(tripKey);
-    } catch (EntityNotFoundException e) {
-      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
+    Trip trip = Trip.getTrip(datastore, request.getParameter("tripKey"));
+    if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
-    }
-    String start = (String) entity.getProperty("start");
-    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    if (destinations == null) {
-      destinations = new ArrayList<String>();
-    }
-    Trip trip = Trip.fromEntity(entity);
+    }  
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Key tripKey = KeyFactory.stringToKey(request.getParameter("tripKey"));
-    Entity entity;
-    String start = request.getParameter("start-location");
-    String destination = request.getParameter("destinations");
-    try {
-      entity = datastore.get(tripKey);
-    } catch (EntityNotFoundException e) {
-      logger.atInfo().withCause(e).log("Unable to find Trip Entity %s", tripKey);
+    Trip trip = Trip.getTrip(datastore, request.getParameter("tripKey"));
+    if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
-    }
-    entity.setProperty("start", start);
-    ArrayList<String> destinations = (ArrayList<String>) entity.getProperty("destinations");
-    if (destinations == null) {
-      destinations = new ArrayList<String>();
-    }
-    destinations.add(destination);
-    entity.setProperty("destinations", destinations);
-    datastore.put(entity);
-    Trip trip = Trip.fromEntity(entity);
-    response.setContentType("application/json;");
+    }  
+    String start = request.getParameter("start-location");
+    String destination = request.getParameter("destinations");
+    trip.setStart(start);
+    trip.addDestination(destination);
+    datastore.put(trip.toEntity(datastore));
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(trip));
   }
 }
