@@ -18,11 +18,11 @@ import com.google.errorprone.annotations.Immutable;
 
 @Immutable
 public final class LoginState {
-  private final boolean status;
+  private final boolean isLoggedIn;
   private final String url;
 
-  public LoginState(boolean status, String url) {
-    this.status = status;
+  public LoginState(boolean isLoggedIn, String url) {
+    this.isLoggedIn = isLoggedIn;
     this.url = url;
   }
 }

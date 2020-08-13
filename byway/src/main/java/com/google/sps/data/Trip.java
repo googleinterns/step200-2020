@@ -17,6 +17,7 @@ package com.google.sps.data;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -133,5 +134,18 @@ public final class Trip {
             (ArrayList<String>) tripEntity.getProperty("route"),
             "Trip entity does not contain route");
     return new Trip(keyString, start, destinations, interests, route);
+  }
+
+    /**
+   * Adds new Trip entity with empty properties
+   */
+  public static Trip createTrip(DatastoreService datastore) {
+    Entity tripEntity = new Entity(DATASTORE_ENTITY_KIND);
+    tripEntity.setProperty("start", "");
+    tripEntity.setProperty("destinations", new ArrayList<String>());
+    tripEntity.setProperty("interests", new ArrayList<String>());
+    tripEntity.setProperty("route", new ArrayList<String>());
+    datastore.put(tripEntity);
+    return fromEntity(tripEntity);
   }
 }

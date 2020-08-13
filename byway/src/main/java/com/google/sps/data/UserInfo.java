@@ -62,8 +62,8 @@ public final class UserInfo {
     return Collections.unmodifiableList(this.tripIds);
   }
 
-  public void addTripId(String tripKey) {
-    tripIds.add(tripKey);
+  public void addTrip(Trip trip) {
+    tripIds.add(trip.getKeyString());
   }
 
   /* Retrieves the unique user ID as a String. */
@@ -104,16 +104,9 @@ public final class UserInfo {
   }
 
   public Entity toEntity(DatastoreService datastore) {
-    Entity userEntity;
-    try {
-      userEntity = datastore.get(this.getKey());
-      userEntity.setProperty("email", this.email);
-      userEntity.setProperty("tripIds", this.tripIds);
-    } catch (EntityNotFoundException exception) {
-      userEntity = new Entity(this.getKey());
-      userEntity.setProperty("email", this.email);
-      userEntity.setProperty("tripIds", this.tripIds);
-    }
+    Entity userEntity = new Entity(this.getKey());
+    userEntity.setProperty("email", this.email);
+    userEntity.setProperty("tripIds", this.tripIds);
     return userEntity;
   }
 
@@ -126,23 +119,22 @@ public final class UserInfo {
   public static UserInfo findOrCreateUser(UserService userService, DatastoreService datastore) {
     User user = userService.getCurrentUser();
     // Create a key based on the user ID
-    if (userService.getCurrentUser() == null) {
+    if (user == null) {
       return null;
     }
     Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
     UserInfo userInfo;
+    Entity userEntity;
     try {
       // try to retrieve the entity with the key
-      Entity userEntity = datastore.get(userKey);
-      userInfo = UserInfo.fromEntity(userEntity);
+      userEntity = datastore.get(userKey);
     } catch (EntityNotFoundException exception) {
       // If the user doesn't exist yet or is new, create a new user
-      Entity newUserEntity = new Entity(userKey);
-      newUserEntity.setProperty("email", user.getEmail());
-      newUserEntity.setProperty("tripIds", new ArrayList<String>());
-      datastore.put(newUserEntity);
-      userInfo = UserInfo.fromEntity(newUserEntity);
+      UserInfo newUser = new UserInfo(user.getEmail(), user.getUserId(), new ArrayList<String>());
+      userEntity = newUser.toEntity(datastore);
+      datastore.put(userEntity);
     }
-    return userInfo;
+    return fromEntity(userEntity);
   }
 }
+

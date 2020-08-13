@@ -21,10 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/api/createtrip")
 public class CreateTripServlet extends HttpServlet {
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   @Override
   public void init() {
@@ -34,46 +35,21 @@ public class CreateTripServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Key tripKey = createTripEntity();
-    String keyString = KeyFactory.keyToString(tripKey);
-    addTripForUser(keyString);
-    String json = gson.toJson(KeyFactory.keyToString(tripKey));
+    UserInfo user = UserInfo.findOrCreateUser(userService, datastore);
+    if (user == null) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+    Trip trip = Trip.createTrip(datastore);
+    addTripForUser(trip, user);
+    String json = gson.toJson(trip);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
-  /*
-   * Adds new Trip entity with empty properties
-   **/
-  public Key createTripEntity() {
-    System.setProperty(
-        DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
-    Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND);
-    tripEntity.setProperty("start", "");
-    tripEntity.setProperty("destinations", new ArrayList<String>());
-    tripEntity.setProperty("interests", new ArrayList<String>());
-    tripEntity.setProperty("route", new ArrayList<String>());
-    datastore.put(tripEntity);
-    Key tripKey = tripEntity.getKey();
-    return tripKey;
-  }
 
-  public void addTripForUser(String tripKey) {
-    UserInfo userInfo = UserInfo.findOrCreateUser(userService, datastore);
-    userInfo.addTripId(tripKey);
-    datastore.put(userInfo.toEntity(datastore));
-    /*Key userKey =
-        KeyFactory.createKey(
-            UserInfo.DATASTORE_ENTITY_KIND, userService.getCurrentUser().getUserId());
-    try {
-      Entity userEntity = datastore.get(userKey);
-      ArrayList<String> tripIds = (ArrayList<String>) userEntity.getProperty("tripIds");
-      tripIds.add(tripKey);
-      userEntity.setProperty("tripIds", tripIds);
-      datastore.put(userEntity);
-    } catch (EntityNotFoundException exception) {
-      logger.atInfo().withCause(exception).log("User Entity not found: %s", userKey);
-      return;
-    }*/
+  public void addTripForUser(Trip trip, UserInfo user) {
+    user.addTrip(trip);
+    datastore.put(user.toEntity(datastore));
   }
 }
