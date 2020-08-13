@@ -16,8 +16,7 @@ package com.google.sps.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
+
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -76,11 +75,12 @@ public final class Trip {
   }
 
   /**
-   * Sets the route of the trip with a list of stops and destinations as plain text. 
-   *  @param route list of user-selected stops and destinations
+   * Sets the route of the trip with a list of stops and destinations as plain text.
+   *
+   * @param route list of user-selected stops and destinations
    */
-  public void setRoute(ArrayList<String> route) {
-    this.route = route;
+  public void setRoute(Collection<String> route) {
+    this.route = new ArrayList<>(route);
   }
 
   /**
@@ -114,6 +114,7 @@ public final class Trip {
    * make a valid Trip instance.
    *
    * @param tripEntity entity from datastore
+   * @return Trip object of the Trip class
    */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");
@@ -144,6 +145,11 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
+  /**
+   * Creates a Trip entity based on the Trip class attributes
+   *
+   * @return tripEntity entity from datastore
+   */
   public Entity toEntity() {
     Entity tripEntity = new Entity(this.getKey());
     tripEntity.setProperty("start", this.start);
@@ -152,6 +158,4 @@ public final class Trip {
     tripEntity.setProperty("route", this.route);
     return tripEntity;
   }
-
-
 }

@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -44,7 +43,7 @@ public final class StopsServlet extends HttpServlet {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final Key key = KeyFactory.createKey(Trip.DATASTORE_ENTITY_KIND, 1234);
 
-  /* Passes saved destinations stops (if any) to be shown in the schedule panel */
+  /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<String> stops = Collections.emptyList();
@@ -62,7 +61,7 @@ public final class StopsServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(stops));
   }
 
-  /* Modifies the destinations array of Trip entity in datastore */
+  /* Modifies the route array of Trip entity in datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);

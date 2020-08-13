@@ -16,7 +16,9 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -24,19 +26,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.data.Trip;
-import com.google.appengine.api.datastore.Entity;
 
 /** Servlet that handles data for recommended places */
 @WebServlet("/api/recs")
 public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
- 
+
   // TODO: Remove when merging PR
   @Override
-  public void init(){
-    System.out.println("init");
+  public void init() {
     Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND, 1234);
     tripEntity.setProperty("start", "Chelsea Market");
     tripEntity.setProperty("destinations", Arrays.asList("Chelsea Market", "Yonkers"));
