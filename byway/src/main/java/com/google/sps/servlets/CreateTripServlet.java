@@ -45,6 +45,6 @@ public class CreateTripServlet extends HttpServlet {
 
   public void addTripForUser(Trip trip, UserInfo user) {
     user.addTrip(trip);
-    datastore.put(user.toEntity(datastore));
+    datastore.put(user.toEntity());
   }
 }

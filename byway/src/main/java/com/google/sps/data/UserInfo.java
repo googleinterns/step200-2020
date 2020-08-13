@@ -103,7 +103,7 @@ public final class UserInfo {
     return new UserInfo(email, userId, tripIds);
   }
 
-  public Entity toEntity(DatastoreService datastore) {
+  public Entity toEntity() {
     Entity userEntity = new Entity(this.getKey());
     userEntity.setProperty("email", this.email);
     userEntity.setProperty("tripIds", this.tripIds);
@@ -131,7 +131,7 @@ public final class UserInfo {
     } catch (EntityNotFoundException exception) {
       // If the user doesn't exist yet or is new, create a new user
       UserInfo newUser = new UserInfo(user.getEmail(), user.getUserId(), new ArrayList<String>());
-      userEntity = newUser.toEntity(datastore);
+      userEntity = newUser.toEntity();
       datastore.put(userEntity);
     }
     return fromEntity(userEntity);

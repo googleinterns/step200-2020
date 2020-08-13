@@ -147,7 +147,7 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
-  public Entity toEntity(DatastoreService datastore) {
+  public Entity toEntity() {
     Entity tripEntity = new Entity(this.getKey());
     tripEntity.setProperty("start", this.start);
     tripEntity.setProperty("destinations", this.destinations);

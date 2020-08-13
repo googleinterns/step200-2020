@@ -44,7 +44,7 @@ public class DestinationsServlet extends HttpServlet {
     String destination = request.getParameter("destinations");
     trip.setStart(start);
     trip.addDestination(destination);
-    datastore.put(trip.toEntity(datastore));
+    datastore.put(trip.toEntity());
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(trip));
   }
