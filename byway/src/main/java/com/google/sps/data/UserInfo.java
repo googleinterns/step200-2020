@@ -28,7 +28,7 @@ import java.util.List;
 /** A class to make a UserInfo type, containing an email, id and a list of trip IDs per user. */
 public final class UserInfo {
 
-  public static final String DATASTORE_ENTITY_KIND = "user";
+  public static final String DATASTORE_ENTITY_KIND = "userInfo";
 
   private final String email;
   private final String userId;
