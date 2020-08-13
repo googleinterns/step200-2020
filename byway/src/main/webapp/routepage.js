@@ -94,11 +94,11 @@ function calcRoute() {
  * @param {response} result response from the directions service object
  */
 function computeTotalDistance(result) {
-  var totalDist = 0;
-  var totalTime = 0;
+  let totalDist = 0;
+  let totalTime = 0;
   // full route
-  var route = result.routes[0];
-  for (i = 0; i < route.legs.length; i++) {
+  let route = result.routes[0];
+  for (let i = 0; i < route.legs.length; i++) {
     // in meters
     totalDist += route.legs[i].distance.value;
     // in seconds
@@ -106,8 +106,8 @@ function computeTotalDistance(result) {
   }
 
   totalDist = (totalDist / 1000).toFixed(2);
-  hours = Math.floor(totalTime / 3600);
-  minutes = Math.round((totalTime - hours*3600) / 60);
+  let hours = Math.floor(totalTime / 3600);
+  let minutes = Math.round((totalTime - hours*3600) / 60);
  
   document.getElementById("distance").innerText = totalDist + "km";
   document.getElementById("duration").innerText = 
