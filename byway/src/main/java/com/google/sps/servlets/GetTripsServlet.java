@@ -42,14 +42,12 @@ public class GetTripsServlet extends HttpServlet {
     List<String> userTripIds = userInfo.getTripIds();
     ArrayList<Trip> userTrips = new ArrayList<Trip>();
     for (String tripId : userTripIds) {
-      try {
-        Entity tripEntity = datastore.get(KeyFactory.stringToKey(tripId));
-        Trip trip = Trip.fromEntity(tripEntity);
+      Trip trip = Trip.getTrip(datastore, tripId);
+      if (trip == null) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      } 
+      else{ 
         userTrips.add(trip);
-      } catch (EntityNotFoundException exception) {
-        logger.atInfo().withCause(exception).log("Trip Entity not found: %s", tripId);
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        return;
       }
     }
     String json = gson.toJson(userTrips);
