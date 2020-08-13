@@ -80,6 +80,10 @@ public final class PlacesServlet extends HttpServlet {
     String tripKeyString = request.getParameter("tripId");
     ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Trip trip = Trip.getTrip(datastore, tripKeyString);
+    if(trip == null) {
+      response.setStatus(response.SC_NOT_FOUND);
+      return;
+    }
     trip.setInterests(interests);
     datastore.put(trip.toEntity());
   }

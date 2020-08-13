@@ -38,7 +38,7 @@ public final class Trip {
   private final String keyString;
   private final String start;
   private final ArrayList<String> destinations;
-  private ArrayList<String> interests;
+  private final ArrayList<String> interests;
   private final ArrayList<String> route;
 
   /**
@@ -72,7 +72,8 @@ public final class Trip {
    * @param interests collection of Strings indicating a user interest
    */
   public void setInterests(Collection<String> interests) {
-    this.interests = new ArrayList<>(interests);
+    this.interests.clear();
+    this.interests.addAll(interests);
   }
 
   /* Retrieves interests for the trip as plain text. */
