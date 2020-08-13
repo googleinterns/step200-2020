@@ -81,6 +81,6 @@ public final class PlacesServlet extends HttpServlet {
     ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Trip trip = Trip.getTrip(datastore, tripKeyString);
     trip.setInterests(interests);
-    datastore.put(trip.toEntity(datastore));
+    datastore.put(trip.toEntity());
   }
 }
