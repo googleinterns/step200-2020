@@ -3,9 +3,6 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.flogger.FluentLogger;
@@ -13,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +42,6 @@ public class CreateTripServlet extends HttpServlet {
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
-
 
   public void addTripForUser(Trip trip, UserInfo user) {
     user.addTrip(trip);

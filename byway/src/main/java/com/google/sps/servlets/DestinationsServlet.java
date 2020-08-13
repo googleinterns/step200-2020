@@ -2,15 +2,10 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +28,7 @@ public class DestinationsServlet extends HttpServlet {
     if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
-    }  
+    }
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }
@@ -44,7 +39,7 @@ public class DestinationsServlet extends HttpServlet {
     if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
-    }  
+    }
     String start = request.getParameter("start-location");
     String destination = request.getParameter("destinations");
     trip.setStart(start);

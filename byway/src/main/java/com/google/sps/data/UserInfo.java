@@ -137,4 +137,3 @@ public final class UserInfo {
     return fromEntity(userEntity);
   }
 }
-

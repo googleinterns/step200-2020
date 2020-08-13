@@ -3,9 +3,6 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.flogger.FluentLogger;
@@ -45,8 +42,7 @@ public class GetTripsServlet extends HttpServlet {
       Trip trip = Trip.getTrip(datastore, tripId);
       if (trip == null) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      } 
-      else{ 
+      } else {
         userTrips.add(trip);
       }
     }

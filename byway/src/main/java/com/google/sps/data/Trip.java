@@ -156,10 +156,7 @@ public final class Trip {
     return tripEntity;
   }
 
-
-    /**
-   * Adds new Trip entity with empty properties
-   */
+  /** Adds new Trip entity with empty properties */
   public static Trip createTrip(DatastoreService datastore) {
     Entity tripEntity = new Entity(DATASTORE_ENTITY_KIND);
     tripEntity.setProperty("start", "");
