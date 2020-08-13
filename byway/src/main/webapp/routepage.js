@@ -46,12 +46,12 @@ function loadData(){
 function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
-  start = "111 8th Ave, New York, NY";
-  end = "Yonkers, NY";
+  start = "Chelsea Market";
+  end = "Chelsea Market";
  
   let mapOptions = {
     zoom: 14,
-    center: start
+    center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
   }
   const map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
@@ -129,9 +129,13 @@ function getStopsOnload(){
   .then(response => response.json())
   .then((stopsResponse) => {
     if(stopsResponse != null){
-      stops.push(...stopsResponse);
+      stopsResponse.forEach((stop)=>{
+        stops.add(stop);
+        waypoints.add({location:stop});
+      });
     }
     renderStopsList();
+    calcRoute();
   });
 }
  
@@ -185,7 +189,9 @@ function getRecsOnload() {
   fetch('/api/recs')
   .then(response => response.json())
   .then((recommendations) => {
-    recs.push(...recommendations);
+     recommendations.forEach((rec)=>{
+      recs.add(rec);
+    })
     renderRecsList();
   })
 }
