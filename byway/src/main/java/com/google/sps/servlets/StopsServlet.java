@@ -42,19 +42,22 @@ public final class StopsServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final Key key = KeyFactory.createKey(Trip.KIND, 1234);
+  private final Key key = KeyFactory.createKey(Trip.DATASTORE_ENTITY_KIND, 1234);
 
   /* Passes saved destinations stops (if any) to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<String> stops = Collections.emptyList();
+    Entity entity;
     try {
-      Entity entity = datastore.get(key);
-      stops = (ArrayList<String>) entity.getProperty("destinations");
+      entity = datastore.get(key);
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to get the stops", key);
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      return;
     }
+    stops = (ArrayList<String>) entity.getProperty("destinations");
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(stops));
   }
@@ -63,13 +66,18 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
+    Entity entity;
     try {
-      Entity entity = datastore.get(key);
-      entity.setProperty("destinations", stops);
-      datastore.put(entity);
+      entity = datastore.get(key);
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      return;
     }
+
+    entity.setProperty("destinations", stops);
+    datastore.put(entity);
+    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
   }
 }
