@@ -168,6 +168,7 @@ function createStopButton(stop){
 function updateStops(){
   renderStopsList();
   fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(stops))});
+}
 
 /** Clear the recommendations panel in the html */
 function clearRecs(){
@@ -214,11 +215,10 @@ function createRecButton(rec){
       waypoints.add({location:rec});
       calcRoute();
       updateStops();
-    } 
+    }
   });
   return recBtn;
 }
 
 /* exported initMap */
 /* global google */
-
