@@ -1,4 +1,4 @@
-/* exported setProgressBar, getTripFromUrl */
+/* exported setProgressBar, getTripIdFromUrl, setTripIdFor */
 /** 
 * Sets Progress Bar to correct location based on the page number
 * @param {int} pageNumber
