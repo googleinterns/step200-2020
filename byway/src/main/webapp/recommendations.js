@@ -134,7 +134,8 @@ function delayPromise(delayMs) {
 async function loadRecommendations() {
   for(interest of interests) {
     for(region of regions) {
-      // Prevent hitting the query limit by setting a timeout in delayPromise
+      // Prevent hitting the query limit from the maps API
+      // by setting a timeout in delayPromise
       await delayPromise(250);
       const request = {
         location: region,
