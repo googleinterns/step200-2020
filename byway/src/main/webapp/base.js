@@ -28,7 +28,6 @@ function getTripIdFromUrl() {
  * with an href attribute, e.g. an 'a' tag.
  */
 function setTripIdFor(tripId, filename) {
-  const tripId = params.get('tripId');
   if(tripId === null) {
     // Send back to page where a trip can be made
     alert("tripId not created! Create a new trip.");

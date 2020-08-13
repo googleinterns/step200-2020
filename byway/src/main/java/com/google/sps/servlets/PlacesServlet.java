@@ -14,6 +14,8 @@
 
 package com.google.maps;
 
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,6 +26,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
+import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -47,6 +50,11 @@ public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+  @Override
+  public void init() {
+    System.setProperty(DatastoreServiceConfig.DATASTORE_EMPTY_LIST_SUPPORT, Boolean.TRUE.toString());
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -75,18 +83,9 @@ public final class PlacesServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String tripKeyString = request.getParameter("tripId");
-    Key tripKey = KeyFactory.stringToKey(tripKeyString);
     ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    Entity trip;
-    try {
-      trip = datastore.get(tripKey);
-    } catch(EntityNotFoundException e) {
-      //thrown automatically
-      logger.atInfo().withCause(e).log("Unable to find Trip Entity with key string %s", tripKeyString);
-      response.setStatus(response.SC_NOT_FOUND);
-      return;
-    }
-    trip.setProperty("interests", interests);
-    datastore.put(trip);
+    Trip trip = Trip.getTrip(datastore, tripKeyString);
+    trip.setInterests(interests);
+    datastore.put(trip.toEntity(datastore));
   }
 }
