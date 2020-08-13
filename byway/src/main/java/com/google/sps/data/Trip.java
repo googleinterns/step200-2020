@@ -16,7 +16,8 @@ package com.google.sps.data;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -37,7 +38,7 @@ public final class Trip {
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
-  private final ArrayList<String> route;
+  private ArrayList<String> route;
 
   /**
    * Constructor to make an instance of Trip.
@@ -72,6 +73,14 @@ public final class Trip {
   /** Retrieves the route of the trip with a list of stops and destinations as plain text. */
   public List<String> getRoute() {
     return Collections.unmodifiableList(this.route);
+  }
+
+  /**
+   * Sets the route of the trip with a list of stops and destinations as plain text. 
+   *  @param route list of user-selected stops and destinations
+   */
+  public void setRoute(ArrayList<String> route) {
+    this.route = route;
   }
 
   /**
@@ -134,4 +143,15 @@ public final class Trip {
             "Trip entity does not contain route");
     return new Trip(keyString, start, destinations, interests, route);
   }
+
+  public Entity toEntity() {
+    Entity tripEntity = new Entity(this.getKey());
+    tripEntity.setProperty("start", this.start);
+    tripEntity.setProperty("destinations", this.destinations);
+    tripEntity.setProperty("interests", this.interests);
+    tripEntity.setProperty("route", this.route);
+    return tripEntity;
+  }
+
+
 }
