@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
  
 // copies of recommendations and selected stops, stored as sets for synchronous updating
 let recs = new Set();
@@ -50,16 +51,26 @@ function initMap() {
  
   let mapOptions = {
     zoom: 14,
-    center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
+    center: start
   }
   const map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
+  document.getElementById("route").addEventListener("click", function() {
+    calcRoute(directionsService, directionsRenderer, start, end);
+  });
 }
  
 /** 
- * Displays route containing waypoints of places the user wants to visit, 
- * as shown in the schedule panel
+ * Displays route containing waypoints overtop the map.
+ * TODO: Add in code from routeDir to change route in real-time
+ * based on what's in the schedule panel
+ * @param {DirectionsService} directionsService object that communicates with the GMaps API service
+ * @param {DirectionsRenderer} directionsRenderer object that renders display results on the map
+ * @param {String} start starting point of route
+ * @param {String} end ending point of route. TODO: In the final implementation, just have 
+ * start as start and end are the same
  */
+
 function calcRoute() {
   let request = {
     origin:  start,
@@ -118,12 +129,8 @@ function getStopsOnload(){
   .then(response => response.json())
   .then((stopsResponse) => {
     if(stopsResponse != null){
-      stopsResponse.forEach((stop)=>{
-        stops.add(stop);
-        waypoints.add({location:stop});
-      });
+      stops.push(...stopsResponse);
     }
-    calcRoute();
     renderStopsList();
   });
 }
@@ -136,6 +143,7 @@ function renderStopsList(){
     stopList.appendChild(createStopButton(stop));
   })
 }
+
  
 /** Creates a button in the schedule panel in the html
  *  @param {String} stop a String to add as a button 
@@ -154,15 +162,13 @@ function createStopButton(stop){
   });
   return stopBtn;
 }
+
  
-/** Add stop to or delete stop from the stoplist in javascript and in the datastore
- *  @param {String} stop a String to add or delete
- */
+/** Add stop to or delete stop from the stoplist in javascript and in the datastore */
 function updateStops(){
   renderStopsList();
   fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(stops))});
-}
- 
+
 /** Clear the recommendations panel in the html */
 function clearRecs(){
   const recList = document.getElementById('rec-list');
@@ -178,9 +184,7 @@ function getRecsOnload() {
   fetch('/api/recs')
   .then(response => response.json())
   .then((recommendations) => {
-    recommendations.forEach((rec)=>{
-      recs.add(rec);
-    })
+    recs.push(...recommendations);
     renderRecsList();
   })
 }
@@ -212,7 +216,7 @@ function createRecButton(rec){
       updateStops();
     } 
   });
-    return recBtn;
+  return recBtn;
 }
 
 /* exported initMap */
