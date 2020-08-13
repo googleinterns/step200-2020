@@ -41,9 +41,7 @@ public class GetTripsServlet extends HttpServlet {
     ArrayList<Trip> userTrips = new ArrayList<Trip>();
     for (String tripId : userTripIds) {
       Trip trip = Trip.getTrip(datastore, tripId);
-      if (trip == null) {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      } else {
+      if (trip != null) {
         userTrips.add(trip);
       }
     }

@@ -1,6 +1,15 @@
 window.onload = function(){ 
   fetch("/login").then(response => response.json()).then((login) =>{
-  if (status == false) {
+  if (login.isLoggedIn == true) {
+    let loginLink = document.createElement("a");
+    loginLink.id = "login-button";
+    loginLink.href = "/home.html";
+    loginLink.innerText = "GO TO MY TRIPS";
+    let container = document.getElementById("login-link");
+    container.append(loginLink);
+
+  }
+  else{
     let loginLink = document.createElement("a");
     loginLink.id = "login-button";
     loginLink.href = login.url;
@@ -8,9 +17,6 @@ window.onload = function(){
     let container = document.getElementById("login-link");
     container.href = login.url;
     container.append(loginLink);
-  }
-  else{
-    window.location.href = "/landing.html";
   }
   });
 }
