@@ -134,18 +134,23 @@ function delayPromise(delayMs) {
  */
 async function loadRecommendations() {
   for(interest of interests) {
-    for(region of regions) {
-      // Prevent hitting the query limit from the maps API
-      // by setting a timeout in delayPromise
-      await delayPromise(250);
-      const request = {
-        location: region,
-        radius: RADIUS,
-        query: interest
-      }
-      const placesFound = await findPlacesWithTextSearch(request);
-      if(placesFound !== undefined) {
-        addRecommendations(placesFound);
+    const recommendationsSaved = sessionStorage.getItem(interest);
+    if(recommendationsSaved !== null) {
+      addRecommendations(interest, JSON.parse(recommendationsSaved));
+    } else {
+      for(region of regions) {
+        // Prevent hitting the query limit from the maps API
+        // by setting a timeout in delayPromise
+        await delayPromise(250);
+        const request = {
+          location: region,
+          radius: RADIUS,
+          query: interest
+        }
+        const placesFound = await findPlacesWithTextSearch(request);
+        if(placesFound !== undefined) {
+          addRecommendations(request.query, placesFound);
+        }
       }
     }
   }
@@ -193,20 +198,32 @@ function alertUser(msgFromService) {
 
 /**
  * Places markers on the locations found from textSearch.
- * Temporarily limit the amount of suggestions.
+ * Temporarily limit the amount of suggestions. Keep track of
+ * places generated from interests with savePlacesFromInterests function.
  * TODO: Store more results and limit on UI with option to "show more"
+ * @param {String} interest plain text of user interest
  * @param {PlaceResults[]} results places found with PlaceResult type.
  */
-function addRecommendations(placesFound) {
+function addRecommendations(interest, placesFound) {
   const MAX_RECOMMENDATIONS = 1;
-  let numRecommendations = 0;
+  let placesLoaded = [];
   for (place of placesFound) {
     placeMarker(place);
-    numRecommendations++;
-    if(numRecommendations == MAX_RECOMMENDATIONS) {
+    placesLoaded.push(place);
+    if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;
     }
   }
+  savePlacesFromInterests(interest, placesLoaded)
+}
+
+/**
+ * Saves the places generated from interest in sessionStorage as key/value pairs.
+ * @param {String} interest plain text of user interest
+ * @param {PlaceResults[]} placesLoaded List of places related to interest
+ */
+function savePlacesFromInterests(interest, placesLoaded) {
+  sessionStorage.setItem(interest, JSON.stringify(placesLoaded));
 }
 
 /**
