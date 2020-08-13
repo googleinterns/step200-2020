@@ -121,6 +121,7 @@ function findRegions(directionResult) {
 /**
  * Set a timeout to delay the browser.
  * @param {Number} delayMs number of milliseconds
+ * @return empty promise after delayMs milliseconds passed
  */
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
@@ -142,22 +143,34 @@ async function loadRecommendations() {
         radius: RADIUS,
         query: interest
       }
-      const placesFound = await new Promise((resolve, reject) => {
-        placesService.textSearch(request, (result, status) => {
-          if(status === "OK") {
-            resolve(result);
-          } else {
-            reject(new Error(status));
-          }
-        });
-      }).catch((error) => {
-        alertUser(error.message);
-      });
+      const placesFound = await findPlacesWithTextSearch(request);
       if(placesFound !== undefined) {
         addRecommendations(placesFound);
       }
     }
   }
+}
+
+/**
+ * Use the textSearch function from PlacesService to find the results
+ * fitting the request object passed in. Convert callback function into
+ * a chain of promises to return the result directly. If the service
+ * returns a status other than OK, reject the promise and alert the user.
+ * @param {TextSearchRequest} request object with location, radius and query fields.
+ * @return promise either with PlaceResult[] results or undefined if rejected.
+ */
+function findPlacesWithTextSearch(request) {
+  return new Promise((resolve, reject) => {
+    placesService.textSearch(request, (result, status) => {
+      if(status === "OK") {
+        resolve(result);
+      } else {
+        reject(new Error(status));
+      }
+    });
+  }).catch((error) => {
+    alertUser(error.message);
+  });
 }
 
 /**
