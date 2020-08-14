@@ -47,8 +47,6 @@ public final class StopsServlet extends HttpServlet {
   /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> destinations = Collections.emptyList();
-    List<String> route = Collections.emptyList();
     Trip trip;
     try {
       trip = Trip.fromEntity(datastore.get(key));
