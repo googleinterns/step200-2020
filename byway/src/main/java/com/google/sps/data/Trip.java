@@ -161,6 +161,14 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
+  /**
+   * Converts the tripKeyString passed in into a Key tripKey and searches for an entity with this
+   * key. If found, convert the entity into a Trip type or return null if not found.
+   *
+   * @param datastore DatastoreService database
+   * @param tripKeyString String convertible to a Key for access to a specific entity in datastore.
+   * @return Trip type with information retrieved from the entity, or null.
+   */
   public static Trip getTrip(DatastoreService datastore, String tripKeyString) {
     Key tripKey = KeyFactory.stringToKey(tripKeyString);
     try {
