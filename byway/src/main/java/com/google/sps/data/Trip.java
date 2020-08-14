@@ -33,7 +33,7 @@ import java.util.List;
  */
 public final class Trip {
 
-  public static final String DATASTORE_ENTITY_KIND = "trip";
+  public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   private final String keyString;
   private final String start;
