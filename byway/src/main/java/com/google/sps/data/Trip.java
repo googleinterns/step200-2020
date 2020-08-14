@@ -172,14 +172,7 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
-  public Entity toEntity() {
-    Entity tripEntity = new Entity(this.getKey());
-    tripEntity.setProperty("start", this.start);
-    tripEntity.setProperty("destinations", this.destinations);
-    tripEntity.setProperty("interests", this.interests);
-    tripEntity.setProperty("route", this.route);
-    return tripEntity;
-
+  /**
    * Converts the tripKeyString passed in into a Key tripKey and searches for an entity with this
    * key. If found, convert the entity into a Trip type or return null if not found.
    *

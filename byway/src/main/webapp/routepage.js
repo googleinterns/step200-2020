@@ -106,6 +106,8 @@ function orderWaypoints(response){
 /**
  * Calculates and sums up the distance and time duration between all destinations (legs)
  * @param {response} response response from the directions service object
+ * @return {number, number, number} distance total driving distance for whole route, 
+ * hours estimated driving time in hours, minutes estimated driving time in minutes
  */
 function computeDistanceTime(response) {
   let totalDist = 0;
@@ -118,7 +120,6 @@ function computeDistanceTime(response) {
     totalDist += route_response.legs[i].distance.value;
     // in seconds
     totalTime += route_response.legs[i].duration.value;
-
   }
   
   let distance = (totalDist / 1000).toFixed(2);
@@ -130,12 +131,10 @@ function computeDistanceTime(response) {
 
 /**
  * Updates total distance and duration elements in HTML
- * @param {number} distance total driving distance for whole route
- * @param {number} hours estimated driving time in hours
- * @param {number} minutes estimated driving time in minutes
+ * @param {response} response response from the directions service object
  */
 function updateDistanceTime(response){
-  result = computeDistanceTime(response);
+  let result = computeDistanceTime(response);
   document.getElementById("distance").innerText = result.distance + "km";
   document.getElementById("duration").innerText = 
     (result.hours == 0) ? result.minutes + " mins" : result.hours + " hr " + result.minutes + " mins";
