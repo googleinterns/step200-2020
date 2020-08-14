@@ -17,7 +17,6 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
@@ -39,8 +38,6 @@ public final class PlacesServlet extends HttpServlet {
 
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
-
-  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -82,8 +79,6 @@ public final class PlacesServlet extends HttpServlet {
     ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Trip trip = Trip.getTrip(datastore, tripKeyString);
     if (trip == null) {
-      logger.atInfo().withCause(e).log(
-          "Unable to find Trip Entity with key string %s", tripKeyString);
       response.setStatus(response.SC_NOT_FOUND);
       return;
     }
