@@ -56,9 +56,8 @@ public final class StopsServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    stops = trip.getRoute();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(stops));
+    response.getWriter().println(gson.toJson(trip));
   }
 
   /* Modifies the route array of Trip entity in datastore */
