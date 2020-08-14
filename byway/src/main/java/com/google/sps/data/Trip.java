@@ -37,7 +37,7 @@ public final class Trip {
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
-  private ArrayList<String> route;
+  private final ArrayList<String> route;
 
   /**
    * Constructor to make an instance of Trip.
@@ -80,7 +80,8 @@ public final class Trip {
    * @param route list of user-selected stops and destinations
    */
   public void setRoute(Collection<String> route) {
-    this.route = new ArrayList<>(route);
+    this.route.clear();
+    this.route.addAll(route);
   }
 
   /**
@@ -114,7 +115,7 @@ public final class Trip {
    * make a valid Trip instance.
    *
    * @param tripEntity entity from datastore
-   * @return Trip object of the Trip class
+   * @return Trip object of with properties copied from provided entity
    */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");
@@ -148,7 +149,8 @@ public final class Trip {
   /**
    * Creates a Trip entity based on the Trip class attributes
    *
-   * @return tripEntity entity from datastore
+   * @return tripEntity entity with propoerties set from this Trip instance to be put into the
+   *     datastore
    */
   public Entity toEntity() {
     Entity tripEntity = new Entity(this.getKey());
