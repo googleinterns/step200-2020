@@ -17,7 +17,9 @@ package com.google.sps.data;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
@@ -64,6 +66,16 @@ public final class Trip {
     this.route = new ArrayList<String>(route);
   }
 
+  /**
+   * Set the interests for the trip as plain text with the Collection passed in.
+   *
+   * @param interests collection of Strings indicating a user interest
+   */
+  public void setInterests(Collection<String> interests) {
+    this.interests.clear();
+    this.interests.addAll(interests);
+  }
+
   /* Retrieves interests for the trip as plain text. */
   public List<String> getInterests() {
     return Collections.unmodifiableList(this.interests);
@@ -101,6 +113,20 @@ public final class Trip {
   }
 
   /**
+   * Creates an entity using the properties from the Trip class instance.
+   *
+   * @return entity representing the trip
+   */
+  public Entity toEntity() {
+    Entity tripEntity = new Entity(this.getKey());
+    tripEntity.setProperty("start", this.start);
+    tripEntity.setProperty("destinations", this.destinations);
+    tripEntity.setProperty("interests", this.interests);
+    tripEntity.setProperty("route", this.route);
+    return tripEntity;
+  }
+
+  /**
    * Creates a Trip instance from the entity passed in. Checks for valid properties of the entity to
    * make a valid Trip instance.
    *
@@ -133,5 +159,23 @@ public final class Trip {
             (ArrayList<String>) tripEntity.getProperty("route"),
             "Trip entity does not contain route");
     return new Trip(keyString, start, destinations, interests, route);
+  }
+
+  /**
+   * Converts the tripKeyString passed in into a Key tripKey and searches for an entity with this
+   * key. If found, convert the entity into a Trip type or return null if not found.
+   *
+   * @param datastore DatastoreService database
+   * @param tripKeyString String convertible to a Key for access to a specific entity in datastore.
+   * @return Trip type with information retrieved from the entity, or null.
+   */
+  public static Trip getTrip(DatastoreService datastore, String tripKeyString) {
+    Key tripKey = KeyFactory.stringToKey(tripKeyString);
+    try {
+      Entity tripEntity = datastore.get(tripKey);
+      return fromEntity(tripEntity);
+    } catch (EntityNotFoundException e) {
+      return null;
+    }
   }
 }
