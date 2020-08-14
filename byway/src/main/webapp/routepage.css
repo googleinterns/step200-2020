@@ -72,7 +72,29 @@ h3.box-outline{
 
 .rec-btn{
   display:block;
-  border: solid 2px #fad3a7;
+  border: solid 5px #ffc05f;
+  border-radius: 10px;
+  background-color: white;
+  height: 75px;
+  width: 300px;
+  padding: 5px;
+  margin: 0 auto 10px auto;
+}
+
+.stop-btn{
+  display:block;
+  border: solid 5px #ff826c;
+  border-radius: 10px;
+  background-color: white;
+  height: 75px;
+  width: 300px;
+  padding: 5px;
+  margin: 0 auto 10px auto;
+}
+
+.destination-btn{
+  display:block;
+  border: solid 5px #53d2dc;
   border-radius: 10px;
   background-color: white;
   height: 75px;

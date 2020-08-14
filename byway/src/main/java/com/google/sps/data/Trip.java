@@ -37,7 +37,7 @@ public final class Trip {
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
-  private ArrayList<String> route;
+  private final ArrayList<String> route;
 
   /**
    * Constructor to make an instance of Trip.
@@ -80,7 +80,8 @@ public final class Trip {
    * @param route list of user-selected stops and destinations
    */
   public void setRoute(Collection<String> route) {
-    this.route = new ArrayList<>(route);
+    this.route.clear();
+    this.route.addAll(route);
   }
 
   /**

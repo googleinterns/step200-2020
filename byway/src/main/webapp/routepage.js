@@ -70,67 +70,62 @@ function calcRoute() {
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
-      computeDistanceTime(response);
+      orderWaypoints(response);
+      updateDistanceTime(response);
     } else {
       window.alert("Could not calculate route due to: " + status);
     }
+    updateRoute();
   });
-
-  updateRoute();
 }
 
-/** Displays final route containing waypoints overtop the map.
- *  TODO: Maybe also show the steps (actual directions) at the bottom of page
- *  TODO: Take the route in this state and send as email
+/** Add the starting location back to the schedule panel
+ *  TODO: Delete markers for recommended stops not selected.
+ *  TODO: Disable usage after? Don't want to keep adding to list. 
  */
 function generateRoute() {
-  let request = {
-    origin:  start,
-    destination: end,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint})),
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == 'OK') {
-      directionsRenderer.setDirections(response);
-    } else {
-      window.alert("Could not calculate route due to: " + status);
-    }
-  });
-  // add starting point back into schedule panel for better visuals
-
   route.splice(0,0,start);
+  route.splice(route.length, 0, end);
+  console.log(route);
   renderRouteList();
 }
 
 /**
- * Calculates and sums up the distance and time duration between all destinations (legs)
- * @param {response} result response from the directions service object
+ * Reorders the elements in route list based on the optimized order of 
+ * waypoints returned in the response 
+ * @param {response} response response from the directions service object
  */
-function computeDistanceTime(result) {
-  let totalDist = 0;
-  let totalTime = 0;
-  // full route
-  let route_response = result.routes[0];
-  let waypoint_order = route_response.waypoint_order;
-  
+function orderWaypoints(response){
+  let waypoint_order = response.routes[0].waypoint_order;
   let route_copy = [...route];
   for(let i = 0; i < route.length; i++){
     route[i] = route_copy[waypoint_order[i]];
   }
+}
+
+/**
+ * Calculates and sums up the distance and time duration between all destinations (legs)
+ * @param {response} response response from the directions service object
+ */
+function computeDistanceTime(response) {
+  let totalDist = 0;
+  let totalTime = 0;
+  // full route
+  let route_response = response.routes[0];
 
   for (let i = 0; i < route_response.legs.length; i++) {
     // in meters
     totalDist += route_response.legs[i].distance.value;
     // in seconds
     totalTime += route_response.legs[i].duration.value;
+
   }
   
-  totalDist = (totalDist / 1000).toFixed(2);
+  let distance = (totalDist / 1000).toFixed(2);
   let hours = Math.floor(totalTime / 3600);
   let minutes = Math.round((totalTime - hours*3600) / 60);
- 
-  updateDistanceTime(totalDist, hours, minutes);
+
+  return {distance, hours, minutes};
 }
 
 /**
@@ -139,10 +134,11 @@ function computeDistanceTime(result) {
  * @param {number} hours estimated driving time in hours
  * @param {number} minutes estimated driving time in minutes
  */
-function updateDistanceTime(distance, hours, minutes){
-  document.getElementById("distance").innerText = distance + "km";
+function updateDistanceTime(response){
+  result = computeDistanceTime(response);
+  document.getElementById("distance").innerText = result.distance + "km";
   document.getElementById("duration").innerText = 
-    (hours == 0) ? minutes + " mins" : hours + " hr " + minutes + " mins";
+    (result.hours == 0) ? result.minutes + " mins" : result.hours + " hr " + result.minutes + " mins";
 }
  
 /** Clear the route panel in the html */
@@ -165,7 +161,6 @@ function getRouteOnload(){
       route.push(...trip.route)
 
       calcRoute();
-      renderRouteList();
     }
     else{
       console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
@@ -189,13 +184,18 @@ function renderRouteList(){
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
   routeBtn.innerText = waypoint;
-  routeBtn.className =  "btn rec-btn";
+  if(!destinations.includes(waypoint)){
+    routeBtn.className =  "btn stop-btn";
+  } else{
+    routeBtn.className =  "btn destination-btn";
+  }
   routeBtn.addEventListener("click", function() {
     // only delete if the waypoint is only a stop, not a destination
     if(!destinations.includes(waypoint)){
       route = route.filter(stop => stop != waypoint);
       calcRoute();
     }
+   
   });
   return routeBtn;
 }
