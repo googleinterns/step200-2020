@@ -45,14 +45,6 @@ public final class StopsServlet extends HttpServlet {
   // TODO: get key from query string params 
   private final Key key = KeyFactory.createKey(Trip.DATASTORE_ENTITY_KIND, 1234);
 
-  private static class TripLists{
-    List<String> destinations;
-    List<String> route;
-    private TripLists(Collection<String> destinations, Collection<String> route){
-      this.destinations = new ArrayList<String>(destinations);
-      this.route = new ArrayList<String>(route);
-    }
-  }
   /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -73,7 +65,8 @@ public final class StopsServlet extends HttpServlet {
     
     response.setContentType("application/json");
     // just use Trip?
-    response.getWriter().println(gson.toJson(new TripLists(destinations, route)));
+    response.getWriter().println(gson.toJson(trip));
+    // response.getWriter().println(gson.toJson(new TripLists(destinations, route)));
     // response.getWriter().println({"route": trip.getRoute(), "destinations": trip.getDestinations()});
   }
 

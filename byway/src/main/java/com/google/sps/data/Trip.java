@@ -37,7 +37,7 @@ public final class Trip {
   private final String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
-  private final ArrayList<String> route;
+  private ArrayList<String> route;
 
   /**
    * Constructor to make an instance of Trip.
@@ -52,7 +52,7 @@ public final class Trip {
       String keyString,
       String start,
       Collection<String> destinations,
-      Collection<String> interests,
+      Collection<String> interest
       Collection<String> route) {
     this.keyString = keyString;
     this.start = checkNotNull(start, "start");
@@ -72,6 +72,15 @@ public final class Trip {
   /** Retrieves the route of the trip with a list of stops and destinations as plain text. */
   public List<String> getRoute() {
     return Collections.unmodifiableList(this.route);
+  }
+
+  /**
+   * Sets the route of the trip with a list of stops and destinations as plain text.
+   *
+   * @param route list of user-selected stops and destinations
+   */
+  public void setRoute(Collection<String> route) {
+    this.route = new ArrayList<>(route);
   }
 
   /**
@@ -105,6 +114,7 @@ public final class Trip {
    * make a valid Trip instance.
    *
    * @param tripEntity entity from datastore
+   * @return Trip object of the Trip class
    */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");
@@ -133,5 +143,19 @@ public final class Trip {
             (ArrayList<String>) tripEntity.getProperty("route"),
             "Trip entity does not contain route");
     return new Trip(keyString, start, destinations, interests, route);
+  }
+
+  /**
+   * Creates a Trip entity based on the Trip class attributes
+   *
+   * @return tripEntity entity from datastore
+   */
+  public Entity toEntity() {
+    Entity tripEntity = new Entity(this.getKey());
+    tripEntity.setProperty("start", this.start);
+    tripEntity.setProperty("destinations", this.destinations);
+    tripEntity.setProperty("interests", this.interests);
+    tripEntity.setProperty("route", this.route);
+    return tripEntity;
   }
 }
