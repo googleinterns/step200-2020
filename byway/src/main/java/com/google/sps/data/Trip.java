@@ -149,8 +149,7 @@ public final class Trip {
   /**
    * Creates a Trip entity based on the Trip class attributes
    *
-   * @return tripEntity entity with propoerties set from this Trip instance to be put into the
-   *     datastore
+   * @return tripEntity entity with propoerties set from this Trip instance to be put into the datastore
    */
   public Entity toEntity() {
     Entity tripEntity = new Entity(this.getKey());
