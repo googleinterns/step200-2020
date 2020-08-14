@@ -15,10 +15,10 @@
  
 // copies of recommendations and selected stops, stored as sets for synchronous updating
 let recs = new Set();
-let stops = new Set();
+let stops = [];
  
 // location representations of stops array
-let waypoints = new Set();
+// let waypoints = new Set();
  
 // object that communicates with the GMaps API service
 let directionsService;
@@ -27,17 +27,19 @@ let directionsService;
 let directionsRenderer;
  
 // TODO: get from Trip key
-let start;
-let end;
+let start = "";
+let end = "";
  
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
+  console.log("loading");
 } else {  // `DOMContentLoaded` has already fired
   loadData();
 }
  
 /** Used to restore stops and recommendations upon load or refresh */
 function loadData(){
+  console.log("loadData");
   getRecsOnload();
   getStopsOnload();
 }
@@ -46,8 +48,8 @@ function loadData(){
 function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
-  start = "Chelsea Market";
-  end = "Chelsea Market";
+  // start = "Chelsea Market";
+  // end = "Chelsea Market";
  
   let mapOptions = {
     zoom: 14,
@@ -55,9 +57,16 @@ function initMap() {
   }
   const map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
-  document.getElementById("route").addEventListener("click", function() {
-    calcRoute(directionsService, directionsRenderer, start, end);
-  });
+  
+}
+
+// document.getElementById("route").addEventListener("click", function() {
+//    calcRoute(directionsService, directionsRenderer, start, end);
+// });
+
+function generateRoute(){
+  console.log("generate route");
+  calcRoute(directionsService, directionsRenderer, start, end);
 }
  
 /** 
@@ -72,11 +81,12 @@ function initMap() {
  */
 
 function calcRoute() {
+  console.log("calculate route");
   let request = {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints: Array.from(waypoints),
+    waypoints:  stops.map(stop => ({location: stop})),
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
@@ -98,6 +108,14 @@ function computeTotalDistance(result) {
   let totalTime = 0;
   // full route
   let route = result.routes[0];
+  let waypoint_order = route.waypoint_order;
+  
+  let stops_copy = [...stops];
+  for(let i = 0; i < stops.length; i++){
+    stops[i] = stops_copy[waypoint_order[i]];
+  }
+  console.log(stops);
+
   for (let i = 0; i < route.legs.length; i++) {
     // in meters
     totalDist += route.legs[i].distance.value;
@@ -124,18 +142,34 @@ function clearStops(){
  
 /** Get the new list of stops from datastore onload */
 function getStopsOnload(){
+  console.log("get stops ");
   clearStops();
   fetch('/api/stop')
   .then(response => response.json())
   .then((stopsResponse) => {
-    if(stopsResponse != null){
-      stopsResponse.forEach((stop)=>{
-        stops.add(stop);
-        waypoints.add({location:stop});
+    if(stopsResponse!= null){
+        /** 
+      stopsResponse.forEach((stop)=>
+        stops.push(stop);
+        // waypoints.add({location:stop});
       });
+      */
+      // must be start of destinations not route
+      start = end = stopsResponse[0];
+      console.log("start");
+      console.log(start);
+      // start = end = new google.maps.LatLng(40.730610, -73.935242) 
+      for(let i = 1; i < stopsResponse.length; i++){
+          stops.push(stopsResponse[i]);
+      }
+      calcRoute();
+      renderStopsList();
+    
     }
-    renderStopsList();
-    calcRoute();
+    else{
+        console.log("null");
+    }
+    
   });
 }
  
@@ -159,8 +193,9 @@ function createStopButton(stop){
   stopBtn.className =  "btn rec-btn";
   stopBtn.addEventListener("click", function() {
     // remove place from stops and waypoints set
-    stops.delete(stop);
-    waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
+    // stops.delete(stop);
+    stops = stops.filter(s => s != stop);
+    // waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
     calcRoute();
     updateStops();
   });
@@ -185,6 +220,7 @@ function clearRecs(){
  
 /** Get the new list of recommendations from servlet onload */
 function getRecsOnload() {
+  console.log("get recs");
   clearRecs();
   fetch('/api/recs')
   .then(response => response.json())
@@ -215,13 +251,20 @@ function createRecButton(rec){
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
     // TODO: add to recs later for better visuals on html
-    stops.add(rec);
+    // stops.add(rec);
+    if(!stops.includes(rec)){
+      stops.push(rec);
+      calcRoute();
+      updateStops();
+    }
+    /** 
     //  if new place, add it to the selected stops and redraw route
     if(!Array.from(waypoints).find(waypoint => waypoint.location === rec)){
       waypoints.add({location:rec});
       calcRoute();
       updateStops();
     }
+    */
   });
   return recBtn;
 }
