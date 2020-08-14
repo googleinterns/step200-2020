@@ -66,7 +66,11 @@ function initMap() {
 
 function generateRoute(){
   console.log("generate route");
+  // make new function for generate final route
   calcRoute(directionsService, directionsRenderer, start, end);
+  stops.splice(0,0,start);
+  updateStops();
+
 }
  
 /** 
@@ -122,7 +126,7 @@ function computeTotalDistance(result) {
     // in seconds
     totalTime += route.legs[i].duration.value;
   }
-
+  updateStops();
   totalDist = (totalDist / 1000).toFixed(2);
   let hours = Math.floor(totalTime / 3600);
   let minutes = Math.round((totalTime - hours*3600) / 60);
@@ -197,7 +201,7 @@ function createStopButton(stop){
     stops = stops.filter(s => s != stop);
     // waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
     calcRoute();
-    updateStops();
+    // updateStops();
   });
   return stopBtn;
 }
@@ -205,6 +209,8 @@ function createStopButton(stop){
  
 /** Add stop to or delete stop from the stoplist in javascript and in the datastore */
 function updateStops(){
+  console.log("update stops");
+  console.log(stops);
   renderStopsList();
   fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(stops))});
 }
@@ -254,8 +260,9 @@ function createRecButton(rec){
     // stops.add(rec);
     if(!stops.includes(rec)){
       stops.push(rec);
+      console.log("createrec");
       calcRoute();
-      updateStops();
+      // updateStops();
     }
     /** 
     //  if new place, add it to the selected stops and redraw route
