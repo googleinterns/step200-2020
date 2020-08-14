@@ -34,14 +34,12 @@ let end = "";
  
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
-  console.log("loading");
 } else {  // `DOMContentLoaded` has already fired
   loadData();
 }
  
 /** Used to restore route and recommendations upon load or refresh */
 function loadData(){
-  console.log("loadData");
   getRecsOnload();
   getRouteOnload();
 }
@@ -86,7 +84,6 @@ function calcRoute() {
  *  TODO: Take the route in this state and send as email
  */
 function generateRoute() {
-  console.log("calculate route");
   let request = {
     origin:  start,
     destination: end,
@@ -103,7 +100,6 @@ function generateRoute() {
   // add starting point back into schedule panel for better visuals
 
   route.splice(0,0,start);
-  console.log(route);
   renderRouteList();
 }
 
@@ -222,7 +218,6 @@ function clearRecs(){
  
 /** Get the new list of recommendations from servlet onload */
 function getRecsOnload() {
-  console.log("get recs");
   clearRecs();
   fetch('/api/recs')
   .then(response => response.json())
@@ -254,7 +249,6 @@ function createRecButton(rec){
   recBtn.addEventListener("click", function() {
     if(!route.includes(rec)){
       route.push(rec);
-      console.log("createrec");
       calcRoute();
     }
   });
