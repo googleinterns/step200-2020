@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -27,6 +26,7 @@ import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -42,42 +42,57 @@ public final class StopsServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  // TODO: get key from query string params 
   private final Key key = KeyFactory.createKey(Trip.DATASTORE_ENTITY_KIND, 1234);
 
-  /* Passes saved destinations stops (if any) to be shown in the schedule panel */
+  private static class TripLists{
+    List<String> destinations;
+    List<String> route;
+    private TripLists(Collection<String> destinations, Collection<String> route){
+      this.destinations = new ArrayList<String>(destinations);
+      this.route = new ArrayList<String>(route);
+    }
+  }
+  /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> stops = Collections.emptyList();
-    Entity entity;
+    List<String> destinations = Collections.emptyList();
+    List<String> route = Collections.emptyList();
+    Trip trip;
     try {
-      entity = datastore.get(key);
+      trip = Trip.fromEntity(datastore.get(key));
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to get the stops", key);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    stops = (ArrayList<String>) entity.getProperty("destinations");
-    response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(stops));
+    destinations = trip.getDestinations();
+    route = trip.getRoute();
+
+    
+    response.setContentType("application/json");
+    // just use Trip?
+    response.getWriter().println(gson.toJson(new TripLists(destinations, route)));
+    // response.getWriter().println({"route": trip.getRoute(), "destinations": trip.getDestinations()});
   }
 
-  /* Modifies the destinations array of Trip entity in datastore */
+  /* Modifies the route array of Trip entity in datastore */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    Entity entity;
+    Trip trip;
     try {
-      entity = datastore.get(key);
+      trip = Trip.fromEntity(datastore.get(key));
+
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
           "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-
-    entity.setProperty("destinations", stops);
-    datastore.put(entity);
+    trip.setRoute(stops);
+    datastore.put(trip.toEntity());
     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
   }
 }

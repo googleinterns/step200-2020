@@ -152,6 +152,8 @@ function getStopsOnload(){
   .then(response => response.json())
   .then((stopsResponse) => {
     if(stopsResponse!= null){
+      console.log(stopsResponse.destinations);
+      console.log(stopsResponse.route);
         /** 
       stopsResponse.forEach((stop)=>
         stops.push(stop);
@@ -159,12 +161,12 @@ function getStopsOnload(){
       });
       */
       // must be start of destinations not route
-      start = end = stopsResponse[0];
+      start = end = stopsResponse.destinations[0];
       console.log("start");
       console.log(start);
       // start = end = new google.maps.LatLng(40.730610, -73.935242) 
-      for(let i = 1; i < stopsResponse.length; i++){
-          stops.push(stopsResponse[i]);
+      for(let i = 1; i < stopsResponse.route.length; i++){
+          stops.push(stopsResponse.route[i]);
       }
       calcRoute();
       renderStopsList();
