@@ -34,7 +34,6 @@ function loadContent() {
 }
 
 /* Gets the trip id from the url and sets it for the next page. */
-
 function configureTripId() {
   tripId = getTripIdFromUrl();
   configureTripIdForNextPage(tripId, "/generator.html");
@@ -44,8 +43,8 @@ function configureTripId() {
  * Check if a button's value is stored in the set interestsChosen.
  * Remove from the set and remove the active class if the interest
  * was previously chosen and add if the interest was not included.
- * @param {String place} text value of the button's interest
- * @param {Element elem} tracks the current button element chosen.
+ * @param {String} place text value of the button's interest
+ * @param {Element} elem tracks the current button element chosen.
  */
 function updateStatus(place, elem) {
   if(interestsChosen.has(place)) {
@@ -76,7 +75,7 @@ function loadButtonsWithInterests() {
  * Creates a button element that contains the text of an
  * interest. When clicked, it updates the active status to indicate
  * if it is currently selected or not.
- * @param {String place} text value of the button's interest
+ * @param {String} place text value of the button's interest
  * @returns ButtonElement
  */
 function createButtonForPlace(place) {
@@ -92,10 +91,10 @@ function createButtonForPlace(place) {
 
 /**
  * Gets all potential interests from server to load or sets the user's
- * specific interests for their specific trip with tripId. userInterests
+ * specific interests for their trip with tripId. userInterests
  * may be any type that is convertible to an array via Array.from. It will
  * be sent to the server as JSON in the post body.
- * @param {String tripId} value for tripId
+ * @param {String} tripId value for tripId
  * @param {Array} [userInterests] interests selected by user
  */
 function fetchPlaces(tripId, /* optional */ userInterests) {

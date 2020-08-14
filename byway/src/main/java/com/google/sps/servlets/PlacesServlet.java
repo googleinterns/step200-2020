@@ -45,6 +45,7 @@ public final class PlacesServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+  /* Distinguishes null values from empty lists in DatastoreService. */
   @Override
   public void init() {
     System.setProperty(
