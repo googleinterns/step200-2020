@@ -13,12 +13,14 @@
 // limitations under the License.
 
  
-// copies of recommendations and selected stops, stored as sets for synchronous updating
+// copies of recommendations and route, stored as sets for synchronous updating
 let recs = new Set();
-let stops = [];
- 
-// location representations of stops array
-// let waypoints = new Set();
+
+// holds stops and destinations
+let route = [];
+
+// holds destinations 
+let destinations = []; 
  
 // object that communicates with the GMaps API service
 let directionsService;
@@ -37,19 +39,17 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
   loadData();
 }
  
-/** Used to restore stops and recommendations upon load or refresh */
+/** Used to restore route and recommendations upon load or refresh */
 function loadData(){
   console.log("loadData");
   getRecsOnload();
-  getStopsOnload();
+  getRouteOnload();
 }
  
 /** Initializes map on the page */
 function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
-  // start = "Chelsea Market";
-  // end = "Chelsea Market";
  
   let mapOptions = {
     zoom: 14,
@@ -60,161 +60,155 @@ function initMap() {
   
 }
 
-// document.getElementById("route").addEventListener("click", function() {
-//    calcRoute(directionsService, directionsRenderer, start, end);
-// });
-
-function generateRoute(){
-  console.log("generate route");
-  // make new function for generate final route
-  calcRoute(directionsService, directionsRenderer, start, end);
-  stops.splice(0,0,start);
-  updateStops();
-
-}
- 
-/** 
- * Displays route containing waypoints overtop the map.
- * TODO: Add in code from routeDir to change route in real-time
- * based on what's in the schedule panel
- * @param {DirectionsService} directionsService object that communicates with the GMaps API service
- * @param {DirectionsRenderer} directionsRenderer object that renders display results on the map
- * @param {String} start starting point of route
- * @param {String} end ending point of route. TODO: In the final implementation, just have 
- * start as start and end are the same
- */
-
+/** Displays route containing waypoints overtop the map. */
 function calcRoute() {
-  console.log("calculate route");
   let request = {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints:  stops.map(stop => ({location: stop})),
+    waypoints:  route.map(waypoint => ({location: waypoint})),
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
-      computeTotalDistance(response);
+      computeDistanceTime(response);
     } else {
       window.alert("Could not calculate route due to: " + status);
     }
   });
+
+  updateRoute();
+}
+
+/** Displays final route containing waypoints overtop the map.
+ *  TODO: Maybe also show the steps (actual directions) at the bottom of page
+ *  TODO: Take the route in this state and send as email
+ */
+function generateRoute() {
+  console.log("calculate route");
+  let request = {
+    origin:  start,
+    destination: end,
+    travelMode: 'DRIVING',
+    waypoints:  route.map(waypoint => ({location: waypoint})),
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == 'OK') {
+      directionsRenderer.setDirections(response);
+    } else {
+      window.alert("Could not calculate route due to: " + status);
+    }
+  });
+  // add starting point back into schedule panel for better visuals
+
+  route.splice(0,0,start);
+  console.log(route);
+  renderRouteList();
 }
 
 /**
  * Calculates and sums up the distance and time duration between all destinations (legs)
  * @param {response} result response from the directions service object
  */
-function computeTotalDistance(result) {
+function computeDistanceTime(result) {
   let totalDist = 0;
   let totalTime = 0;
   // full route
-  let route = result.routes[0];
-  let waypoint_order = route.waypoint_order;
+  let route_response = result.routes[0];
+  let waypoint_order = route_response.waypoint_order;
   
-  let stops_copy = [...stops];
-  for(let i = 0; i < stops.length; i++){
-    stops[i] = stops_copy[waypoint_order[i]];
+  let route_copy = [...route];
+  for(let i = 0; i < route.length; i++){
+    route[i] = route_copy[waypoint_order[i]];
   }
-  console.log(stops);
 
-  for (let i = 0; i < route.legs.length; i++) {
+  for (let i = 0; i < route_response.legs.length; i++) {
     // in meters
-    totalDist += route.legs[i].distance.value;
+    totalDist += route_response.legs[i].distance.value;
     // in seconds
-    totalTime += route.legs[i].duration.value;
+    totalTime += route_response.legs[i].duration.value;
   }
-  updateStops();
+  
   totalDist = (totalDist / 1000).toFixed(2);
   let hours = Math.floor(totalTime / 3600);
   let minutes = Math.round((totalTime - hours*3600) / 60);
  
-  document.getElementById("distance").innerText = totalDist + "km";
+  updateDistanceTime(totalDist, hours, minutes);
+}
+
+/**
+ * Updates total distance and duration elements in HTML
+ * @param {number} distance total driving distance for whole route
+ * @param {number} hours estimated driving time in hours
+ * @param {number} minutes estimated driving time in minutes
+ */
+function updateDistanceTime(distance, hours, minutes){
+  document.getElementById("distance").innerText = distance + "km";
   document.getElementById("duration").innerText = 
     (hours == 0) ? minutes + " mins" : hours + " hr " + minutes + " mins";
 }
  
-/** Clear the stops panel in the html */
-function clearStops(){
-  const stopList = document.getElementById('stop-list');
-  if(stopList != null){
-    stopList.innerText = "";
+/** Clear the route panel in the html */
+function clearRoute(){
+  const routeList = document.getElementById('route-list');
+  if(routeList != null){
+    routeList.innerText = "";
   }
 }
  
-/** Get the new list of stops from datastore onload */
-function getStopsOnload(){
-  console.log("get stops ");
-  clearStops();
+/** Get trip info from datastore onload */
+function getRouteOnload(){
+  clearRoute();
   fetch('/api/stop')
   .then(response => response.json())
-  .then((stopsResponse) => {
-    if(stopsResponse!= null){
-      console.log(stopsResponse.destinations);
-      console.log(stopsResponse.route);
-        /** 
-      stopsResponse.forEach((stop)=>
-        stops.push(stop);
-        // waypoints.add({location:stop});
-      });
-      */
-      // must be start of destinations not route
-      start = end = stopsResponse.destinations[0];
-      console.log("start");
-      console.log(start);
-      // start = end = new google.maps.LatLng(40.730610, -73.935242) 
-      for(let i = 1; i < stopsResponse.route.length; i++){
-          stops.push(stopsResponse.route[i]);
-      }
+  .then((trip) => {
+    if(trip != null){
+      start = end = trip.start;
+      destinations = trip.destinations;
+      route.push(...trip.route)
+
       calcRoute();
-      renderStopsList();
-    
+      renderRouteList();
     }
     else{
-        console.log("null");
+      console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
-    
   });
 }
  
-/** Re-render stop list synchronously */
-function renderStopsList(){
-  clearStops();
-  const stopList = document.getElementById('stop-list');
-  stops.forEach((stop)=>{
-    stopList.appendChild(createStopButton(stop));
+/** Re-render route list synchronously */
+function renderRouteList(){
+  clearRoute();
+  const routeList = document.getElementById('route-list');
+  route.forEach((waypoint)=>{
+    routeList.appendChild(createRouteButton(waypoint));
   })
 }
 
- 
 /** Creates a button in the schedule panel in the html
- *  @param {String} stop a String to add as a button 
- *  @return {button} stopBtn a button showing a selected stop
+ *  @param {String} waypoint a String to add as a button 
+ *  @return {button} routeBtn a button showing a selected waypoint along route
  */
-function createStopButton(stop){
-  const stopBtn = document.createElement('button');
-  stopBtn.innerText = stop;
-  stopBtn.className =  "btn rec-btn";
-  stopBtn.addEventListener("click", function() {
-    // remove place from stops and waypoints set
-    // stops.delete(stop);
-    stops = stops.filter(s => s != stop);
-    // waypoints = new Set([...waypoints].filter(waypoint => waypoint.location != stop));
-    calcRoute();
-    // updateStops();
+function createRouteButton(waypoint){
+  const routeBtn = document.createElement('button');
+  routeBtn.innerText = waypoint;
+  routeBtn.className =  "btn rec-btn";
+  routeBtn.addEventListener("click", function() {
+    // only delete if the waypoint is only a stop, not a destination
+    if(!destinations.includes(waypoint)){
+      route = route.filter(stop => stop != waypoint);
+      calcRoute();
+    }
   });
-  return stopBtn;
+  return routeBtn;
 }
 
  
-/** Add stop to or delete stop from the stoplist in javascript and in the datastore */
-function updateStops(){
-  console.log("update stops");
-  console.log(stops);
-  renderStopsList();
-  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(stops))});
+/** Display new route list and store it in the datastore */
+function updateRoute(){
+  renderRouteList();
+  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(route))});
 }
 
 /** Clear the recommendations panel in the html */
@@ -258,22 +252,11 @@ function createRecButton(rec){
   recBtn.innerText = rec;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
-    // TODO: add to recs later for better visuals on html
-    // stops.add(rec);
-    if(!stops.includes(rec)){
-      stops.push(rec);
+    if(!route.includes(rec)){
+      route.push(rec);
       console.log("createrec");
       calcRoute();
-      // updateStops();
     }
-    /** 
-    //  if new place, add it to the selected stops and redraw route
-    if(!Array.from(waypoints).find(waypoint => waypoint.location === rec)){
-      waypoints.add({location:rec});
-      calcRoute();
-      updateStops();
-    }
-    */
   });
   return recBtn;
 }

@@ -62,12 +62,9 @@ public final class StopsServlet extends HttpServlet {
     destinations = trip.getDestinations();
     route = trip.getRoute();
 
-    
     response.setContentType("application/json");
-    // just use Trip?
     response.getWriter().println(gson.toJson(trip));
-    // response.getWriter().println(gson.toJson(new TripLists(destinations, route)));
-    // response.getWriter().println({"route": trip.getRoute(), "destinations": trip.getDestinations()});
+   
   }
 
   /* Modifies the route array of Trip entity in datastore */
