@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/login")
+@WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
@@ -24,8 +24,10 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     boolean loginStatus = userService.isUserLoggedIn();
-    String url = loginStatus ? userService.createLogoutURL(URL_TO_REDIRECT_TO_AFTER_LOGOUT) : 
-    userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGIN);
+    String url =
+        loginStatus
+            ? userService.createLogoutURL(URL_TO_REDIRECT_TO_AFTER_LOGOUT)
+            : userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGIN);
     LoginState loginState = new LoginState(loginStatus, url);
     String json = gson.toJson(loginState);
     response.setContentType("application/json;");

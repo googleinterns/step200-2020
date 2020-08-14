@@ -1,5 +1,5 @@
 window.onload = function(){ 
-  fetch("/login").then(response => response.json()).then((login) =>{
+  fetch("/api/login").then(response => response.json()).then((login) =>{
   if (login.isLoggedIn == true) {
     let loginLink = document.createElement("a");
     loginLink.id = "login-button";
