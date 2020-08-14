@@ -52,7 +52,7 @@ public final class Trip {
       String keyString,
       String start,
       Collection<String> destinations,
-      Collection<String> interest
+      Collection<String> interests,
       Collection<String> route) {
     this.keyString = keyString;
     this.start = checkNotNull(start, "start");

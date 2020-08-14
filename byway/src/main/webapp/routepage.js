@@ -261,5 +261,5 @@ function createRecButton(rec){
   return recBtn;
 }
 
-/* exported initMap */
+/* exported initMap, generateRoute */
 /* global google */
