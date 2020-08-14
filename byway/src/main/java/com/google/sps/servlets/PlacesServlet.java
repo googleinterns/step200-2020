@@ -82,7 +82,8 @@ public final class PlacesServlet extends HttpServlet {
     ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Trip trip = Trip.getTrip(datastore, tripKeyString);
     if (trip == null) {
-      logger.atInfo().withCause(e).log("Unable to find Trip Entity with key string %s", tripKeyString);
+      logger.atInfo().withCause(e).log(
+          "Unable to find Trip Entity with key string %s", tripKeyString);
       response.setStatus(response.SC_NOT_FOUND);
       return;
     }
