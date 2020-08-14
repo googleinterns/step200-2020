@@ -88,10 +88,10 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
       destination: end,
       travelMode: 'DRIVING'
   };
-  directionsService.route(request, function(response, status) {
+  directionsService.route(request, function(result, status) {
     if (status == 'OK') {
-      directionsRenderer.setDirections(response);
-      findRegions(response);
+      directionsRenderer.setDirections(result);
+      findRegions(result);
       loadRecommendations();
     } else {
       alert("Could not calculate route due to: " + status);
@@ -100,20 +100,22 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 }
 
 /**
- * Goes through steps along route to find the average location
+ * Goes through steps of every leg along route to find the average location
  * between a step's start and end location. Store these points
  * in the regions Array.
  * @param {DirectionsResult} directionResult contains directions
  * for the route made.
  */
 function findRegions(directionResult) {
-  const myRoute = directionResult.routes[0].legs[0];
-  for(step of myRoute.steps) {
-    const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
-    const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
-    const avgLoc = {lat: avgLat, lng: avgLng};
-    if(step.distance.value > MIN_DISTANCE) {
-      regions.push(avgLoc);
+  const myRoute = directionResult.routes[0];
+  for(leg of myRoute.legs) {
+    for(step of leg.steps) {
+      const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
+      const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
+      const avgLoc = {lat: avgLat, lng: avgLng};
+      if(step.distance.value > MIN_DISTANCE) {
+        regions.push(avgLoc);
+      }
     }
   }
 }
