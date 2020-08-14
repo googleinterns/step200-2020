@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* global google */
-/* global step:writable, interest:writable, region:writable, place: writable */
+/* global interest:writable, leg:writable, place:writable, region:writable, step: writable */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initServices);
