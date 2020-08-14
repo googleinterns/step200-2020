@@ -25,8 +25,8 @@ let map;
 let placesService;
 
 // Measured in meters
-const RADIUS = 1000;
-const MIN_DISTANCE = 4000;
+const RADIUS_TO_SEARCH_AROUND = 1000;
+const MIN_DISTANCE_FOR_STEP_PATH = 4000;
 
 const interests = ["park"];
 let destinations = new Set();
@@ -113,7 +113,7 @@ function findRegions(directionResult) {
       const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
       const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
       const avgLoc = {lat: avgLat, lng: avgLng};
-      if(step.distance.value > MIN_DISTANCE) {
+      if(step.distance.value > MIN_DISTANCE_FOR_STEP_PATH) {
         regions.push(avgLoc);
       }
     }
@@ -141,18 +141,18 @@ async function loadRecommendations() {
     for(region of regions) {
       const request = {
         location: region,
-        radius: RADIUS,
+        radius: RADIUS_TO_SEARCH_AROUND,
         query: interest
       }
       const recommendationsSaved = sessionStorage.getItem(JSON.stringify(request));
       if(recommendationsSaved !== null) {
         addRecommendations(request, JSON.parse(recommendationsSaved));
       } else{
-        // Prevent hitting the query limit from the maps API
-        // by setting a timeout in delayPromise
+        // Set an intermediate timeout between calls to findPlacesWithTextSearch
+        // to prevent hitting the query limit from the google maps API
         await delayPromise(250);
         const placesFound = await findPlacesWithTextSearch(request);
-        if(placesFound !== undefined) {
+        if(placesFound !== null) {
           addRecommendations(request, placesFound);
         }
       }
@@ -169,16 +169,13 @@ async function loadRecommendations() {
  * @return promise either with PlaceResult[] results or undefined if rejected.
  */
 function findPlacesWithTextSearch(request) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     placesService.textSearch(request, (result, status) => {
-      if(status === "OK") {
-        resolve(result);
-      } else {
-        reject(new Error(status));
+      if(status !== "OK") {
+        alertUser(status);
       }
+      resolve(result);
     });
-  }).catch((error) => {
-    alertUser(error.message);
   });
 }
 
