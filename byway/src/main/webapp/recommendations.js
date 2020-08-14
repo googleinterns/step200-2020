@@ -130,26 +130,28 @@ function delayPromise(delayMs) {
 /**
  * Go through a user's interests and search for places
  * fitting those interests. Search around the regions
- * previously found using textSearch.
+ * previously found using textSearch. Prioritize finding
+ * past results loaded through sessionStorage to avoid calling
+ * textSearch repeatedly from the PlacesService.
  */
 async function loadRecommendations() {
   for(interest of interests) {
-    const recommendationsSaved = sessionStorage.getItem(interest);
-    if(recommendationsSaved !== null) {
-      addRecommendations(interest, JSON.parse(recommendationsSaved));
-    } else {
-      for(region of regions) {
+    for(region of regions) {
+      const request = {
+        location: region,
+        radius: RADIUS,
+        query: interest
+      }
+      const recommendationsSaved = sessionStorage.getItem(JSON.stringify(request));
+      if(recommendationsSaved !== null) {
+        addRecommendations(request, JSON.parse(recommendationsSaved));
+      } else{
         // Prevent hitting the query limit from the maps API
         // by setting a timeout in delayPromise
         await delayPromise(250);
-        const request = {
-          location: region,
-          radius: RADIUS,
-          query: interest
-        }
         const placesFound = await findPlacesWithTextSearch(request);
         if(placesFound !== undefined) {
-          addRecommendations(request.query, placesFound);
+          addRecommendations(request, placesFound);
         }
       }
     }
@@ -199,12 +201,12 @@ function alertUser(msgFromService) {
 /**
  * Places markers on the locations found from textSearch.
  * Temporarily limit the amount of suggestions. Keep track of
- * places generated from interests with savePlacesFromInterests function.
+ * places found from interests around a location with savePlacesFromInterests function.
  * TODO: Store more results and limit on UI with option to "show more"
- * @param {String} interest plain text of user interest
+ * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} results places found with PlaceResult type.
  */
-function addRecommendations(interest, placesFound) {
+function addRecommendations(request, placesFound) {
   const MAX_RECOMMENDATIONS = 1;
   let placesLoaded = [];
   for (place of placesFound) {
@@ -214,16 +216,16 @@ function addRecommendations(interest, placesFound) {
       break;
     }
   }
-  savePlacesFromInterests(interest, placesLoaded)
+  savePlacesFromInterests(request, placesLoaded)
 }
 
 /**
- * Saves the places generated from interest in sessionStorage as key/value pairs.
- * @param {String} interest plain text of user interest
+ * Saves the places generated from interest and location in sessionStorage as key/value pairs.
+ * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} placesLoaded List of places related to interest
  */
-function savePlacesFromInterests(interest, placesLoaded) {
-  sessionStorage.setItem(interest, JSON.stringify(placesLoaded));
+function savePlacesFromInterests(request, placesLoaded) {
+  sessionStorage.setItem(JSON.stringify(request), JSON.stringify(placesLoaded));
 }
 
 /**
