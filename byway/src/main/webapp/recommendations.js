@@ -183,21 +183,25 @@ function findPlacesWithTextSearch(request) {
 }
 
 /**
- * Provides a message to the user if there was an issue
- * with their request.
+ * Reveals a message to the user if there was an issue with their request.
  * TODO: Make a class to indicate as a "warning" and make text red.
  * Also, organize on front end.
  * @param {String} msgFromService status String from placesService
  */
 function alertUser(msgFromService) {
   let messageContainer = document.getElementById("message-container");
-  let message = document.createElement('p');
+  messageContainer.style.visibility = 'visible';
   if(msgFromService === "OVER_QUERY_LIMIT") {
-    message.innerText += "Showing limited results.\n"
+    document.getElementById("query-limit").style.visibility = 'visible';
   } else if(msgFromService === "ZERO_RESULTS") {
-    message.innerText = "Some interests are not in the area.\n"
+    document.getElementById("incomplete-results").style.visibility = 'visible';
+  } else {
+    let otherStatusContainer = document.getElementById("other-statuses");
+    otherStatusContainer.style.visibility = 'visible';
+    let statusElement = document.createElement('ul');
+    statusElement.innerText = msgFromService;
+    otherStatusContainer.appendChild(statusElement);
   }
-  messageContainer.appendChild(message);
 }
 
 /**

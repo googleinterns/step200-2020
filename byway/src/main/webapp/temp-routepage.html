@@ -14,6 +14,12 @@
     <div id="content"></div>
     <div id="map"></div>
     <button id="route"> Click me</button>
-    <div id="message-container"></div>
+    <!--TODO: Make a class to encapsulate the hidden attribute for all members. Change individually in the js-->
+    <!--(After removing this page and adding on third page)-->
+    <div id="message-container" style="visibility: hidden">
+      <p id="query-limit" style="visibility: hidden">Showing limited results</p>
+      <p id="incomplete-results" style="visibility: hidden">Some places did not match some interests</p>
+      <p id="other-statuses" style="visibility: hidden">Statuses: </p>
+    </div>
   </body>
 </html>
