@@ -67,6 +67,16 @@ public final class Trip {
     this.route = new ArrayList<String>(route);
   }
 
+  /**
+   * Set the interests for the trip as plain text with the Collection passed in.
+   *
+   * @param interests collection of Strings indicating a user interest
+   */
+  public void setInterests(Collection<String> interests) {
+    this.interests.clear();
+    this.interests.addAll(interests);
+  }
+
   /* Retrieves interests for the trip as plain text. */
   public List<String> getInterests() {
     return Collections.unmodifiableList(this.interests);
@@ -111,6 +121,20 @@ public final class Trip {
   /* Adds a destination point of the trip as plain text. */
   public void addDestination(String destination) {
     destinations.add(destination);
+  }
+
+  /**
+   * Creates an entity using the properties from the Trip class instance.
+   *
+   * @return entity representing the trip
+   */
+  public Entity toEntity() {
+    Entity tripEntity = new Entity(this.getKey());
+    tripEntity.setProperty("start", this.start);
+    tripEntity.setProperty("destinations", this.destinations);
+    tripEntity.setProperty("interests", this.interests);
+    tripEntity.setProperty("route", this.route);
+    return tripEntity;
   }
 
   /**
