@@ -32,6 +32,8 @@ let directionsRenderer;
 let start = "";
 let end = "";
  
+let map; 
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -51,9 +53,10 @@ function initMap() {
  
   let mapOptions = {
     zoom: 14,
-    center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
+    center: new google.maps.LatLng(0,0)
+    // center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
   }
-  const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   
 }
