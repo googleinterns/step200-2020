@@ -1,4 +1,4 @@
-#interests {
+#interests-section {
   margin: 5vh 25vw 5vh 25vw;
   overflow-y: scroll;
   height: 50vh;
@@ -7,7 +7,7 @@
   border-radius: 10%;
 }
 
-.btn {
+.interestBtn {
   margin: 10px;
   align-items: center;
   background-color: rgba(222,222,222, 0.4);
@@ -19,7 +19,7 @@
   font-size: 20px;
 }
 
-.btn.active {
+.interestBtn.active {
   background-color: #53D2DC;
   border: 2px solid #3196E2;
 }
