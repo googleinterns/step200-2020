@@ -43,6 +43,10 @@ let regions = [];
  * initializing the map and other google services.
  */
 function initServices() {
+  //Clears the localStorage when user exits a tab.
+  window.addEventListener('unload', () => {
+    localStorage.clear();
+  });
   // Modified version of Justine's implementation
   let directionsService = new google.maps.DirectionsService();
   let directionsRenderer = new google.maps.DirectionsRenderer();
@@ -133,7 +137,7 @@ function delayPromise(delayMs) {
  * Go through a user's interests and search for places
  * fitting those interests. Search around the regions
  * previously found using textSearch. Prioritize finding
- * past results loaded through sessionStorage to avoid calling
+ * past results loaded through localStorage to avoid calling
  * textSearch repeatedly from the PlacesService.
  */
 async function loadRecommendations() {
@@ -144,7 +148,7 @@ async function loadRecommendations() {
         radius: RADIUS_TO_SEARCH_AROUND,
         query: interest
       }
-      const recommendationsSaved = sessionStorage.getItem(JSON.stringify(request));
+      const recommendationsSaved = localStorage.getItem(JSON.stringify(request));
       if(recommendationsSaved !== null) {
         addRecommendations(request, JSON.parse(recommendationsSaved));
       } else{
@@ -225,12 +229,12 @@ function addRecommendations(request, placesFound) {
 }
 
 /**
- * Saves the places generated from interest and location in sessionStorage as key/value pairs.
+ * Saves the places generated from interest and location in localStorage as key/value pairs.
  * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} placesLoaded List of places related to interest
  */
 function savePlacesFromInterests(request, placesLoaded) {
-  sessionStorage.setItem(JSON.stringify(request), JSON.stringify(placesLoaded));
+  localStorage.setItem(JSON.stringify(request), JSON.stringify(placesLoaded));
 }
 
 /**
