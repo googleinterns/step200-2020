@@ -172,15 +172,6 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
-  public Entity toEntity() {
-    Entity tripEntity = new Entity(this.getKey());
-    tripEntity.setProperty("start", this.start);
-    tripEntity.setProperty("destinations", this.destinations);
-    tripEntity.setProperty("interests", this.interests);
-    tripEntity.setProperty("route", this.route);
-    return tripEntity;
-  }
-
   /** Adds new Trip entity with empty properties */
   public static Trip createTrip(DatastoreService datastore) {
     Entity tripEntity = new Entity(DATASTORE_ENTITY_KIND);
