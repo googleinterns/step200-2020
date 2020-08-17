@@ -109,7 +109,8 @@ function orderWaypoints(response){
 /**
  * Calculates and sums up the distance and time duration between all destinations (legs)
  * @param {response} response response from the directions service object
- * @return {number, number, number} distance total driving distance for whole route, 
+ * @return {'distance': number, 'hours': number, 'minutes': number}
+ * distance total driving distance for whole route in kilometers, 
  * hours estimated driving time in hours, minutes estimated driving time in minutes
  */
 function computeDistanceTime(response) {
@@ -124,7 +125,8 @@ function computeDistanceTime(response) {
     // in seconds
     totalTime += route_response.legs[i].duration.value;
   }
-  
+
+  // in kilometers
   let distance = (totalDist / 1000).toFixed(2);
   let hours = Math.floor(totalTime / 3600);
   let minutes = Math.round((totalTime - hours*3600) / 60);
@@ -165,7 +167,8 @@ function getRouteOnload(){
       calcRoute();
     }
     else{
-      console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
+      console.log("Could not retrieve any routes nor destinations associated with this trip." +
+       "Please reload page and try again.");
     }
   });
 }
