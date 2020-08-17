@@ -22,18 +22,21 @@ let route = [];
 // holds destinations 
 let destinations = []; 
  
+ /** 
 // object that communicates with the GMaps API service
 let directionsService;
  
 // object that renders display results on the map
 let directionsRenderer;
- 
-// TODO: get from Trip key
+
+let map; 
+let placesService;
+ */
+
 let start = "";
 let end = "";
  
-let map; 
-let placesService;
+
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
@@ -46,8 +49,8 @@ function loadData(){
   getRecsOnload();
   getRouteOnload();
 }
- 
-/** Initializes map on the page */
+ /**
+/** Initializes map on the page 
 function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
@@ -61,7 +64,7 @@ function initMap() {
   directionsRenderer.setMap(map);
   placesService = new google.maps.places.PlacesService(map);
   
-}
+} */
 
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
@@ -95,9 +98,15 @@ function generateRoute() {
   renderRouteList();
 }
 
-function testUtils(){
-  findPlace('ChIJ4zGFAZpYwokRGUGph3Mf37k');
+async function testUtils(){
+  let res = await findPlace('ChIJ4zGFAZpYwokRGUGph3Mf37k');
+  console.log(res);
+  new Promise(resolve => resolve(res)).then(result => console.log(result));
+  // new Promise(resolve => resolve(true)).then(result => console.log(result));
+  // console.log(result);
+  // console.log(result.name);
 }
+
 /**
  * Reorders the elements in route list based on the optimized order of 
  * waypoints returned in the response 
