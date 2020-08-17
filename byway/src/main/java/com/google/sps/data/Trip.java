@@ -191,8 +191,7 @@ public final class Trip {
     datastore.put(tripEntity);
     return fromEntity(tripEntity);
   }
-  
-  
+
   /**
    * Converts the tripKeyString passed in into a Key tripKey and searches for an entity with this
    * key. If found, convert the entity into a Trip type or return null if not found.
