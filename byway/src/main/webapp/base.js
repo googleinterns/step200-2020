@@ -13,7 +13,7 @@ function setProgressBar(pageNumber){
 
 /**
  * Go through url to retrieve the trip key.
- * @returns String of trip key
+ * @return String of trip key
  */
 function getTripKeyFromUrl() {
   return new URLSearchParams(location.search).get('tripKey');
