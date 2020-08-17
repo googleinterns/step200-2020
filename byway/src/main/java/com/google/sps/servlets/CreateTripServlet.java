@@ -5,7 +5,6 @@ import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.sps.data.Trip;
 import com.google.sps.data.UserInfo;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/api/createtrip")
 public class CreateTripServlet extends HttpServlet {
-  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-
   private final Gson gson = new Gson();
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

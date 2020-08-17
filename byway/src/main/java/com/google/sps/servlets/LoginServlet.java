@@ -23,12 +23,12 @@ public class LoginServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    boolean loginStatus = userService.isUserLoggedIn();
+    boolean isLoggedIn = userService.isUserLoggedIn();
     String url =
-        loginStatus
+        isLoggedIn
             ? userService.createLogoutURL(URL_TO_REDIRECT_TO_AFTER_LOGOUT)
             : userService.createLoginURL(URL_TO_REDIRECT_TO_AFTER_LOGIN);
-    LoginState loginState = new LoginState(loginStatus, url);
+    LoginState loginState = new LoginState(isLoggedIn, url);
     String json = gson.toJson(loginState);
     response.setContentType("application/json;");
     response.getWriter().println(json);

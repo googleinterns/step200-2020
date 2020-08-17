@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.flogger.FluentLogger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,7 @@ import java.util.List;
  * used when updating a trip.
  */
 public final class Trip {
-
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   private final String keyString;
@@ -173,6 +174,10 @@ public final class Trip {
       Entity tripEntity = datastore.get(tripKey);
       return fromEntity(tripEntity);
     } catch (EntityNotFoundException e) {
+      logger.atInfo().withCause(e).log("Trip Entity not found : %s", tripKey);
+      return null;
+    } catch (IllegalArgumentException e) {
+      logger.atInfo().withCause(e).log("String cannot be parsed: %s", tripKey);
       return null;
     }
   }

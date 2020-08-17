@@ -192,7 +192,8 @@ function updateStartDestination(locationData){
 * fetches data from servlet
 */
 function fetchDestinations(){
-  return fetch('/api/destinations?tripKey=' + tripKey).then(response => response.json());
+    
+  return fetch(withParams("/api/destinations", tripKey)).then(response => response.json());
 }
 
 /** 
@@ -219,12 +220,12 @@ function getCurrentAddress(){
 window.onload = function(){
   let nextButton = document.getElementById('next-button');
   nextButton.addEventListener('click', () => {
-      nextButton.href = "/interests.html?tripKey=" + tripKey;
+      nextButton.href = withParams("/interests.html", tripKey);
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new  FormData(document.getElementById("user-input-form"));
-    fetch('/api/destinations?tripKey=' + tripKey, {method: 'POST', body:formData}).then((response)=>
+    fetch(withParams("/api/destinations", tripKey), {method: 'POST', body:formData}).then((response)=>
         response.json()).then(locationData => {
         updateLocations(locationData);
         updateStartDestination(locationData);
@@ -238,6 +239,11 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 } 
 else{
   initializeDestinationsPage();
+}
+
+/** Adds a tripId parameter to a URL string. Assumes the URL has no existing parameters. */
+function withParams(baseUrl, tripKey) {
+  return baseUrl + "?" + new URLSearchParams({"tripKey": tripKey}).toString();
 }
 
     

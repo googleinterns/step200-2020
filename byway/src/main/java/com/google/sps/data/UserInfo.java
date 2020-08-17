@@ -123,17 +123,14 @@ public final class UserInfo {
       return null;
     }
     Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
-    UserInfo userInfo;
-    Entity userEntity;
     try {
       // try to retrieve the entity with the key
-      userEntity = datastore.get(userKey);
+      return fromEntity(datastore.get(userKey));
     } catch (EntityNotFoundException exception) {
       // If the user doesn't exist yet or is new, create a new user
       UserInfo newUser = new UserInfo(user.getEmail(), user.getUserId(), new ArrayList<String>());
-      userEntity = newUser.toEntity();
-      datastore.put(userEntity);
+      datastore.put(newUser.toEntity());
+      return newUser;
     }
-    return fromEntity(userEntity);
   }
 }
