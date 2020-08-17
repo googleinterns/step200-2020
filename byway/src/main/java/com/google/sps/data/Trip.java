@@ -169,15 +169,18 @@ public final class Trip {
   }
 
   public static Trip getTrip(DatastoreService datastore, String tripKeyString) {
-    Key tripKey = KeyFactory.stringToKey(tripKeyString);
+    Key tripKey;
+    try{
+      tripKey = KeyFactory.stringToKey(tripKeyString);
+    } catch (IllegalArgumentException e) {
+      logger.atInfo().withCause(e).log("String cannot be parsed: %s", tripKeyString);
+      return null;
+    }
     try {
       Entity tripEntity = datastore.get(tripKey);
       return fromEntity(tripEntity);
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log("Trip Entity not found : %s", tripKey);
-      return null;
-    } catch (IllegalArgumentException e) {
-      logger.atInfo().withCause(e).log("String cannot be parsed: %s", tripKey);
       return null;
     }
   }
