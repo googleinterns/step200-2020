@@ -100,11 +100,10 @@ function generateRoute() {
 
 async function testUtils(){
   let res = await findPlace('ChIJ4zGFAZpYwokRGUGph3Mf37k');
-  console.log(res);
-  new Promise(resolve => resolve(res)).then(result => console.log(result));
+  console.log(res.name);
+ 
   // new Promise(resolve => resolve(true)).then(result => console.log(result));
-  // console.log(result);
-  // console.log(result.name);
+  // res.then(resolve => resolve(true)).then(result => console.log(result));
 }
 
 /**

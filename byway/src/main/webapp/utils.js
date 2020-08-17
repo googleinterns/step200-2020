@@ -14,40 +14,24 @@ let placesService;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
- * @return {}
+ * @return {Promise} result a promise
  */
 async function findPlace(placeId) {
   const request = {
     placeId: placeId,
     fields: ['name', 'geometry']
   }
-  /** 
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve, reject) => {
     placesService.getDetails(request, (result, status) => {
-      if(status == "OK") {
-       console.log(result.name);
-       resolve(result);
-      } else {
-        alert("Status: " + status);
-      }
+        if(status == "OK") {
+          resolve(result);
+        } else {
+          alert("status: " + status);
+          reject(result);
+        }
     })
   });
-  */
-    const result = await new Promise((resolve, reject) => {
-        placesService.getDetails(request, (result, status) => {
-            if(status == "OK") {
-            console.log(result.name);
-            // console.log(resolve(result).name);
-              resolve(result);
-            // return result;
-            } else {
-            alert("status: " + status);
-              reject(result);
-            }
-           
-        })
-    });
-
+  return result;
 }
 
 /** Initializes map on the page */
