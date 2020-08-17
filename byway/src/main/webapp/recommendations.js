@@ -169,12 +169,14 @@ async function loadRecommendations() {
  * @return promise either with PlaceResult[] results or undefined if rejected.
  */
 function findPlacesWithTextSearch(request) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     placesService.textSearch(request, (result, status) => {
-      if(status !== "OK") {
+      if(status === "OK") {
+        resolve(result);
+      } else {
         alertUser(status);
+        reject(result);
       }
-      resolve(result);
     });
   });
 }
