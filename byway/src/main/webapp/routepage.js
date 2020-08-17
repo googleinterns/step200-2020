@@ -14,7 +14,7 @@
 
  
 // copies of recommendations and route, stored as sets for synchronous updating
-let recs = new Set();
+let recs = [];
 
 // holds stops and destinations
 let route = [];
@@ -101,9 +101,8 @@ function generateRoute() {
 async function testUtils(){
   let res = await findPlace('ChIJ4zGFAZpYwokRGUGph3Mf37k');
   console.log(res.name);
- 
-  // new Promise(resolve => resolve(true)).then(result => console.log(result));
-  // res.then(resolve => resolve(true)).then(result => console.log(result));
+  console.log(res.place_id);
+  console.log(res.geometry);
 }
 
 /**
@@ -234,18 +233,29 @@ function clearRecs(){
 /** Get the new list of recommendations from servlet onload */
 function getRecsOnload() {
   clearRecs();
-  fetch('/api/recs')
+   fetch('/api/recs')
   .then(response => response.json())
   .then((recommendations) => {
-     recommendations.forEach((rec)=>{
-      recs.add(rec);
+     recommendations.forEach(async (rec)=>{
+        console.log(rec);
+        let res = await findPlace(rec);
+        recs.push(res);
+        
+      // recs.add(rec);
     })
-    renderRecsList();
-  })
+   
+  }).then(() =>  {
+      console.log(recs);
+      renderRecsList();
+  });
 }
  
 /** Re-render recs list synchronously */
 function renderRecsList(){
+  console.log("render");
+  console.log(recs);
+  console.log(recs[0]);
+  console.log(recs[1]);
   clearRecs();
   const recsList = document.getElementById('rec-list');
   recs.forEach((rec)=>{
@@ -259,7 +269,10 @@ function renderRecsList(){
  */
 function createRecButton(rec){
   const recBtn = document.createElement('button');
-  recBtn.innerText = rec;
+  console.log("create rec");
+  console.log(rec);
+  console.log(rec.name);
+  recBtn.innerText = rec.name;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
     if(!route.includes(rec)){

@@ -19,7 +19,7 @@ let placesService;
 async function findPlace(placeId) {
   const request = {
     placeId: placeId,
-    fields: ['name', 'geometry']
+    fields: ['name', 'geometry', 'place_id']
   }
   const result = await new Promise((resolve, reject) => {
     placesService.getDetails(request, (result, status) => {
