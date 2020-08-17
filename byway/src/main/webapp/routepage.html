@@ -5,15 +5,17 @@
   <title>Route Generator</title>
   <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=&v=weekly"
-    defer></script>
   <script src="routepage.js"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places"
+    defer></script>
+  
+  
   <link rel="stylesheet" href="routepage.css">
 </head>
 <body>
   <p>Place holder button to draw route </p>
-  <button id = "route"  onclick = "generateRoute()">Done Adding Recommendations</button>
+  <button id = "route"  onclick = "testUtils()">Done Adding Recommendations</button>
   <div class = "route-container">
     <div class = "map-style">
       <div id= "map"></div>
@@ -52,5 +54,5 @@
   </div>
   
 </body>
-
+<script src="utils.js"></script>
 </html>

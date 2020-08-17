@@ -33,6 +33,7 @@ let start = "";
 let end = "";
  
 let map; 
+let placesService;
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
@@ -58,6 +59,7 @@ function initMap() {
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
+  placesService = new google.maps.places.PlacesService(map);
   
 }
 
@@ -93,6 +95,9 @@ function generateRoute() {
   renderRouteList();
 }
 
+function testUtils(){
+  findPlace('ChIJ4zGFAZpYwokRGUGph3Mf37k');
+}
 /**
  * Reorders the elements in route list based on the optimized order of 
  * waypoints returned in the response 
@@ -256,6 +261,28 @@ function createRecButton(rec){
   });
   return recBtn;
 }
-
+/**
+async function findPlace(placeId) {
+  
+  await delayPromise(250);
+  const request = {
+    placeId: placeId,
+    fields: ['name', 'geometry']
+  }
+  const result = await new Promise(resolve => {
+    placesService.getDetails(request, (result, status) => {
+      if(status == "OK") {
+        console.log('result');
+        console.log(result);
+        resolve(result);
+        
+      } else {
+        alert("Status: " + status)
+      }
+    })
+  });
+  
+}
+ */
 /* exported initMap, generateRoute */
 /* global google */
