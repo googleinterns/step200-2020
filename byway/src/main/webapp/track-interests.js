@@ -64,7 +64,7 @@ function loadButtonsWithInterests() {
   setProgressBar(2);
   fetchPlaces(tripKey)
   .then((places) => {
-    let buttonSection = document.getElementById("interests-section");
+    let buttonSection = document.getElementById("interests-buttons");
     places.forEach((place) => {
       let button = createButtonForPlace(place);
       buttonSection.appendChild(button);
