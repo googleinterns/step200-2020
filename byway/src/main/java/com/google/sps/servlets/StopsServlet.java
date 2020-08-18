@@ -54,6 +54,7 @@ public final class StopsServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
+
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(trip));
   }
