@@ -7,22 +7,22 @@ body{
 }
 
 #road{
-    position: fixed;
-    left: 0px;
-    height: 60px;
-    bottom: 0px;
-    width: 100%;
-    opacity: 0.7;
+  position: fixed;
+  left: 0px;
+  height: 60px;
+  bottom: 0px;
+  width: 100%;
+  opacity: 0.7;
 }
 
 #car{
-    position: fixed;
-    height: 300px;
-    width: 300px;
-    left: 200px;
-    bottom: -40px;
-    z-index: 2;
-    animation: suspension 1s linear infinite;
+  position: fixed;
+  height: 300px;
+  width: 300px;
+  left: 200px;
+  bottom: -40px;
+  z-index: 2;
+  animation: suspension 1s linear infinite;
 }
 
 #tree{
@@ -51,7 +51,7 @@ body{
 }
 
 #login-button:hover{
-    opacity: 0.6
+  opacity: 0.6
 }
 
 #title{
@@ -63,42 +63,42 @@ body{
 }
 
 @keyframes backgroundChange{
-    0%{
-        background-image: url("/images/background1.png")
-    }
-    33%{
-        background-image: url("/images/background2.png")
-    }
-    67%{
-        background-image: url("/images/background3.png")
-    }
+  0%{
+    background-image: url("/images/background1.png")
+  }
+  33%{
+    background-image: url("/images/background2.png")
+  }
+  67%{
+    background-image: url("/images/background3.png")
+  }
 }
 
 @keyframes moveRight{
   0%{
-        transform: translate(0);
-        opacity: 1;
+    transform: translate(0);
+    opacity: 1;
     }
-    25%{
-        opacity: 1
-    }
-    75%{
-        transform: translateX(-3600px);
-        opacity: 0;
-    }
-    100%{
-        opacity: 0;
-    }
+  25%{
+    opacity: 1
+  }
+  75%{
+    transform: translateX(-3600px);
+    opacity: 0;
+  }
+  100%{
+    opacity: 0;
+  }
 }
 
 @keyframes suspension{
-    0%{
-        transform: translateY(-3px)
-    }
-    50%{
-        transform: translateY(5px)
-    }
-    100%{
-        transform: translateY(-3px)
-    }
+  0%{
+    transform: translateY(-3px)
+  }
+  50%{
+    transform: translateY(5px)
+  }
+  100%{
+    transform: translateY(-3px)
+  }
 }
