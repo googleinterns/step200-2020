@@ -14,14 +14,14 @@ let placesService;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
- * @return {Promise} result a promise
+ * @return {Promise} result a Place object
  */
-async function findPlace(placeId) {
+function findPlace(placeId) {
   const request = {
     placeId: placeId,
     fields: ['name', 'geometry', 'place_id']
   }
-  const result = await new Promise((resolve, reject) => {
+  const result = new Promise((resolve, reject) => {
     placesService.getDetails(request, (result, status) => {
         if(status == "OK") {
           resolve(result);

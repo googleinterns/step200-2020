@@ -235,19 +235,21 @@ function getRecsOnload() {
   clearRecs();
    fetch('/api/recs')
   .then(response => response.json())
-  .then((recommendations) => {
-     recommendations.forEach(async (rec)=>{
-        console.log(rec);
+  .then(async(recommendations) => {
+    await Promise.resolve(recommendations.forEach(async (rec) =>{
         let res = await findPlace(rec);
+        console.log(res);
         recs.push(res);
-        
-      // recs.add(rec);
     })
-   
-  }).then(() =>  {
+    
+  )}).then(() => {renderRecsList(); } )
+  
+  /** 
+  }).then(() => {
+      console.log("in chain");
       console.log(recs);
       renderRecsList();
-  });
+  }); */
 }
  
 /** Re-render recs list synchronously */
@@ -259,6 +261,7 @@ function renderRecsList(){
   clearRecs();
   const recsList = document.getElementById('rec-list');
   recs.forEach((rec)=>{
+    console.log("here");
     recsList.appendChild(createRecButton(rec));
   });
 }
@@ -270,8 +273,6 @@ function renderRecsList(){
 function createRecButton(rec){
   const recBtn = document.createElement('button');
   console.log("create rec");
-  console.log(rec);
-  console.log(rec.name);
   recBtn.innerText = rec.name;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
