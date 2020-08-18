@@ -199,6 +199,7 @@ public final class Trip {
       logger.atInfo().withCause(e).log("String cannot be parsed: %s", tripKeyString);
       return null;
     }
+    
     try {
       Entity tripEntity = datastore.get(tripKey);
       return fromEntity(tripEntity);

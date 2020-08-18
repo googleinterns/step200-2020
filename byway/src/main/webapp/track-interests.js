@@ -97,7 +97,8 @@ function createButtonForPlace(place) {
  * @param {String} tripId value for tripId
  * @param {Array} [userInterests] interests selected by user
  */
-function fetchPlaces(tripId, /* optional */ userInterests) {
+function fetchPlaces(
+    , /* optional */ userInterests) {
   const url = '/api/places?' + new URLSearchParams({tripId}).toString();
   if(userInterests === undefined) {
       return fetch(url).then(response => response.json());
