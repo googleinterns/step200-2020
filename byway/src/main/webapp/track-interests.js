@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global configureTripKeyForNextPage, getTripKeyFromUrl, setProgressBar*/
+/* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar*/
 
 let interestsChosen = new Set();
 let tripKey;
@@ -35,8 +35,9 @@ function loadContent() {
 
 /* Gets the trip key from the url and sets it for the next page. */
 function configureTripKey() {
+  let nextPage = document.getElementById("next-button");
   tripKey = getTripKeyFromUrl();
-  configureTripKeyForNextPage(tripKey, "/generator.html");
+  nextPage.href = configureTripKeyForPath(tripKey, "/generator.html");
 }
 
 /** 
@@ -99,7 +100,7 @@ function createButtonForPlace(place) {
  * @param {Array} [userInterests] interests selected by user
  */
 function fetchPlaces(tripKey, /* optional */ userInterests) {
-  const url = '/api/places?' + new URLSearchParams({tripKey}).toString();
+  const url = configureTripKeyForPath(tripKey, "/api/places");
   if(userInterests === undefined) {
       return fetch(url).then(response => response.json());
   }

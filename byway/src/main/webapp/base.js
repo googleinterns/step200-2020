@@ -1,4 +1,4 @@
-/* exported setProgressBar, getTripKeyFromUrl, configureTripKeyForNextPage */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar */
 /** 
 * Sets Progress Bar to correct location based on the page number
 * @param {int} pageNumber
@@ -20,22 +20,21 @@ function getTripKeyFromUrl() {
 }
 
 /**
- * Sets the trip key passed in to the next page, specified
- * by the nextPagePath. If the trip key is null, redirects the
+ * Uses the trip key passed in to create a modified path from
+ * the path parameter. If the trip key is null, redirects the
  * user to the page where they can make a new trip and have
  * a valid trip key to reference.
- * Note: Requires an element in the document with id "next-button"
- * with an href attribute, e.g. an 'a' tag.
  * @param {String} tripKey unique value for a trip
- * @param {String} nextPagePath HTTP path for next page
+ * @param {String} path to send tripKey across
+ * @return String of path with tripKey in query params
  */
-function configureTripKeyForNextPage(tripKey, nextPagePath) {
+function configureTripKeyForPath(tripKey, path) {
   if(tripKey === null) {
     // Send back to page where a trip can be made
     alert("tripKey not created! Create a new trip.");
     window.location.href = '/index.html';
+    return "";
   } else {
-    let nextPage = document.getElementById("next-button");
-    nextPage.href = nextPagePath + "?" + new URLSearchParams({tripKey}).toString();
+    return path + "?" + new URLSearchParams({tripKey}).toString();
   }
 }
