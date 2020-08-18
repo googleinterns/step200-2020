@@ -41,9 +41,13 @@ public class DestinationsServlet extends HttpServlet {
       return;
     }
     String start = request.getParameter("start-location");
+    if (start != null){
+        trip.setStart(start);
+    }
     String destination = request.getParameter("destinations");
-    trip.setStart(start);
-    trip.addDestination(destination);
+    if (destination != null){
+      trip.addDestination(destination);
+    }
     datastore.put(trip.toEntity());
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(trip));
