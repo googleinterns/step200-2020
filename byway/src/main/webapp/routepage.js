@@ -82,15 +82,18 @@ function calcRoute() {
   });
 }
 
-/** Add the starting location back to the schedule panel
+/** Add the start/end location back to the schedule panel
  *  TODO: Delete markers for recommended stops not selected.
  *  TODO: Disable usage after? Don't want to keep adding to list. 
  */
 function generateRoute() {
-  route.splice(0,0,start);
-  route.splice(route.length, 0, end);
-  console.log(route);
-  renderRouteList();
+  clearRoute();
+  const routeList = document.getElementById('route-list');
+  routeList.appendChild(createRouteButton(start));
+  route.forEach((waypoint)=>{
+    routeList.appendChild(createRouteButton(waypoint));
+  });
+  routeList.appendChild(createRouteButton(end));
 }
 
 /**
