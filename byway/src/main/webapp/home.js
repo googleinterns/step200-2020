@@ -16,7 +16,7 @@ function initializeHomePage(){
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
       let tripKey = trip.keyString
-      window.location.href = buildUrlWithParams('/destinations.html', {tripKey}); 
+      window.location.href = configureTripKeyForPath(tripKey, "destinations.html") 
     });
   });
 }
@@ -36,16 +36,16 @@ function createPastTrip(){
         let info =  document.createElement('p');
         if (isDestinationsMissing && isInterestsMissing){
           info.innerText = "Destinations and Interests missing";
-          title.href = buildUrlWithParams('/destinations.html', {tripKey}) 
+          title.href = configureTripKeyForPath(tripKey, "destinations.html")
         }
         else if (isDestinationsMissing && !isInterestsMissing){
           info.innerText = "Destinations missing";
-          title.href = buildUrlWithParams('/destinations.html', {tripKey})  
+          title.href = configureTripKeyForPath(tripKey, "destinations.html")
         }
         else {
           title.innerText = trip.destinations
           info.innerText = "Interests missing";
-          title.href = buildUrlWithParams('/interests.html', {tripKey}) 
+          title.href = configureTripKeyForPath(tripKey, "interests.html")
         }
         pastTrip.append(title);
         pastTrip.append(info);
@@ -53,7 +53,7 @@ function createPastTrip(){
       } 
       else{
         title.innerText = trip.destinations
-        title.href = buildUrlWithParams('/routepage.html', {tripKey}) 
+        title.href = configureTripKeyForPath(tripKey, "routepage.html")
         pastTrip.append(title);
         let map = document.createElement('div');
         map.className = 'map';
@@ -72,7 +72,7 @@ function initMap(start, end, destinations, keyString) {
   waypoints = [];
   destinations.forEach(destination => {
     waypoints.push({
-        location: destination,
+        location: {placeId: destination },
         stopover: true
       });
   });
@@ -87,8 +87,8 @@ function initMap(start, end, destinations, keyString) {
 
 function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
   let request = {
-    origin:  start,
-    destination: end,
+    origin:  {placeId : start},
+    destination: {placeId : end},
     waypoints: waypoints,
     travelMode: 'DRIVING',
     optimizeWaypoints: true
