@@ -242,53 +242,46 @@ window.onload = function(){
 }
 
 function getStartPlaceId(){
-    let formData = new FormData();
-    let service = new google.maps.places.PlacesService(map);
+  let formData = new FormData();
+  let service = new google.maps.places.PlacesService(map);
   const startRequest = {
-        query: String(document.getElementById("start-search-box").value),
-        fields: ["place_id"]
-      };
+    query: String(document.getElementById("start-search-box").value),
+    fields: ["place_id"]
+  };
   service.findPlaceFromQuery(startRequest, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          formData.append("start-location", results[0].place_id);
-          fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData}).then((response)=>
-           response.json()).then(locationData => {
-           updateStartDestination(locationData);
-    }); 
-        }
-        else{
-          alert("Location Invalid");
-        }
-      });
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      formData.append("start-location", results[0].place_id);
+      fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData}).then((response)=>
+        response.json()).then(locationData => {
+        updateStartDestination(locationData);
+      }); 
+    }
+    else{
+      alert("Location Invalid");
+    }
+  });
 }
 
 function getDestinationPlaceId(){
-    let formData = new FormData();
-    let service = new google.maps.places.PlacesService(map);
+  let formData = new FormData();
+  let service = new google.maps.places.PlacesService(map);
   const destinationRequest = {
-        query: String(document.getElementById("destinations-search-box").value),
-        fields: ["place_id"]
-      };
+    query: String(document.getElementById("destinations-search-box").value),
+    fields: ["place_id"]
+  };
   service.findPlaceFromQuery(destinationRequest, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          formData.append("destinations", results[0].place_id);
-          console.log(results);
-          console.log(results[0].place_id);
-          console.log(formData);
-          fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData}).then((response)=>
-           response.json()).then(locationData => {
-           updateLocations(locationData);
-    }); 
-        }
-        else{
-          alert("Location Invalid");
-        }
-      });
-      
-  }
-
-
-
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      formData.append("destinations", results[0].place_id);
+      fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData}).then((response)=>
+        response.json()).then(locationData => {
+        updateLocations(locationData);
+      }); 
+    }
+    else{
+      alert("Location Invalid");
+    }
+  });
+}
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
