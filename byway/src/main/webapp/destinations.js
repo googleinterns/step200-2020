@@ -193,7 +193,6 @@ function updateStartDestination(locationData){
 */
 function fetchDestinations(){
     
-    
   return fetch(buildUrlWithParams("/api/destinations", {tripKey})).then(response => response.json());
 }
 
