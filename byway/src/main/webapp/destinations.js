@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar */
+/* global google, setProgressBar, getTripKeyFromUrl, buildUrlWithParams */
 
 
 const defaultCenter = Object.freeze({
@@ -238,11 +238,6 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 } 
 else{
   initializeDestinationsPage();
-}
-
-/** Adds a tripId parameter to a URL string. Assumes the URL has no existing parameters. */
-function buildUrlWithParams(baseUrl, params) {
-  return baseUrl + "?" + new URLSearchParams(params).toString();
 }
 
     

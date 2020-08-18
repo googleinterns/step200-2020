@@ -1,4 +1,4 @@
-/* exported setProgressBar, getTripIdFromUrl, configureTripIdForNextPage */
+/* exported setProgressBar, getTripKeyFromUrl, configureTripIdForNextPage */
 /** 
 * Sets Progress Bar to correct location based on the page number
 * @param {int} pageNumber
@@ -50,4 +50,9 @@ function configureTripKeyForNextPage(tripKey, nextPagePath) {
   } else {
     return nextPagePath + "?" + new URLSearchParams({tripKey}).toString();
   }
+}
+
+/** Adds a parameter to a URL string. Assumes the URL has no existing parameters. */
+function buildUrlWithParams(baseUrl, params) {
+  return baseUrl + "?" + new URLSearchParams(params).toString();
 }

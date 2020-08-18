@@ -15,7 +15,8 @@ function initializeHomePage(){
   createPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
-      window.location.href = configureTripKeyForNextPage(trip.keyString, '/destinations.html') 
+      let tripKey = trip.keyString
+      window.location.href = buildUrlWithParams('/destinations.html', {tripKey}); 
     });
   });
 }
@@ -29,21 +30,22 @@ function createPastTrip(){
       let title = document.createElement('a');
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
+      let tripKey = trip.keyString;
       if(isDestinationsMissing|| isInterestsMissing) { //TODO: check if interests or route is empty too
         title.innerText = "Trip In-Progress";
         let info =  document.createElement('p');
         if (isDestinationsMissing && isInterestsMissing){
           info.innerText = "Destinations and Interests missing";
-          title.href = configureTripKeyForNextPage(trip.keyString, '/destinations.html') 
+          title.href = buildUrlWithParams('/destinations.html', {tripKey}) 
         }
         else if (isDestinationsMissing && !isInterestsMissing){
           info.innerText = "Destinations missing";
-          title.href = configureTripKeyForNextPage(trip.keyString, '/destinations.html') 
+          title.href = buildUrlWithParams('/destinations.html', {tripKey})  
         }
         else {
           title.innerText = trip.destinations
           info.innerText = "Interests missing";
-          title.href = configureTripKeyForNextPage(trip.keyString, 'interests.html') 
+          title.href = buildUrlWithParams('/interests.html', {tripKey}) 
         }
         pastTrip.append(title);
         pastTrip.append(info);
@@ -51,7 +53,7 @@ function createPastTrip(){
       } 
       else{
         title.innerText = trip.destinations
-        title.href = configureTripKeyForNextPage(trip.keyString, '/routepage.html') 
+        title.href = buildUrlWithParams('/routepage.html', {tripKey}) 
         pastTrip.append(title);
         let map = document.createElement('div');
         map.className = 'map';
