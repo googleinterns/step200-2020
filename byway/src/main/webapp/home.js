@@ -15,7 +15,7 @@ function initializeHomePage(){
   createPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
-      window.location.href = '/destinations.html?tripKey=' + trip.keyString;  
+      window.location.href = configureTripKeyForNextPage(trip.keyString, '/destinations.html') 
     });
   });
 }
@@ -34,16 +34,16 @@ function createPastTrip(){
         let info =  document.createElement('p');
         if (isDestinationsMissing && isInterestsMissing){
           info.innerText = "Destinations and Interests missing";
-          title.href = "/destinations.html?tripKey=" + trip.keyString;
+          title.href = configureTripKeyForNextPage(trip.keyString, '/destinations.html') 
         }
         else if (isDestinationsMissing && !isInterestsMissing){
           info.innerText = "Destinations missing";
-          title.href = "/destinations.html?tripKey=" + trip.keyString;
+          title.href = configureTripKeyForNextPage(trip.keyString, '/destinations.html') 
         }
         else {
           title.innerText = trip.destinations
           info.innerText = "Interests missing";
-          title.href = "/interests.html?tripKey=" + trip.keyString;
+          title.href = configureTripKeyForNextPage(trip.keyString, 'interests.html') 
         }
         pastTrip.append(title);
         pastTrip.append(info);
@@ -51,7 +51,7 @@ function createPastTrip(){
       } 
       else{
         title.innerText = trip.destinations
-        title.href = "/routepage.html?tripKey=" + trip.keyString;
+        title.href = configureTripKeyForNextPage(trip.keyString, '/routepage.html') 
         pastTrip.append(title);
         let map = document.createElement('div');
         map.className = 'map';

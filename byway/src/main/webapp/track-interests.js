@@ -35,8 +35,8 @@ function loadContent() {
 
 /* Gets the trip id from the url and sets it for the next page. */
 function configureTripId() {
-  tripId = getTripIdFromUrl();
-  configureTripIdForNextPage(tripId, "/generator.html");
+  tripId = getTripKeyFromUrl();
+  configureTripKeyForNextPage(tripId, "/generator.html");
 }
 
 /** 

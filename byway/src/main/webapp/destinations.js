@@ -34,7 +34,7 @@ function initializeDestinationsPage(){
 }
 
 const urlParams = new URLSearchParams(window.location.search);
-const tripKey = urlParams.get('tripKey');
+const tripKey = getTripKeyFromUrl();
 /**
 * Creates map and search boxes with autocomplete
 */
@@ -192,7 +192,6 @@ function updateStartDestination(locationData){
 * fetches data from servlet
 */
 function fetchDestinations(){
-    
   return fetch(buildUrlWithParams("/api/destinations", {tripKey})).then(response => response.json());
 }
 
