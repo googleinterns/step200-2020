@@ -11,6 +11,19 @@ function setProgressBar(pageNumber){
   }
 }
 
+function setLogoutLink(){
+    fetch("/api/login").then(response => response.json()).then((login) =>{
+    if (login.isLoggedIn) {
+      let logoutLink = document.createElement("a");
+      logoutLink.id = "logout-button";
+      logoutLink.href = login.url;
+      logoutLink.innerText = "LOGOUT";
+      let container = document.getElementById("logout-link");
+      container.append(logoutLink);
+    }
+  });
+}
+
 /**
  * Go through url to retrieve the trip id.
  * @returns String of trip ID
