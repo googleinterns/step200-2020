@@ -41,11 +41,11 @@ public class DestinationsServlet extends HttpServlet {
       return;
     }
     String start = request.getParameter("start-location");
-    if (start != null){
-        trip.setStart(start);
+    if (start != null) {
+      trip.setStart(start);
     }
     String destination = request.getParameter("destinations");
-    if (destination != null){
+    if (destination != null) {
       trip.addDestination(destination);
     }
     datastore.put(trip.toEntity());
