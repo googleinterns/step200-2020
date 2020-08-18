@@ -24,6 +24,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.Trip;
+import com.google.appengine.api.datastore.Entity;
 
 /** Servlet that handles data for recommended places */
 @WebServlet("/api/recs")
@@ -31,13 +33,24 @@ public final class RecsServlet extends HttpServlet {
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+  @Override
+  public void init() {
+    Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND, 1234);
+    tripEntity.setProperty("start", "Chelsea Market");
+    tripEntity.setProperty("destinations", Arrays.asList("Chelsea Market", "Yonkers"));
+    tripEntity.setProperty("interests", Arrays.asList("Art", "Nature"));
+    tripEntity.setProperty("route", Arrays.asList("Yonkers"));
+    datastore.put(tripEntity);
+  }
+
   /* Passes hard-coded data to be shown in the recommendations panel
    * TODO: Replace with actual arraylist of recommended places based on TextSearch in
    * interests page
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> recs = Arrays.asList("Times Square", "MOMA", "Central Park");
+    // List<String> recs = Arrays.asList("Times Square", "MOMA", "Central Park");
+    List<String>recs = Arrays.asList("ChIJnaBtqVVYwokRaAqg4aX1C4Y","ChIJKxDbe_lYwokRVf__s8CPn-o","ChIJ4zGFAZpYwokRGUGph3Mf37k");
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(recs));
   }
