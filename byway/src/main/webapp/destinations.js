@@ -32,6 +32,9 @@ function initializeDestinationsPage(){
     updateStartDestination(response);
   }); 
 }
+
+const urlParams = new URLSearchParams(window.location.search);
+const tripKey = urlParams.get('tripKey');
 /**
 * Creates map and search boxes with autocomplete
 */
@@ -189,8 +192,8 @@ function updateStartDestination(locationData){
 * fetches data from servlet
 */
 function fetchDestinations(){
-  let promise= fetch('/api/destinations').then(response => response.json());
-  return promise;
+    
+  return fetch(buildUrlWithParams("/api/destinations", {tripKey})).then(response => response.json());
 }
 
 /** 
@@ -215,10 +218,14 @@ function getCurrentAddress(){
 * add event listener for submit button
 */
 window.onload = function(){
+  let nextButton = document.getElementById('next-button');
+  nextButton.addEventListener('click', () => {
+      nextButton.href = buildUrlWithParams("/interests.html", {tripKey});
+  });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const formData = new  FormData(document.getElementById("user-input-form"));
-    fetch('/api/destinations', {method: 'POST', body:formData}).then((response)=>
+    fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData}).then((response)=>
         response.json()).then(locationData => {
         updateLocations(locationData);
         updateStartDestination(locationData);
@@ -232,6 +239,11 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 } 
 else{
   initializeDestinationsPage();
+}
+
+/** Adds a tripId parameter to a URL string. Assumes the URL has no existing parameters. */
+function buildUrlWithParams(baseUrl, params) {
+  return baseUrl + "?" + new URLSearchParams(params).toString();
 }
 
     

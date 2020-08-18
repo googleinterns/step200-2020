@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.flogger.FluentLogger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,11 +33,11 @@ import java.util.List;
  * used when updating a trip.
  */
 public final class Trip {
-
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   private final String keyString;
-  private final String start;
+  private String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
@@ -112,6 +113,16 @@ public final class Trip {
     return KeyFactory.stringToKey(keyString);
   }
 
+  /* Sets the starting point of the trip as plain text. */
+  public void setStart(String start) {
+    this.start = start;
+  }
+
+  /* Adds a destination point of the trip as plain text. */
+  public void addDestination(String destination) {
+    destinations.add(destination);
+  }
+
   /**
    * Creates an entity using the properties from the Trip class instance.
    *
@@ -161,6 +172,17 @@ public final class Trip {
     return new Trip(keyString, start, destinations, interests, route);
   }
 
+  /** Adds new Trip entity with empty properties */
+  public static Trip createTrip(DatastoreService datastore) {
+    Entity tripEntity = new Entity(DATASTORE_ENTITY_KIND);
+    tripEntity.setProperty("start", "");
+    tripEntity.setProperty("destinations", new ArrayList<String>());
+    tripEntity.setProperty("interests", new ArrayList<String>());
+    tripEntity.setProperty("route", new ArrayList<String>());
+    datastore.put(tripEntity);
+    return fromEntity(tripEntity);
+  }
+
   /**
    * Converts the tripKeyString passed in into a Key tripKey and searches for an entity with this
    * key. If found, convert the entity into a Trip type or return null if not found.
@@ -170,11 +192,19 @@ public final class Trip {
    * @return Trip type with information retrieved from the entity, or null.
    */
   public static Trip getTrip(DatastoreService datastore, String tripKeyString) {
-    Key tripKey = KeyFactory.stringToKey(tripKeyString);
+    Key tripKey;
+    try {
+      tripKey = KeyFactory.stringToKey(tripKeyString);
+    } catch (IllegalArgumentException e) {
+      logger.atInfo().withCause(e).log("String cannot be parsed: %s", tripKeyString);
+      return null;
+    }
+
     try {
       Entity tripEntity = datastore.get(tripKey);
       return fromEntity(tripEntity);
     } catch (EntityNotFoundException e) {
+      logger.atInfo().withCause(e).log("Trip Entity not found : %s", tripKey);
       return null;
     }
   }
