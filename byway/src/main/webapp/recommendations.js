@@ -174,10 +174,12 @@ function findPlacesWithTextSearch(request) {
       if(status === "OK") {
         resolve(result);
       } else {
-        alertUser(status);
-        reject(result);
+        reject(new Error(status));
       }
     });
+  }).catch(err => {
+    alertUser(err.message);
+    return null;
   });
 }
 
