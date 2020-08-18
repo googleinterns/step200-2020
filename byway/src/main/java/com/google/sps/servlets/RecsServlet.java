@@ -39,7 +39,7 @@ public final class RecsServlet extends HttpServlet {
     tripEntity.setProperty("start", "Chelsea Market");
     tripEntity.setProperty("destinations", Arrays.asList("Chelsea Market", "Yonkers"));
     tripEntity.setProperty("interests", Arrays.asList("Art", "Nature"));
-    tripEntity.setProperty("route", Arrays.asList("Yonkers"));
+    tripEntity.setProperty("route", Arrays.asList());
     datastore.put(tripEntity);
   }
 

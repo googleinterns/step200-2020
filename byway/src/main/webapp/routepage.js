@@ -68,11 +68,13 @@ function initMap() {
 
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
+  console.log("calcroute");
+  console.log(route);
   let request = {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint})),
+    waypoints:  route.map(waypoint => ({location: waypoint.name})),
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
@@ -235,14 +237,22 @@ function getRecsOnload() {
   clearRecs();
    fetch('/api/recs')
   .then(response => response.json())
-  .then(async(recommendations) => {
+  .then(async (recommendations) => {
+    for (rec of recommendations){
+        let res = await findPlace(rec);
+        console.log(res);
+        recs.push(res);
+    }
+  }).then(() => renderRecsList())
+  
+    /** 
     await Promise.resolve(recommendations.forEach(async (rec) =>{
         let res = await findPlace(rec);
         console.log(res);
         recs.push(res);
     })
-    
-  )}).then(() => {renderRecsList(); } )
+    */
+  // )}).then(() => {renderRecsList(); } )
   
   /** 
   }).then(() => {
