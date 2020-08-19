@@ -15,7 +15,7 @@ let placesService;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
- * @return {Promise} result a Place object
+ * @return {Promise} result a PlaceResult object with fields name, geometry, place_id
  */
 function findPlace(placeId) {
   const request = {
@@ -28,7 +28,7 @@ function findPlace(placeId) {
         resolve(result);
       } else {
         alert("Status: " + status);
-        reject(result);
+        reject(error);
       }
     })
   });
@@ -51,4 +51,5 @@ function initMap() {
   
 }
 
-/* export findPlace, initMap */
+/* exported findPlace, initMap */
+/* global google */

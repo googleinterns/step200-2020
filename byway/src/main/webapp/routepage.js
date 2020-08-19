@@ -53,14 +53,14 @@ function initMap() {
   placesService = new google.maps.places.PlacesService(map);
   
 }
-
+//  new google.maps.LatLng(0,0)
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
   let request = {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.name})),
+    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
@@ -159,22 +159,23 @@ function getRouteOnload(){
       try{
         let res = await findPlace(trip.start);
         start = end = res.name;
+   
       } catch (error) {
         console.error("Could not retrieve a start nor end point due to: ", error);
       }
       
-      for(let destination of trip.destinations){
+      for(let destinationId of trip.destinations){
         try{
-          let destinationAsPlaceObj = await findPlace(destination);
+          let destinationAsPlaceObj = await findPlace(destinationId);
           destinations.push(destinationAsPlaceObj);
         } catch (error) {
           console.error("Could not retrieve destinations due to: ", error);
         }
       }
 
-      for(let waypoint of trip.route){
+      for(let waypointId of trip.route){
         try{
-          let waypointAsPlaceObj = await findPlace(waypoint);
+          let waypointAsPlaceObj = await findPlace(waypointId);
           route.push(waypointAsPlaceObj);
         } catch (error) {
           console.error("Could not retrieve route due to: ", error);
@@ -198,7 +199,7 @@ function renderRouteList(){
 }
 
 /** Creates a button in the schedule panel in the html
- *  @param {Place} waypoint a Place object whose name property is added as a button 
+ *  @param {PlaceResult} waypoint a PlaceResult object whose name property is added as a button 
  *  @return {button} routeBtn a button showing a selected waypoint along route
  */
 function createRouteButton(waypoint){
@@ -241,14 +242,13 @@ function getRecsOnload() {
   fetch('/api/recs')
   .then(response => response.json())
   .then(async (recommendations) => {
-    for (let rec of recommendations){
+    for (let recommendationId of recommendations){
       try{
-        let res = await findPlace(rec);
-        recs.push(res);
+        let recommendationAsPlaceObj = await findPlace(recommendationId);
+        recs.push(recommendationAsPlaceObj);
       } catch (error){
           console.error("Could not retrieve recommended stops due to: ", error);
-        }
-     
+      }
     }
     renderRecsList();
   })
@@ -264,7 +264,7 @@ function renderRecsList(){
 }
  
 /** Creates a button in the recommendations panel in the html 
- *  @param {Place} rec a Place object whose name property is added as a button 
+ *  @param {PlaceResult} rec a PlaceResult object whose name property is added as a button 
  *  @return {button} recBtn a button showing a recommended place
  */
 function createRecButton(rec){
