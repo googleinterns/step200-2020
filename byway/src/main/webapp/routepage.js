@@ -32,6 +32,9 @@ let directionsService;
 // object that renders display results on the map
 let directionsRenderer;
 
+// object that communicates with the Places API service
+let placesService;
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -286,5 +289,5 @@ function createRecButton(rec){
   return recBtn;
 }
 
-/* exported initMap, generateRoute */
-/* global google:true, map:true, findPlace:true, placesService*/
+/* exported initMap, generateRoute, placesServices */
+/* global google:true, map:true, findPlace:true*/

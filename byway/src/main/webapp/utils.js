@@ -3,9 +3,6 @@
 // map object used in the route page
 let map; 
 
-// object that communicates with the Places API service
-let placesService;
-
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
@@ -33,4 +30,5 @@ function findPlace(placeId) {
   return result;
 }
 
-/* exported findPlace, map, placesService */
+/* exported findPlace, map */
+/* global placesService:true */
