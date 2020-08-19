@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar */
+/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath */
 
 
 const defaultCenter = Object.freeze({
@@ -34,7 +34,7 @@ function initializeDestinationsPage(){
 }
 
 const urlParams = new URLSearchParams(window.location.search);
-const tripKey = urlParams.get('tripKey');
+const tripKey = getTripKeyFromUrl();
 
 let service;
 /**
@@ -150,7 +150,6 @@ function updateLocations(locationData){
           addLocationToDom(place, container);
         }
         else{
-            console.log("updatedest");
           alert("Location Invalid:" + status);
           
         }
@@ -203,7 +202,6 @@ function updateStartDestination(locationData){
           document.getElementById('start-search-box').value = place.formatted_address;
         }
         else{
-            console.log("updatetsart");
           alert("Location Invalid:" + status);
         }
       });
@@ -215,7 +213,7 @@ function updateStartDestination(locationData){
 */
 function fetchDestinations(){
     
-  return fetch(buildUrlWithParams("/api/destinations", {tripKey})).then(response => response.json());
+  return fetch(configureTripKeyForPath(tripKey, "/api/destinations")).then(response => response.json());
 }
 
 /** 
@@ -243,7 +241,7 @@ window.onload = function(){
   
   let nextButton = document.getElementById('next-button');
   nextButton.addEventListener('click', () => {
-      nextButton.href = buildUrlWithParams("/interests.html", {tripKey});
+      nextButton.href = configureTripKeyForPath(tripKey, '/interests.html');
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -267,7 +265,7 @@ function sendPlaceId(elementName){
     console.log(status);
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       formData.append(elementName, results[0].place_id);
-      fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData})
+      fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
       .then((response)=>
         response.json())
       .then(locationData => {
@@ -292,10 +290,6 @@ else{
   initializeDestinationsPage();
 }
 
-/** Adds a tripId parameter to a URL string. Assumes the URL has no existing parameters. */
-function buildUrlWithParams(baseUrl, params) {
-  return baseUrl + "?" + new URLSearchParams(params).toString();
-}
 
     
 
