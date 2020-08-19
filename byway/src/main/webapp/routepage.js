@@ -46,8 +46,9 @@ function initMap() {
  
   let mapOptions = {
     zoom: 14,
+    // arbitrary center as it will get recentered to the route 
     center: new google.maps.LatLng(0,0)
-    // center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
+    
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
@@ -57,8 +58,6 @@ function initMap() {
 
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
-  console.log("calcroute");
-  console.log(route);
   let request = {
     origin:  start,
     destination: end,
@@ -80,20 +79,12 @@ function calcRoute() {
 
 /** Add the starting location back to the schedule panel
  *  TODO: Delete markers for recommended stops not selected.
- *  TODO: Disable usage after? Don't want to keep adding to list. 
  */
 function generateRoute() {
   route.splice(0,0,start);
   route.splice(route.length, 0, end);
   console.log(route);
   renderRouteList();
-}
-
-async function testUtils(){
-  let res = await findPlace('ChIJ4zGFAZpYwokRGUGph3Mf37k');
-  console.log(res.name);
-  console.log(res.place_id);
-  console.log(res.geometry);
 }
 
 /**
