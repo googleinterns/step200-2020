@@ -1,4 +1,4 @@
-/** Script that contains shared functions, primarily for use in the third page */
+/** Script that contains shared functions and variables*/
 
 // object that communicates with the GMaps API service
 let directionsService;
@@ -28,7 +28,7 @@ function findPlace(placeId) {
         resolve(result);
       } else {
         alert("Status: " + status);
-        reject(result);
+        reject(error);
       }
     })
   }).catch(error => {
@@ -38,21 +38,5 @@ function findPlace(placeId) {
   return result;
 }
 
-/** Initializes map on the page */
-function initMap() {
-  directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer();
- 
-  let mapOptions = {
-    zoom: 14,
-    // arbitrary center as it will get recentered to the route 
-    center: new google.maps.LatLng(0,0)
-  }
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsRenderer.setMap(map);
-  placesService = new google.maps.places.PlacesService(map);
-  
-}
-
-/* export findPlace, initMap */
+/* exported findPlace */
 /* global google */
