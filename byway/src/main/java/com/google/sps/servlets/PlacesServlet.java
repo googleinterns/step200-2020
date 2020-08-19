@@ -75,7 +75,7 @@ public final class PlacesServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String tripKeyString = request.getParameter("tripId");
+    String tripKeyString = request.getParameter("tripKey");
     ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
     Trip trip = Trip.getTrip(datastore, tripKeyString);
     if (trip == null) {
