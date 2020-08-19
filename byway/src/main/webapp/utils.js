@@ -15,9 +15,10 @@ let placesService;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
- * @return {Promise} result a Place object
+ * @return {Promise} result a Place Result object with fields name, geometry, id, etc.
  */
 function findPlace(placeId) {
+  console.log(placeId);
   const request = {
     placeId: placeId,
     fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address']
@@ -28,15 +29,14 @@ function findPlace(placeId) {
         resolve(result);
       } else {
         alert("Status: " + status);
-        reject(error);
+        reject(new Error("Could not retrieve place result object from request."));
       }
     })
   }).catch(error => {
-    alert("Error.Cannot process this request due to " + error);
+    alert(error);
   });
 
   return result;
 }
 
-/* exported findPlace */
-/* global google */
+/* exported findPlace, map, directionService, directionsRenderer */

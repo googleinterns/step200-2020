@@ -281,4 +281,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute */
-/* global google */
+/* global google, directionsService, directionsRenderer, map, findPlace, placesService*/
