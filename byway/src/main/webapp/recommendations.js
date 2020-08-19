@@ -13,7 +13,6 @@
 // limitations under the License.
 
 /* global google */
-/* global interest:writable, leg:writable, place:writable, region:writable, step: writable */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initServices);
@@ -120,8 +119,8 @@ function resetUserAlerts() {
  */
 function findRegions(directionResult) {
   const myRoute = directionResult.routes[0];
-  for(leg of myRoute.legs) {
-    for(step of leg.steps) {
+  for(let leg of myRoute.legs) {
+    for(let step of leg.steps) {
       const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
       const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
       const avgLoc = {lat: avgLat, lng: avgLng};
@@ -150,8 +149,8 @@ function delayPromise(delayMs) {
  */
 async function loadRecommendations() {
   let statuses = new Set();
-  for(interest of interests) {
-    for(region of regions) {
+  for(let interest of interests) {
+    for(let region of regions) {
       const request = {
         location: region,
         radius: RADIUS_TO_SEARCH_AROUND,
@@ -208,7 +207,7 @@ function alertUser(statuses) {
   document.getElementById("general-message").style.visibility = 'visible';
   let statusesContainer = document.getElementById("statuses");
   statusesContainer.style.visibility = 'visible';
-  for(status of statuses) {
+  for(let status of statuses) {
     let statusElement = document.createElement('ul');
     statusElement.innerText = status;
     statusesContainer.appendChild(statusElement);
@@ -226,7 +225,7 @@ function alertUser(statuses) {
 function addRecommendations(request, placesFound) {
   const MAX_RECOMMENDATIONS = 1;
   let placesLoaded = [];
-  for (place of placesFound) {
+  for(let place of placesFound) {
     placeMarker(place);
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
