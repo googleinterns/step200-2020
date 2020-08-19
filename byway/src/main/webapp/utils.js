@@ -31,7 +31,10 @@ function findPlace(placeId) {
         reject(result);
       }
     })
+  }).catch(error => {
+    alert("Error.Cannot process this request due to " + error);
   });
+
   return result;
 }
 
