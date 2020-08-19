@@ -50,7 +50,6 @@ public final class RecsServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // List<String> recs = Arrays.asList("Times Square", "MOMA", "Central Park");
     List<String>recs = Arrays.asList("ChIJnaBtqVVYwokRaAqg4aX1C4Y","ChIJKxDbe_lYwokRVf__s8CPn-o","ChIJ4zGFAZpYwokRGUGph3Mf37k");
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(recs));

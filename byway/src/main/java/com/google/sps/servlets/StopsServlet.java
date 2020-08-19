@@ -54,7 +54,7 @@ public final class StopsServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    response.setContentType("application/json");
+    response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(trip));
   }
 
@@ -68,7 +68,7 @@ public final class StopsServlet extends HttpServlet {
 
     } catch (EntityNotFoundException e) {
       logger.atInfo().withCause(e).log(
-          "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
+        "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
