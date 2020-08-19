@@ -22,7 +22,8 @@ const defaultCenter = Object.freeze({
 });
 
 let userlatlng = {lat:null , lng: null};
-let map;
+//let map;
+//let placesService;
 
 function initializeDestinationsPage(){
   initAutocomplete(); 
@@ -44,7 +45,7 @@ function initAutocomplete() {
     zoom: 13,
     mapTypeId: "roadmap"
   });
-
+  placesService = new google.maps.places.PlacesService(map);
   //navigator is an HTML geolocation API variable to get information about the users current location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -136,19 +137,9 @@ function updateLocations(locationData){
     container.innerText = "";
     let destinationArray = locationData.destinations;
     destinationArray.forEach((destination) => {
-      const request = {
-        placeId: destination,
-        fields: ["name", "photos", "formatted_address", "rating", "business_status"]
-      };
-      let service = new google.maps.places.PlacesService(map);
-      service.getDetails(request, (place, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          addLocationToDom(place, container);
-        }
-        else{
-          alert("Location Invalid");
-        }
-      });  
+      findPlace(destination).then((placeDetails) =>{
+        addLocationToDom(placeDetails, container);
+      }); 
     }) 
 }
 
@@ -184,18 +175,8 @@ function updateStartDestination(locationData){
       document.getElementById('start-search-box').value = "";
     }
     else{
-      const request = {
-        placeId: locationData.start,
-        fields: ["formatted_address"]
-      };
-      let service = new google.maps.places.PlacesService(map);
-      service.getDetails(request, (place, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          document.getElementById('start-search-box').value = place.formatted_address;
-        }
-        else{
-          alert("Location Invalid");
-        }
+      findPlace(locationData.start).then((placeDetails) =>{
+        document.getElementById('start-search-box').value = placeDetails.formatted_address;
       });
     }
 }
@@ -235,52 +216,45 @@ window.onload = function(){
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    getDestinationPlaceId();
-    getStartPlaceId();
+    sendPlaceId("destinations-search-box");
+    sendPlaceId("start-search-box");
   });
 }
 
-function getStartPlaceId(){
+/** 
+* gets User Input from search box and sends the Place Id of user input to the server
+* elementName indicates which search box to get from, param indicates which param to save as
+* @param {String} elementName
+*/
+function sendPlaceId(elementName){
   let formData = new FormData();
-  let service = new google.maps.places.PlacesService(map);
-  const startRequest = {
-    query: String(document.getElementById("start-search-box").value),
+  const request = {
+    query: String(document.getElementById(elementName).value),
     fields: ["place_id"]
   };
-  service.findPlaceFromQuery(startRequest, (results, status) => {
+  placesService.findPlaceFromQuery(request, (results, status) => {
+    console.log(status);
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      formData.append("start-location", results[0].place_id);
-      fetch(configureTripKeyForPath(tripKey,"/api/destinations"), {method: 'POST', body:formData}).then((response)=>
-        response.json()).then(locationData => {
-        updateStartDestination(locationData);
+      formData.append(elementName, results[0].place_id);
+      fetch(configureTripKeyForPath(tripKey, "/api/destinations"), {method: 'POST', body:formData})
+      .then((response)=>
+        response.json())
+      .then(locationData => {
+        if (elementName == "start-search-box"){
+          updateStartDestination(locationData);
+        }
+        else{
+          updateLocations(locationData);
+        }
       }); 
     }
     else{
-      alert("Location Invalid");
+      alert("Location Invalid:" + status);
     }
   });
 }
+   
 
-function getDestinationPlaceId(){
-  let formData = new FormData();
-  let service = new google.maps.places.PlacesService(map);
-  const destinationRequest = {
-    query: String(document.getElementById("destinations-search-box").value),
-    fields: ["place_id"]
-  };
-  service.findPlaceFromQuery(destinationRequest, (results, status) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      formData.append("destinations", results[0].place_id);
-      fetch(configureTripKeyForPath(tripKey,"/api/destinations"), {method: 'POST', body:formData}).then((response)=>
-        response.json()).then(locationData => {
-        updateLocations(locationData);
-      }); 
-    }
-    else{
-      alert("Location Invalid");
-    }
-  });
-}
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
