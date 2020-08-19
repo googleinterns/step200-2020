@@ -287,4 +287,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute */
-/* global google:true, map:true, findPlace:true, placesService:true */
+/* global google:true, map:true, findPlace:true, placesService*/
