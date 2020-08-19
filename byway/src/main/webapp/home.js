@@ -22,6 +22,7 @@ function initializeHomePage(){
 }
 
 function createPastTrip(){
+  
   fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
     tripIds.forEach(trip => {
       let container = document.getElementById("past-trips-container");
@@ -43,7 +44,6 @@ function createPastTrip(){
           title.href = configureTripKeyForPath(tripKey, "destinations.html")
         }
         else {
-          title.innerText = trip.destinations
           info.innerText = "Interests missing";
           title.href = configureTripKeyForPath(tripKey, "interests.html")
         }
@@ -52,15 +52,22 @@ function createPastTrip(){
         container.append(pastTrip);
       } 
       else{
-        title.innerText = trip.destinations
-        title.href = configureTripKeyForPath(tripKey, "routepage.html")
-        pastTrip.append(title);
         let map = document.createElement('div');
         map.className = 'map';
         map.id = "map-" + trip.keyString;
         pastTrip.append(map);
         container.append(pastTrip);
         initMap(trip.start, trip.start, trip.destinations, trip.keyString); 
+        placesService = new google.maps.places.PlacesService(map);
+        let placeNames =[];
+        trip.destinations.forEach(destination => {
+          findPlace(destination).then(place =>{
+              placeNames.push(place.name);
+          })
+        })
+        title.innerText = "Your Trip To " + placeNames.join();
+        title.href = configureTripKeyForPath(tripKey, "routepage.html")
+        pastTrip.append(title);
       }
     });
   })
