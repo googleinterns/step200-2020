@@ -1,4 +1,4 @@
-/** Script that contains shared functions, primarily for use in the third page */
+/** Script that contains shared functions and variables*/
 
 // object that communicates with the GMaps API service
 let directionsService;
@@ -15,12 +15,12 @@ let placesService;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
- * @return {Promise} result a PlaceResult object with fields name, geometry, place_id
+ * @return {Promise} result a Place object
  */
 function findPlace(placeId) {
   const request = {
     placeId: placeId,
-    fields: ['name', 'geometry', 'place_id']
+    fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address']
   }
   const result = new Promise((resolve, reject) => {
     placesService.getDetails(request, (result, status) => {
@@ -31,25 +31,12 @@ function findPlace(placeId) {
         reject(error);
       }
     })
+  }).catch(error => {
+    alert("Error.Cannot process this request due to " + error);
   });
+
   return result;
 }
 
-/** Initializes map on the page */
-function initMap() {
-  directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer();
- 
-  let mapOptions = {
-    zoom: 14,
-    // arbitrary center as it will get recentered to the route 
-    center: new google.maps.LatLng(0,0)
-  }
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsRenderer.setMap(map);
-  placesService = new google.maps.places.PlacesService(map);
-  
-}
-
-/* exported findPlace, initMap */
+/* exported findPlace */
 /* global google */

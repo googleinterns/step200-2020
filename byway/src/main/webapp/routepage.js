@@ -57,8 +57,8 @@ function initMap() {
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
   let request = {
-    origin:  start,
-    destination: end,
+    origin:  start.name,
+    destination: end.name,
     travelMode: 'DRIVING',
     waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
     optimizeWaypoints: true
@@ -158,7 +158,7 @@ function getRouteOnload(){
     if(trip != null){
       try{
         let res = await findPlace(trip.start);
-        start = end = res.name;
+        start = end = res;
    
       } catch (error) {
         console.error("Could not retrieve a start nor end point due to: ", error);
