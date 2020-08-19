@@ -170,12 +170,23 @@ function getRouteOnload(){
   clearRoute();
   fetch('/api/stop')
   .then(response => response.json())
-  .then((trip) => {
+  .then(async (trip) => {
     if(trip != null){
-      start = end = trip.start;
-      destinations = trip.destinations;
-      route.push(...trip.route)
-
+      let res = await findPlace(trip.start);
+      start = end = res.name;
+      console.log("start " + start);
+      // destinations = trip.destinations;
+      // route.push(...trip.route)
+      for(destination of trip.destinations){
+        let destinationAsPlaceObj = await findPlace(destination);
+        console.log("destination: " + destinationAsPlaceObj.name);
+        destinations.push(destinationAsPlaceObj);
+      }
+      for(waypoint of trip.route){
+        let waypointAsPlaceObj = await findPlace(waypoint);
+        console.log("waypoint: " + waypointAsPlaceObj.name);
+        route.push(waypointAsPlaceObj);
+      }
       calcRoute();
     }
     else{
@@ -187,6 +198,7 @@ function getRouteOnload(){
 /** Re-render route list synchronously */
 function renderRouteList(){
   clearRoute();
+  console.log("destinations" + destinations.map(waypoint => waypoint.name));
   const routeList = document.getElementById('route-list');
   route.forEach((waypoint)=>{
     routeList.appendChild(createRouteButton(waypoint));
@@ -199,16 +211,20 @@ function renderRouteList(){
  */
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
-  routeBtn.innerText = waypoint;
-  if(!destinations.includes(waypoint)){
-    routeBtn.className =  "btn stop-btn";
-  } else{
+  routeBtn.innerText = waypoint.name;
+  // if(!destinations.includes(waypoint)){
+  if(destinations.some(destination => destination.name === waypoint.name)){
+    console.log("destination");
     routeBtn.className =  "btn destination-btn";
+  } else {
+    console.log("stop");
+    routeBtn.className =  "btn stop-btn";
   }
   routeBtn.addEventListener("click", function() {
     // only delete if the waypoint is only a stop, not a destination
-    if(!destinations.includes(waypoint)){
-      route = route.filter(stop => stop != waypoint);
+    // if(!destinations.includes(waypoint)){
+    if(!destinations.some(destination => destination.name === waypoint.name)){
+      route = route.filter(stop => stop.name != waypoint.name);
       calcRoute();
     }
    
@@ -220,7 +236,9 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(route))});
+  // route.map(waypoint => ({location: waypoint.name}))
+  console.log("putting into stops " + route.map(waypoint => waypoint.place_id));
+  fetch('/api/stop', {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
 
 /** Clear the recommendations panel in the html */
@@ -240,7 +258,7 @@ function getRecsOnload() {
   .then(async (recommendations) => {
     for (rec of recommendations){
         let res = await findPlace(rec);
-        console.log(res);
+        // console.log(res);
         recs.push(res);
     }
   }).then(() => renderRecsList())

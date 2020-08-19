@@ -36,10 +36,11 @@ public final class RecsServlet extends HttpServlet {
   @Override
   public void init() {
     Entity tripEntity = new Entity(Trip.DATASTORE_ENTITY_KIND, 1234);
-    tripEntity.setProperty("start", "Chelsea Market");
-    tripEntity.setProperty("destinations", Arrays.asList("Chelsea Market", "Yonkers"));
+    // tripEntity.setProperty("start", "Chelsea Market");
+    tripEntity.setProperty("start", "ChIJw2lMFL9ZwokRosAtly52YX4");
+    tripEntity.setProperty("destinations", Arrays.asList("ChIJw2lMFL9ZwokRosAtly52YX4", "ChIJoa9DCQjAwokRotrYpIRzlr4"));
     tripEntity.setProperty("interests", Arrays.asList("Art", "Nature"));
-    tripEntity.setProperty("route", Arrays.asList());
+    tripEntity.setProperty("route", Arrays.asList("ChIJoa9DCQjAwokRotrYpIRzlr4"));
     datastore.put(tripEntity);
   }
 
