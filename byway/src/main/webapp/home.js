@@ -1,3 +1,5 @@
+let placesService;
+
 if(!!window.performance && window.performance.navigation.type == 2)
 {
     window.location.reload();
@@ -22,18 +24,19 @@ function initializeHomePage(){
 }
 
 function createPastTrip(){
-  
   fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
+    let tripNum = 1;
     tripIds.forEach(trip => {
       let container = document.getElementById("past-trips-container");
       let pastTrip = document.createElement('div');
       pastTrip.className = "past-trip";
       let title = document.createElement('a');
+      pastTrip.append(title);
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
       let tripKey = trip.keyString;
       if(isDestinationsMissing|| isInterestsMissing) { //TODO: check if interests or route is empty too
-        title.innerText = "Trip In-Progress";
+        title.innerText = "Trip #" + tripNum + ": In-Progress";
         let info =  document.createElement('p');
         if (isDestinationsMissing && isInterestsMissing){
           info.innerText = "Destinations and Interests missing";
@@ -44,31 +47,24 @@ function createPastTrip(){
           title.href = configureTripKeyForPath(tripKey, "destinations.html")
         }
         else {
+          title.innerText = trip.destinations
           info.innerText = "Interests missing";
           title.href = configureTripKeyForPath(tripKey, "interests.html")
         }
-        pastTrip.append(title);
         pastTrip.append(info);
         container.append(pastTrip);
       } 
       else{
-        let map = document.createElement('div');
-        map.className = 'map';
-        map.id = "map-" + trip.keyString;
-        pastTrip.append(map);
+        let mapContainer = document.createElement('div');
+        mapContainer.className = 'map';
+        mapContainer.id = "map-" + trip.keyString;
+        pastTrip.append(mapContainer);
         container.append(pastTrip);
-        initMap(trip.start, trip.start, trip.destinations, trip.keyString); 
-        placesService = new google.maps.places.PlacesService(map);
-        let placeNames =[];
-        trip.destinations.forEach(destination => {
-          findPlace(destination).then(place =>{
-              placeNames.push(place.name);
-          })
-        })
-        title.innerText = "Your Trip To " + placeNames.join();
+        initMap(trip.start, trip.start, trip.destinations, trip.keyString);
+        title.innerText = "Trip #" + tripNum;
         title.href = configureTripKeyForPath(tripKey, "routepage.html")
-        pastTrip.append(title);
       }
+      tripNum++;
     });
   })
 }
@@ -87,8 +83,9 @@ function initMap(start, end, destinations, keyString) {
     zoom: 14,
     center: start
   }
-  const map = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
-  directionsRenderer.setMap(map);
+  const tripMap = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
+  placesService = new google.maps.places.PlacesService(tripMap);
+  directionsRenderer.setMap(tripMap);
   calcRoute(directionsService, directionsRenderer, start, end, waypoints);
 }
 
