@@ -1,4 +1,4 @@
-/** Script that contains shared functions, primarily for use in the third page */
+/** Script that contains shared functions and variables */
 
 // object that communicates with the GMaps API service
 let directionsService;
