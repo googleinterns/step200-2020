@@ -163,7 +163,7 @@ function getRouteOnload(){
         console.error("Could not retrieve a start nor end point due to: ", error);
       }
       
-      for(destination of trip.destinations){
+      for(let destination of trip.destinations){
         try{
           let destinationAsPlaceObj = await findPlace(destination);
           destinations.push(destinationAsPlaceObj);
@@ -172,7 +172,7 @@ function getRouteOnload(){
         }
       }
 
-      for(waypoint of trip.route){
+      for(let waypoint of trip.route){
         try{
           let waypointAsPlaceObj = await findPlace(waypoint);
           route.push(waypointAsPlaceObj);
@@ -241,7 +241,7 @@ function getRecsOnload() {
   fetch('/api/recs')
   .then(response => response.json())
   .then(async (recommendations) => {
-    for (rec of recommendations){
+    for (let rec of recommendations){
       try{
         let res = await findPlace(rec);
         recs.push(res);
