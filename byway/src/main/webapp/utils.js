@@ -52,3 +52,4 @@ function initMap() {
 }
 
 /* export findPlace, initMap */
+/* global google */
