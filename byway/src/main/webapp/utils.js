@@ -28,7 +28,7 @@ function findPlace(placeId) {
         resolve(result);
       } else {
         alert("Status: " + status);
-        reject(result);
+        reject(error);
       }
     })
   }).catch(error => {
