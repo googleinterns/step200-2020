@@ -36,6 +36,7 @@ function initializeDestinationsPage(){
 
 const urlParams = new URLSearchParams(window.location.search);
 const tripKey = getTripKeyFromUrl();
+
 /**
 * Creates map and search boxes with autocomplete
 */
