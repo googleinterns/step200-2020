@@ -34,8 +34,8 @@ function initializeDestinationsPage(){
 }
 
 const tripKey = getTripKeyFromUrl();
+let placesService;
 
-let service;
 /**
 * Creates map and search boxes with autocomplete
 */
@@ -45,7 +45,7 @@ function initAutocomplete() {
     zoom: 13,
     mapTypeId: "roadmap"
   });
-  service = new google.maps.places.PlacesService(map);
+  placesService = new google.maps.places.PlacesService(map);
 
   //navigator is an HTML geolocation API variable to get information about the users current location
   if (navigator.geolocation) {
@@ -144,7 +144,7 @@ function updateLocations(locationData){
         placeId: destination,
         fields: ["name", "photos", "formatted_address"]
       };
-      service.getDetails(request, (place, status) => {
+      placesService.getDetails(request, (place, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           addLocationToDom(place, container);
         }
@@ -196,7 +196,7 @@ function updateStartDestination(locationData){
         placeId: locationData.start,
         fields: ["formatted_address"]
       };
-      service.getDetails(request, (place, status) => {
+      placesService.getDetails(request, (place, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           document.getElementById('start-search-box').value = place.formatted_address;
         }
@@ -244,8 +244,8 @@ window.onload = function(){
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    sendPlaceId("destinations-search-box");
-    sendPlaceId("start-search-box");
+    savePlaceId("destinations-search-box");
+    savePlaceId("start-search-box");
   });
 }
 
@@ -254,13 +254,13 @@ window.onload = function(){
 * elementName indicates which search box to get from, param indicates which param to save as
 * @param {String} elementName
 */
-function sendPlaceId(elementName){
+function savePlaceId(elementName){
   let formData = new FormData();
   const request = {
     query: String(document.getElementById(elementName).value),
     fields: ["place_id"]
   };
-  service.findPlaceFromQuery(request, (results, status) => {
+  placesService.findPlaceFromQuery(request, (results, status) => {
     console.log(status);
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       formData.append(elementName, results[0].place_id);
@@ -268,18 +268,22 @@ function sendPlaceId(elementName){
       .then((response)=>
         response.json())
       .then(locationData => {
-        if (elementName == "start-search-box"){
-          updateStartDestination(locationData);
-        }
-        else{
-          updateLocations(locationData);
-        }
+        updateDom(locationData, elementName)
       }); 
     }
     else{
       alert("Location Invalid:" + status);
     }
   });
+}
+
+function updateDom(locationData,elementName){
+  if (elementName == "start-search-box"){
+    updateStartDestination(locationData);
+  }
+  else{
+    updateLocations(locationData);
+  }
 }
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
