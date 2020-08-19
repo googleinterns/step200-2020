@@ -21,22 +21,11 @@ let route = [];
 
 // holds destinations 
 let destinations = []; 
- 
- /** 
-// object that communicates with the GMaps API service
-let directionsService;
- 
-// object that renders display results on the map
-let directionsRenderer;
 
-let map; 
-let placesService;
- */
-
+// start/end points for the route
 let start = "";
 let end = "";
  
-
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
@@ -49,8 +38,8 @@ function loadData(){
   getRecsOnload();
   getRouteOnload();
 }
- /**
-/** Initializes map on the page 
+
+/** Initializes map on the page */
 function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
@@ -64,7 +53,7 @@ function initMap() {
   directionsRenderer.setMap(map);
   placesService = new google.maps.places.PlacesService(map);
   
-} */
+} 
 
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
@@ -304,35 +293,14 @@ function createRecButton(rec){
   recBtn.innerText = rec.name;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
-    if(!route.includes(rec)){
+    // if(!route.includes(rec)){
+    if(!route.some(waypoint => waypoint.name === rec.name)){
       route.push(rec);
       calcRoute();
     }
   });
   return recBtn;
 }
-/**
-async function findPlace(placeId) {
-  
-  await delayPromise(250);
-  const request = {
-    placeId: placeId,
-    fields: ['name', 'geometry']
-  }
-  const result = await new Promise(resolve => {
-    placesService.getDetails(request, (result, status) => {
-      if(status == "OK") {
-        console.log('result');
-        console.log(result);
-        resolve(result);
-        
-      } else {
-        alert("Status: " + status)
-      }
-    })
-  });
-  
-}
- */
+
 /* exported initMap, generateRoute */
 /* global google */
