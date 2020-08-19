@@ -12,18 +12,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadButtons);
-} else {
-  loadButtons();
-}
+/* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar*/
 
 let interestsChosen = new Set();
+let tripKey;
+
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadContent);
+} else {
+  loadContent();
+}
+
+/**
+ * Loads the content of the page by loading the trip
+ * key of the user and the buttons with interests
+ * they can select.
+ */
+function loadContent() {
+  configureTripKey();
+  loadButtonsWithInterests();
+}
+
+/* Gets the trip key from the url and sets it for the next page. */
+function configureTripKey() {
+  let nextPage = document.getElementById("next-button");
+  tripKey = getTripKeyFromUrl();
+  nextPage.href = configureTripKeyForPath(tripKey, "/generator.html");
+}
 
 /** 
- * Track the interests chosen in an array according to their current
- * status. Toggle their status afterwards.
- * @param {Element elem} tracks the current button element chosen.
+ * Check if a button's value is stored in the set interestsChosen.
+ * Remove from the set and remove the active class if the interest
+ * was previously chosen and add if the interest was not included.
+ * @param {String} place text value of the button's interest
+ * @param {Element} elem tracks the current button element chosen.
  */
 function updateStatus(place, elem) {
   if(interestsChosen.has(place)) {
@@ -35,12 +57,15 @@ function updateStatus(place, elem) {
   }
 }
 
-/** Display all the buttons onscreen with independent onClick events. */
-function loadButtons() {
-  fetch('/api/places')
-  .then(response => response.json())
+/**
+ * Display all the buttons onscreen with independent onClick events.
+ * Load interest values through a fetch request.
+ */
+function loadButtonsWithInterests() {
+  setProgressBar(2);
+  fetchPlaces(tripKey)
   .then((places) => {
-    let buttonSection = document.getElementById("interests");
+    let buttonSection = document.getElementById("interests-buttons");
     places.forEach((place) => {
       let button = createButtonForPlace(place);
       buttonSection.appendChild(button);
@@ -49,16 +74,35 @@ function loadButtons() {
 }
 
 /**
- * Creates a button element that contains the place of
- * interest. When clicked, it switches status and indicates
- * to the user if selected or deselected.
- * @param {String place} contains the text of place of interest.
+ * Creates a button element that contains the text of an
+ * interest. When clicked, it updates the active status to indicate
+ * if it is currently selected or not.
+ * @param {String} place text value of the button's interest
  * @returns ButtonElement
  */
 function createButtonForPlace(place) {
   let button = document.createElement("button");
   button.innerText = place;
-  button.addEventListener('click', () => updateStatus(place, button));
-  button.className = "btn";
+  button.addEventListener('click', () => {
+      updateStatus(place, button);
+      fetchPlaces(tripKey, interestsChosen);
+  });
+  button.className = "interestBtn";
   return button;
+}
+
+/**
+ * Gets all potential interests from server to load or sets the user's
+ * specific interests for their trip with tripKey. userInterests
+ * may be any type that is convertible to an array via Array.from. It will
+ * be sent to the server as JSON in the post body.
+ * @param {String} tripKey value for tripKey
+ * @param {Array} [userInterests] interests selected by user
+ */
+function fetchPlaces(tripKey, /* optional */ userInterests) {
+  const url = configureTripKeyForPath(tripKey, "/api/places");
+  if(userInterests === undefined) {
+      return fetch(url).then(response => response.json());
+  }
+  return fetch(url, {method: 'POST', body: JSON.stringify(Array.from(userInterests))});
 }

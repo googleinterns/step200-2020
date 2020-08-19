@@ -17,9 +17,12 @@ package com.google.sps.data;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.flogger.FluentLogger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,11 +33,11 @@ import java.util.List;
  * used when updating a trip.
  */
 public final class Trip {
-
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
   public static final String DATASTORE_ENTITY_KIND = "Trip";
 
   private final String keyString;
-  private final String start;
+  private String start;
   private final ArrayList<String> destinations;
   private final ArrayList<String> interests;
   private final ArrayList<String> route;
@@ -64,6 +67,16 @@ public final class Trip {
     this.route = new ArrayList<String>(route);
   }
 
+  /**
+   * Set the interests for the trip as plain text with the Collection passed in.
+   *
+   * @param interests collection of Strings indicating a user interest
+   */
+  public void setInterests(Collection<String> interests) {
+    this.interests.clear();
+    this.interests.addAll(interests);
+  }
+
   /* Retrieves interests for the trip as plain text. */
   public List<String> getInterests() {
     return Collections.unmodifiableList(this.interests);
@@ -72,6 +85,16 @@ public final class Trip {
   /** Retrieves the route of the trip with a list of stops and destinations as plain text. */
   public List<String> getRoute() {
     return Collections.unmodifiableList(this.route);
+  }
+
+  /**
+   * Sets the route of the trip with a list of stops and destinations as plain text.
+   *
+   * @param route list of user-selected stops and destinations
+   */
+  public void setRoute(Collection<String> route) {
+    this.route.clear();
+    this.route.addAll(route);
   }
 
   /**
@@ -100,11 +123,37 @@ public final class Trip {
     return KeyFactory.stringToKey(keyString);
   }
 
+  /* Sets the starting point of the trip as plain text. */
+  public void setStart(String start) {
+    this.start = start;
+  }
+
+  /* Adds a destination point of the trip as plain text. */
+  public void addDestination(String destination) {
+    destinations.add(destination);
+  }
+
+  /**
+   * Creates an entity using the properties from the Trip class instance.
+   *
+   * @return tripEntity entity with propoerties set from this Trip instance to be put into the
+   *     datastore
+   */
+  public Entity toEntity() {
+    Entity tripEntity = new Entity(this.getKey());
+    tripEntity.setProperty("start", this.start);
+    tripEntity.setProperty("destinations", this.destinations);
+    tripEntity.setProperty("interests", this.interests);
+    tripEntity.setProperty("route", this.route);
+    return tripEntity;
+  }
+
   /**
    * Creates a Trip instance from the entity passed in. Checks for valid properties of the entity to
    * make a valid Trip instance.
    *
    * @param tripEntity entity from datastore
+   * @return Trip object of with properties copied from provided entity
    */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");
@@ -133,5 +182,42 @@ public final class Trip {
             (ArrayList<String>) tripEntity.getProperty("route"),
             "Trip entity does not contain route");
     return new Trip(keyString, start, destinations, interests, route);
+  }
+
+  /** Adds new Trip entity with empty properties */
+  public static Trip createTrip(DatastoreService datastore) {
+    Entity tripEntity = new Entity(DATASTORE_ENTITY_KIND);
+    tripEntity.setProperty("start", "");
+    tripEntity.setProperty("destinations", new ArrayList<String>());
+    tripEntity.setProperty("interests", new ArrayList<String>());
+    tripEntity.setProperty("route", new ArrayList<String>());
+    datastore.put(tripEntity);
+    return fromEntity(tripEntity);
+  }
+
+  /**
+   * Converts the tripKeyString passed in into a Key tripKey and searches for an entity with this
+   * key. If found, convert the entity into a Trip type or return null if not found.
+   *
+   * @param datastore DatastoreService database
+   * @param tripKeyString String convertible to a Key for access to a specific entity in datastore.
+   * @return Trip type with information retrieved from the entity, or null.
+   */
+  public static Trip getTrip(DatastoreService datastore, String tripKeyString) {
+    Key tripKey;
+    try {
+      tripKey = KeyFactory.stringToKey(tripKeyString);
+    } catch (IllegalArgumentException e) {
+      logger.atInfo().withCause(e).log("String cannot be parsed: %s", tripKeyString);
+      return null;
+    }
+
+    try {
+      Entity tripEntity = datastore.get(tripKey);
+      return fromEntity(tripEntity);
+    } catch (EntityNotFoundException e) {
+      logger.atInfo().withCause(e).log("Trip Entity not found : %s", tripKey);
+      return null;
+    }
   }
 }
