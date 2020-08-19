@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google */
-/* global interest:writable, leg:writable, place:writable, region:writable, step: writable */
+/* global google, map, start, end, destinations, directionsService, directionsRenderer */
+/* exported calcMainRoute */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initServices);
@@ -21,7 +21,6 @@ if(document.readyState === 'loading') {
   initServices();
 }
 
-let map;
 let placesService;
 
 // Measured in meters
@@ -29,66 +28,29 @@ const RADIUS_TO_SEARCH_AROUND = 1000;
 const MIN_DISTANCE_FOR_STEP_PATH = 4000;
 
 const interests = ["park"];
-let destinations = new Set();
 
 // Contains google.maps.LatLng objects.
 // Used as a center point to search around a region.
 let regions = [];
 
-/**
- * Initializes the webpage with a map and other google
- * services. Creates a route between two endpoints.
- * Note: Temp setup to mimic a route between two endpoints.
- * TODO: Link/adapt with Justine's third page, which handles
- * initializing the map and other google services.
- */
+/* Initializes the webpage with a google PlacesService instance. */
 function initServices() {
-  // Modified version of Justine's implementation
-  let directionsService = new google.maps.DirectionsService();
-  let directionsRenderer = new google.maps.DirectionsRenderer();
-  const start = new google.maps.LatLng(37.7699298, -122.4469157);
-  const end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-  const mapOptions = {
-    zoom: 14,
-    center: start
-  }
-  addDestinations(start, end);
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsRenderer.setMap(map);
-  document.getElementById("route").addEventListener("click", () => {
-    calcRoute(directionsService, directionsRenderer, start, end);
-  });
   placesService = new google.maps.places.PlacesService(map);
-}
-
-/**
- * Add start and end points of the route to regions to search around.
- * Temporary set up to mimic adding several endpoints between legs.
- * @param {google.maps.LatLng} start coordinate of route's startpoint
- * @param {google.maps.LatLng} end coordinate of route's endpoint
- */
-function addDestinations(start, end) {
-  destinations.add(start);
-  destinations.add(end);
-  regions.push(...destinations);
 }
 
 /**
  * Creates a route between two points and loads onto the map.
  * Finds points along the path to load the regions Array.
  * Loads recommendations centered around these points.
- * @param {DirectionsService} directionsService finds directions
- * @param {DirectionsRenderer} directionsRenderer renders the route
- * @param {LatLng} start starting point location
- * @param {LatLng} end ending point location
  */
-function calcRoute(directionsService, directionsRenderer, start, end) {
+function calcMainRoute() {
   resetUserAlerts();
   const request = {
       origin:  start,
       destination: end,
       travelMode: 'DRIVING'
   };
+  regions.push(...destinations);
   directionsService.route(request, function(result, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(result);
@@ -120,8 +82,8 @@ function resetUserAlerts() {
  */
 function findRegions(directionResult) {
   const myRoute = directionResult.routes[0];
-  for(leg of myRoute.legs) {
-    for(step of leg.steps) {
+  for(let leg of myRoute.legs) {
+    for(let step of leg.steps) {
       const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
       const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
       const avgLoc = {lat: avgLat, lng: avgLng};
@@ -150,8 +112,8 @@ function delayPromise(delayMs) {
  */
 async function loadRecommendations() {
   let statuses = new Set();
-  for(interest of interests) {
-    for(region of regions) {
+  for(let interest of interests) {
+    for(let region of regions) {
       const request = {
         location: region,
         radius: RADIUS_TO_SEARCH_AROUND,
@@ -208,7 +170,7 @@ function alertUser(statuses) {
   document.getElementById("general-message").style.visibility = 'visible';
   let statusesContainer = document.getElementById("statuses");
   statusesContainer.style.visibility = 'visible';
-  for(status of statuses) {
+  for(let status of statuses) {
     let statusElement = document.createElement('ul');
     statusElement.innerText = status;
     statusesContainer.appendChild(statusElement);
@@ -226,7 +188,7 @@ function alertUser(statuses) {
 function addRecommendations(request, placesFound) {
   const MAX_RECOMMENDATIONS = 1;
   let placesLoaded = [];
-  for (place of placesFound) {
+  for(let place of placesFound) {
     placeMarker(place);
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
