@@ -35,8 +35,6 @@ let destinations = new Set();
 // Used as a center point to search around a region.
 let regions = [];
 
-let textSearchStatuses = new Set();
-
 /**
  * Initializes the webpage with a map and other google
  * services. Creates a route between two endpoints.
@@ -111,7 +109,6 @@ function resetUserAlerts() {
     statusesContainer.removeChild(statusesContainer.firstChild);
   }
   statusesContainer.style.visibility = 'hidden';
-  textSearchStatuses = new Set();
 }
 
 /**
@@ -152,6 +149,7 @@ function delayPromise(delayMs) {
  * textSearch repeatedly from the PlacesService.
  */
 async function loadRecommendations() {
+  let statuses = new Set();
   for(interest of interests) {
     for(region of regions) {
       const request = {
@@ -166,13 +164,14 @@ async function loadRecommendations() {
         // Set an intermediate timeout between calls to findPlacesWithTextSearch
         // to prevent hitting the query limit from the google maps API
         await delayPromise(250);
-        const placesFound = await findPlacesWithTextSearch(request);
+        const placesFound = await findPlacesWithTextSearch(request, statuses);
         if(placesFound !== null) {
           addRecommendations(request, placesFound);
         }
       }
     }
   }
+  alertUser(statuses);
 }
 
 /**
@@ -183,7 +182,7 @@ async function loadRecommendations() {
  * @param {TextSearchRequest} request object with location, radius and query fields.
  * @return PlaceResult[] results or null if rejected by a status from placesService.
  */
-function findPlacesWithTextSearch(request) {
+function findPlacesWithTextSearch(request, statuses) {
   return new Promise((resolve, reject) => {
     placesService.textSearch(request, (result, status) => {
       if(status === "OK") {
@@ -193,27 +192,26 @@ function findPlacesWithTextSearch(request) {
       }
     });
   }).catch(err => {
-    alertUser(err.message);
+    statuses.add(err.message);
     return null;
   });
 }
 
 /**
- * Reveals a message to the user if there was an issue with their request.
+ * Reveals status codes if there was an issue with a request.
  * TODO: Make a class to indicate as a "warning" and make text red.
  * Also, organize on front end.
- * @param {String} msgFromService status String from placesService
+ * @param {Set} statuses String elements with status codes from placesService
  */
-function alertUser(msgFromService) {
+function alertUser(statuses) {
   document.getElementById("message-container").style.visibility = 'visible';
   document.getElementById("general-message").style.visibility = 'visible';
   let statusesContainer = document.getElementById("statuses");
   statusesContainer.style.visibility = 'visible';
-  if(!textSearchStatuses.has(msgFromService)) {
+  for(status of statuses) {
     let statusElement = document.createElement('ul');
-    statusElement.innerText = msgFromService;
+    statusElement.innerText = status;
     statusesContainer.appendChild(statusElement);
-    textSearchStatuses.add(msgFromService);
   }
 }
 
