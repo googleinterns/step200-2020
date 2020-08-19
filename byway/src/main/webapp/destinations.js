@@ -33,7 +33,6 @@ function initializeDestinationsPage(){
   }); 
 }
 
-const urlParams = new URLSearchParams(window.location.search);
 const tripKey = getTripKeyFromUrl();
 
 let service;
