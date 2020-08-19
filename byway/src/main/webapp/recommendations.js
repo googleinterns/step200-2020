@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global destinations, directionsRenderer, directionsService, end, google, map, route, start */
+/* global destinations, directionsRenderer, directionsService, end,
+    google, map, orderWaypoints, route, start, updateDistanceTime */
 /* exported calcMainRoute, recs */
 
 if(document.readyState === 'loading') {
@@ -49,18 +50,21 @@ function initServices() {
 function calcMainRoute() {
   resetUserAlerts();
   const request = {
-      origin:  start,
-      destination: end,
-      waypoints:  route.map(waypoint => ({location: waypoint})),
-      optimizeWaypoints: true,
-      travelMode: 'DRIVING'
+    origin:  start,
+    destination: end,
+    travelMode: 'DRIVING',
+    waypoints:  route.map(waypoint => ({location: waypoint})),
+    optimizeWaypoints: true
   };
+  regions.push(start);
   regions.push(...destinations);
   directionsService.route(request, function(result, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(result);
       findRegions(result);
       loadRecommendations();
+      orderWaypoints(result);
+      updateDistanceTime(result);
     } else {
       alert("Could not calculate route due to: " + status);
     }
