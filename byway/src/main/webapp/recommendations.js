@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* global destinations, directionsRenderer, directionsService, end, google, map, route, start */
-/* exported calcMainRoute */
+/* exported calcMainRoute, recs */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initServices);
@@ -21,11 +21,14 @@ if(document.readyState === 'loading') {
   initServices();
 }
 
+// Holds recommendations as PlaceResult objects
+let recs = new Set();
+
 let placesService;
 
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
-const MIN_DISTANCE_FOR_STEP_PATH = 4000;
+const MIN_DISTANCE_FOR_STEP_PATH = 400.;
 
 const interests = ["park"];
 
@@ -185,13 +188,14 @@ function alertUser(statuses) {
  * places found from interests around a location with savePlacesFromInterests function.
  * TODO: Store more results and limit on UI with option to "show more"
  * @param {TextSearchRequest} request with unique location and interest
- * @param {PlaceResults[]} results places found with PlaceResult type.
+ * @param {PlaceResults[]} placesFound places found with PlaceResult type.
  */
 function addRecommendations(request, placesFound) {
   const MAX_RECOMMENDATIONS = 1;
   let placesLoaded = [];
   for(let place of placesFound) {
     placeMarker(place);
+    recs.add(place);
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;

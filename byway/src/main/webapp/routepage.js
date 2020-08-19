@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
- 
-// copies of recommendations and route, stored as sets for synchronous updating
-let recs = new Set();
-
 // holds stops and destinations
 let route = [];
 
@@ -42,7 +38,6 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
  
 /** Used to restore route and recommendations upon load or refresh */
 function loadData(){
-  getRecsOnload();
   getRouteOnload();
 }
  
@@ -223,19 +218,6 @@ function clearRecs(){
   }
 }
  
-/** Get the new list of recommendations from servlet onload */
-function getRecsOnload() {
-  clearRecs();
-  fetch('/api/recs')
-  .then(response => response.json())
-  .then((recommendations) => {
-     recommendations.forEach((rec)=>{
-      recs.add(rec);
-    })
-    renderRecsList();
-  })
-}
- 
 /** Re-render recs list synchronously */
 function renderRecsList(){
   clearRecs();
@@ -263,4 +245,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, map */
-/* global calcMainRoute, google */
+/* global calcMainRoute, google, recs */
