@@ -20,7 +20,7 @@ let placesService;
 function findPlace(placeId) {
   const request = {
     placeId: placeId,
-    fields: ['name', 'geometry', 'place_id']
+    fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address']
   }
   const result = new Promise((resolve, reject) => {
     placesService.getDetails(request, (result, status) => {
