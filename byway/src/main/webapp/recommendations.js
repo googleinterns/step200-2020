@@ -85,6 +85,7 @@ function addDestinations(start, end) {
  * @param {LatLng} end ending point location
  */
 function calcRoute(directionsService, directionsRenderer, start, end) {
+  resetUserAlerts();
   const request = {
       origin:  start,
       destination: end,
@@ -99,6 +100,18 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
       alert("Could not calculate route due to: " + status);
     }
   });
+}
+
+/* Resets the alerts found in a previous attempt to load recommendations. */
+function resetUserAlerts() {
+  document.getElementById("message-container").style.visibility = 'hidden';
+  document.getElementById("general-message").style.visibility = 'hidden';
+  let statusesContainer = document.getElementById("statuses");
+  while(statusesContainer.hasChildNodes()) {
+    statusesContainer.removeChild(statusesContainer.firstChild);
+  }
+  statusesContainer.style.visibility = 'hidden';
+  textSearchStatuses = new Set();
 }
 
 /**
@@ -194,9 +207,9 @@ function findPlacesWithTextSearch(request) {
 function alertUser(msgFromService) {
   document.getElementById("message-container").style.visibility = 'visible';
   document.getElementById("general-message").style.visibility = 'visible';
+  let statusesContainer = document.getElementById("statuses");
+  statusesContainer.style.visibility = 'visible';
   if(!textSearchStatuses.has(msgFromService)) {
-    let statusesContainer = document.getElementById("statuses");
-    statusesContainer.style.visibility = 'visible';
     let statusElement = document.createElement('ul');
     statusElement.innerText = msgFromService;
     statusesContainer.appendChild(statusElement);
