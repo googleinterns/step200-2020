@@ -35,6 +35,8 @@ let destinations = new Set();
 // Used as a center point to search around a region.
 let regions = [];
 
+let textSearchStatuses = new Set();
+
 /**
  * Initializes the webpage with a map and other google
  * services. Creates a route between two endpoints.
@@ -166,7 +168,7 @@ async function loadRecommendations() {
  * a chain of promises to return the result directly. If the service
  * returns a status other than OK, reject the promise and alert the user.
  * @param {TextSearchRequest} request object with location, radius and query fields.
- * @return promise either with PlaceResult[] results or undefined if rejected.
+ * @return PlaceResult[] results or null if rejected by a status from placesService.
  */
 function findPlacesWithTextSearch(request) {
   return new Promise((resolve, reject) => {
@@ -190,18 +192,15 @@ function findPlacesWithTextSearch(request) {
  * @param {String} msgFromService status String from placesService
  */
 function alertUser(msgFromService) {
-  let messageContainer = document.getElementById("message-container");
-  messageContainer.style.visibility = 'visible';
-  if(msgFromService === "OVER_QUERY_LIMIT") {
-    document.getElementById("query-limit").style.visibility = 'visible';
-  } else if(msgFromService === "ZERO_RESULTS") {
-    document.getElementById("incomplete-results").style.visibility = 'visible';
-  } else {
-    let otherStatusContainer = document.getElementById("other-statuses");
-    otherStatusContainer.style.visibility = 'visible';
+  document.getElementById("message-container").style.visibility = 'visible';
+  document.getElementById("general-message").style.visibility = 'visible';
+  if(!textSearchStatuses.has(msgFromService)) {
+    let statusesContainer = document.getElementById("statuses");
+    statusesContainer.style.visibility = 'visible';
     let statusElement = document.createElement('ul');
     statusElement.innerText = msgFromService;
-    otherStatusContainer.appendChild(statusElement);
+    statusesContainer.appendChild(statusElement);
+    textSearchStatuses.add(msgFromService);
   }
 }
 
