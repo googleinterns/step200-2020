@@ -40,11 +40,11 @@ public class DestinationsServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    String start = request.getParameter("start-location");
+    String start = request.getParameter("start-search-box");
     if (start != null) {
       trip.setStart(start);
     }
-    String destination = request.getParameter("destinations");
+    String destination = request.getParameter("destinations-search-box");
     if (destination != null) {
       trip.addDestination(destination);
     }
