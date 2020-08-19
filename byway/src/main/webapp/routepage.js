@@ -25,7 +25,13 @@ let destinations = [];
 // TODO: get from Trip key
 let start = "";
 let end = "";
+
+// object that communicates with the GMaps API service
+let directionsService;
  
+// object that renders display results on the map
+let directionsRenderer;
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -281,4 +287,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute */
-/* global google, directionsService, directionsRenderer, map, findPlace, placesService*/
+/* global google:true, map:true, findPlace:true, placesService:true */

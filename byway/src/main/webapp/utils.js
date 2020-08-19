@@ -1,11 +1,5 @@
 /** Script that contains shared functions and variables*/
 
-// object that communicates with the GMaps API service
-let directionsService;
- 
-// object that renders display results on the map
-let directionsRenderer;
-
 // map object used in the route page
 let map; 
 
@@ -39,4 +33,4 @@ function findPlace(placeId) {
   return result;
 }
 
-/* exported findPlace, map, directionService, directionsRenderer */
+/* exported findPlace, map, placesService */
