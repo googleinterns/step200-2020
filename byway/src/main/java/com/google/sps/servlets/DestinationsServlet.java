@@ -47,6 +47,7 @@ public class DestinationsServlet extends HttpServlet {
     String destination = request.getParameter("destinations-search-box");
     if (destination != null) {
       trip.addDestination(destination);
+      trip.addToRoute(destination);
     }
     datastore.put(trip.toEntity());
     response.setContentType("application/json");
