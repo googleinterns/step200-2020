@@ -17,9 +17,13 @@ package com.google.sps.data;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +62,10 @@ public final class UserInfo {
     return Collections.unmodifiableList(this.tripIds);
   }
 
+  public void addTrip(Trip trip) {
+    tripIds.add(trip.getKeyString());
+  }
+
   /* Retrieves the unique user ID as a String. */
   public String getUserId() {
     return this.userId;
@@ -93,5 +101,36 @@ public final class UserInfo {
             (ArrayList<String>) userInfoEntity.getProperty("tripIds"),
             "User entity does not contain trip Ids");
     return new UserInfo(email, userId, tripIds);
+  }
+
+  public Entity toEntity() {
+    Entity userEntity = new Entity(this.getKey());
+    userEntity.setProperty("email", this.email);
+    userEntity.setProperty("tripIds", this.tripIds);
+    return userEntity;
+  }
+
+  /**
+   * Finds a User or creates User if User doesnt exist
+   *
+   * @param userService UserServiceFactory.getUserService()
+   * @param datastore DatastoreServiceFactory.getDatastoreService()
+   */
+  public static UserInfo findOrCreateUser(UserService userService, DatastoreService datastore) {
+    User user = userService.getCurrentUser();
+    // Create a key based on the user ID
+    if (user == null) {
+      return null;
+    }
+    Key userKey = KeyFactory.createKey(UserInfo.DATASTORE_ENTITY_KIND, user.getUserId());
+    try {
+      // try to retrieve the entity with the key
+      return fromEntity(datastore.get(userKey));
+    } catch (EntityNotFoundException exception) {
+      // If the user doesn't exist yet or is new, create a new user
+      UserInfo newUser = new UserInfo(user.getEmail(), user.getUserId(), new ArrayList<String>());
+      datastore.put(newUser.toEntity());
+      return newUser;
+    }
   }
 }

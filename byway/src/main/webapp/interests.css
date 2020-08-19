@@ -1,34 +1,57 @@
-#header {
-    padding: 5vh;
-    text-align: center;
+ #interests-section{
+  position: relative;
+  height: 50vh;
+  display: grid;
+  grid-template-columns: 80% 20%;
+  grid-template-rows: 45% 10% 45%;
 }
 
-#interests {
-    margin: 5vh 25vw 5vh 25vw;
-    overflow-y: scroll;
-    height: 50vh;
-    padding: 50px;
-    outline: thin solid #000000;
+#interests-buttons {
+  position: relative;
+  margin: 0 15vh 0 15vh;
+  grid-column: 1/span 1;
+  grid-row: 1/span 3;
+  overflow-y: scroll;
+  padding: 50px;
+  border: 2px solid #ff826c;
+  border-radius: 10%;
 }
 
-.btn {
+.interestBtn {
   margin: 10px;
   align-items: center;
   background-color: rgba(222,222,222, 0.4);
   border-color: rgba(0,0,0,0.5);
   border-radius: 50px;
-  border-width: 1px;
+  border-width: 2px;
   padding: 20px;
   outline: none;
   font-size: 20px;
 }
 
-.btn.active {
+.interestBtn.active {
   background-color: #53D2DC;
-  border-color: #3196E2;
+  border: 2px solid #3196E2;
 }
 
 p {
-    text-align: center;
-    font-size: 20px;
+  text-align: center;
+  font-size: 20px;
+}
+
+#next-button{
+  position: relative;
+  grid-column: 2/span 2;
+  grid-row: 2/span 2;
+  left: 5%;
+  height: 3vw;
+  width:10vw;
+  background-color:#3196e2;
+  border-radius:50px;
+  text-decoration: none;
+  color:white;
+  font-size: 2vw;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 6px;
 }
