@@ -62,7 +62,7 @@ function initMap() {
 }
 
 /** Displays route containing waypoints overtop the map. */
-function calcRoute() {
+function calcRouteWithRecs() {
   let request = {
     origin:  start,
     destination: end,
@@ -165,9 +165,8 @@ function getRouteOnload(){
     if(trip != null){
       start = end = trip.start;
       destinations = trip.destinations;
-      route.push(...trip.route)
-
-      calcRoute();
+      route.push(...trip.route);
+      calcMainRoute();
     }
     else{
       console.log("Could not retrieve any routes nor destinations associated with this trip." +
@@ -201,7 +200,7 @@ function createRouteButton(waypoint){
     // only delete if the waypoint is only a stop, not a destination
     if(!destinations.includes(waypoint)){
       route = route.filter(stop => stop != waypoint);
-      calcRoute();
+      calcRouteWithRecs();
     }
    
   });
@@ -257,11 +256,11 @@ function createRecButton(rec){
   recBtn.addEventListener("click", function() {
     if(!route.includes(rec)){
       route.push(rec);
-      calcRoute();
+      calcRouteWithRecs();
     }
   });
   return recBtn;
 }
 
-/* exported initMap, generateRoute */
-/* global google */
+/* exported initMap, generateRoute, map */
+/* global calcMainRoute, google */
