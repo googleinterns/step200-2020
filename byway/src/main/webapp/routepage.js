@@ -14,7 +14,7 @@
 
  
 // copies of recommendations and route, stored as sets for synchronous updating
-let recs = new Set();
+let recs = [];
 
 // holds stops and destinations
 let route = [];
@@ -22,18 +22,10 @@ let route = [];
 // holds destinations 
 let destinations = []; 
  
-// object that communicates with the GMaps API service
-let directionsService;
- 
-// object that renders display results on the map
-let directionsRenderer;
- 
 // TODO: get from Trip key
 let start = "";
 let end = "";
  
-let map; 
-
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -53,11 +45,12 @@ function initMap() {
  
   let mapOptions = {
     zoom: 14,
+    // arbitrary center as it will get recentered to the route 
     center: new google.maps.LatLng(0,0)
-    // center: new google.maps.LatLng(40.730610, -73.935242) // coordinates of NYC
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
+  placesService = new google.maps.places.PlacesService(map);
   
 }
 
@@ -67,7 +60,7 @@ function calcRoute() {
     origin:  start,
     destination: end,
     travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint})),
+    waypoints:  route.map(waypoint => ({location: waypoint.name})),
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
@@ -161,17 +154,36 @@ function getRouteOnload(){
   clearRoute();
   fetch('/api/stop')
   .then(response => response.json())
-  .then((trip) => {
+  .then(async (trip) => {
     if(trip != null){
-      start = end = trip.start;
-      destinations = trip.destinations;
-      route.push(...trip.route)
+      try{
+        let res = await findPlace(trip.start);
+        start = end = res.name;
+      } catch (error) {
+        console.error("Could not retrieve a start nor end point due to: ", error);
+      }
+      
+      for(destination of trip.destinations){
+        try{
+          let destinationAsPlaceObj = await findPlace(destination);
+          destinations.push(destinationAsPlaceObj);
+        } catch (error) {
+          console.error("Could not retrieve destinations due to: ", error);
+        }
+      }
 
+      for(waypoint of trip.route){
+        try{
+          let waypointAsPlaceObj = await findPlace(waypoint);
+          route.push(waypointAsPlaceObj);
+        } catch (error) {
+          console.error("Could not retrieve route due to: ", error);
+        }
+      }
       calcRoute();
     }
     else{
-      console.log("Could not retrieve any routes nor destinations associated with this trip." +
-       "Please reload page and try again.");
+      console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
   });
 }
@@ -186,24 +198,23 @@ function renderRouteList(){
 }
 
 /** Creates a button in the schedule panel in the html
- *  @param {String} waypoint a String to add as a button 
+ *  @param {Place} waypoint a Place object whose name property is added as a button 
  *  @return {button} routeBtn a button showing a selected waypoint along route
  */
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
-  routeBtn.innerText = waypoint;
-  if(!destinations.includes(waypoint)){
-    routeBtn.className =  "btn stop-btn";
-  } else{
+  routeBtn.innerText = waypoint.name;
+  if(destinations.some(destination => destination.name === waypoint.name)){
     routeBtn.className =  "btn destination-btn";
+  } else {
+    routeBtn.className =  "btn stop-btn";
   }
   routeBtn.addEventListener("click", function() {
     // only delete if the waypoint is only a stop, not a destination
-    if(!destinations.includes(waypoint)){
-      route = route.filter(stop => stop != waypoint);
+    if(!destinations.some(destination => destination.name === waypoint.name)){
+      route = route.filter(stop => stop.name != waypoint.name);
       calcRoute();
     }
-   
   });
   return routeBtn;
 }
@@ -212,7 +223,7 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(route))});
+  fetch('/api/stop', {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
 
 /** Clear the recommendations panel in the html */
@@ -229,10 +240,16 @@ function getRecsOnload() {
   clearRecs();
   fetch('/api/recs')
   .then(response => response.json())
-  .then((recommendations) => {
-     recommendations.forEach((rec)=>{
-      recs.add(rec);
-    })
+  .then(async (recommendations) => {
+    for (rec of recommendations){
+      try{
+        let res = await findPlace(rec);
+        recs.push(res);
+      } catch (error){
+          console.error("Could not retrieve recommended stops due to: ", error);
+        }
+     
+    }
     renderRecsList();
   })
 }
@@ -247,15 +264,15 @@ function renderRecsList(){
 }
  
 /** Creates a button in the recommendations panel in the html 
- *  @param {String} rec a String to add as a button 
+ *  @param {Place} rec a Place object whose name property is added as a button 
  *  @return {button} recBtn a button showing a recommended place
  */
 function createRecButton(rec){
   const recBtn = document.createElement('button');
-  recBtn.innerText = rec;
+  recBtn.innerText = rec.name;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
-    if(!route.includes(rec)){
+    if(!route.some(waypoint => waypoint.name === rec.name)){
       route.push(rec);
       calcRoute();
     }
