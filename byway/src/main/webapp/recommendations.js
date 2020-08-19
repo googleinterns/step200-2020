@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google, map, start, end, destinations, directionsService, directionsRenderer */
+/* global destinations, directionsRenderer, directionsService, end, google, map, route, start */
 /* exported calcMainRoute */
 
 if(document.readyState === 'loading') {
@@ -48,6 +48,8 @@ function calcMainRoute() {
   const request = {
       origin:  start,
       destination: end,
+      waypoints:  route.map(waypoint => ({location: waypoint})),
+      optimizeWaypoints: true,
       travelMode: 'DRIVING'
   };
   regions.push(...destinations);
