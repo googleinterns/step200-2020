@@ -22,9 +22,7 @@ function findPlace(placeId) {
         reject(new Error("Could not retrieve place result object from request."));
       }
     })
-  }).catch(error => {
-      alert(error);
-  });
+  })
 
   return result;
 }
