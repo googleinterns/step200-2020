@@ -251,11 +251,10 @@ window.onload = function(){
 /** 
 * gets User Input from search box and sends the Place Id of user input to the server
 * elementName indicates which search box to get from, param indicates which param to save as
-* @param {String} elementName
+* 
 */
 function savePlaceIds(){
   let formData = new FormData();
-
   const destRequest = {
     query: String(document.getElementById("destinations-search-box").value),
     fields: ["place_id"]
@@ -266,6 +265,9 @@ function savePlaceIds(){
   };
 
   findPlaceFromQuery(destRequest)
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
+  })
   .then(({result,status}) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         formData.append("destinations-search-box", result[0].place_id);
@@ -275,6 +277,9 @@ function savePlaceIds(){
       }
   })
   .then(() => findPlaceFromQuery(startRequest))
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
+  })
   .then(({result,status}) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         formData.append("start-search-box", result[0].place_id);
