@@ -133,7 +133,7 @@ public final class Trip {
     destinations.add(destination);
   }
 
-   /* Adds a route point of the trip as plain text. */
+  /* Adds a route point of the trip as plain text. */
   public void addToRoute(String destination) {
     route.add(destination);
   }
