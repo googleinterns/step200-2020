@@ -228,12 +228,12 @@ function renderRecsList(){
 }
  
 /** Creates a button in the recommendations panel in the html 
- *  @param {String} rec a String to add as a button 
+ *  @param {PlaceResult} rec contains information about a place
  *  @return {button} recBtn a button showing a recommended place
  */
 function createRecButton(rec){
   const recBtn = document.createElement('button');
-  recBtn.innerText = rec;
+  recBtn.innerText = rec.name;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
     if(!route.includes(rec)){
@@ -244,5 +244,5 @@ function createRecButton(rec){
   return recBtn;
 }
 
-/* exported initMap, generateRoute, map */
+/* exported calcRouteWithRecs, initMap, generateRoute, map, renderRecsList */
 /* global calcMainRoute, google, recs */
