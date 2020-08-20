@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* global destinations, directionsRenderer, directionsService, end,
-    google, map, orderWaypoints, route, start, updateDistanceTime */
+    google, map, orderWaypoints, renderRecsList, route, start, updateDistanceTime */
 /* exported calcMainRoute, recs */
 
 if(document.readyState === 'loading') {
@@ -29,7 +29,7 @@ let placesService;
 
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
-const MIN_DISTANCE_FOR_STEP_PATH = 400.;
+const MIN_DISTANCE_FOR_STEP_PATH = 4000;
 
 const interests = ["park"];
 
@@ -142,7 +142,8 @@ async function loadRecommendations() {
       }
     }
   }
-  alertUser(statuses);
+  if(statuses.size !== 0) alertUser(statuses);
+  renderRecsList();
 }
 
 /**
