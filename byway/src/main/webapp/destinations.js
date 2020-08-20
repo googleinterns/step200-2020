@@ -265,27 +265,19 @@ function savePlaceIds(){
     fields: ["place_id"]
   };
 
-  let promise = new Promise((resolve,reject) => {
-    placesService.findPlaceFromQuery(destRequest, (results, status) => {
-    console.log(status);
+  findPlaceFromQuery(destRequest)
+  .then(({result,status}) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        formData.append("destinations-search-box", results[0].place_id);
-        resolve(results);
+        formData.append("destinations-search-box", result[0].place_id);
       }
       else{
         alert("Status: " + status);
-        reject(new Error("Could not find place:" + status));
       }
-    });
-  }).catch(error => {
-    alert("Error: cannot process this request due to " + error);
-  });
-
-  promise.then(() => { 
-    placesService.findPlaceFromQuery(startRequest, (results, status) => {
-      console.log(status);
+  })
+  .then(() => findPlaceFromQuery(startRequest))
+  .then(({result,status}) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        formData.append("start-search-box", results[0].place_id);
+        formData.append("start-search-box", result[0].place_id);
         fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
         .then((response)=>
           response.json())
@@ -295,9 +287,14 @@ function savePlaceIds(){
         }); 
       }
       else{
-        alert("Location Invalid:" + status);
+        alert("Status: " + status);
       }
-    });
+  });
+}
+
+function findPlaceFromQuery(request) {
+  return new Promise(resolve => {
+    placesService.findPlaceFromQuery(request, (result, status) => resolve({result, status}));
   });
 }
 
