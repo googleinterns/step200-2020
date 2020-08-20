@@ -85,11 +85,18 @@ public final class PlacesServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> places = new ArrayList<>();
+    ArrayList<String> places = new ArrayList<String>();
     for (PlaceType location : PlaceType.values()) {
-      String place = formatLocation(location);
-      places.add(place);
+      if (!nonInterests.contains(location.toString())) {
+        String place = formatPlace(location.toString());
+        places.add(place);
+      }
     }
+    for (String customInterest : customInterests) {
+      String customPlace = formatPlace(customInterest);
+      places.add(customPlace);
+    }
+    Collections.sort(places);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(places));
   }
@@ -97,11 +104,10 @@ public final class PlacesServlet extends HttpServlet {
   /**
    * Format string by capitalizing and adding spaces in-between words.
    *
-   * @param location is a PlaceType that indicates a type of location/interest.
-   * @return is the modified location name.
+   * @param place indicates a type of location/interest.
+   * @return the modified location name.
    */
-  private String formatLocation(PlaceType location) {
-    String place = location.toString();
+  private String formatPlace(String place) {
     place = place.substring(0, 1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
