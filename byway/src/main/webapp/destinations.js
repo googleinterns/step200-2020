@@ -278,7 +278,7 @@ function savePlaceIds(){
       }
     });
   }).catch(error => {
-    alert("Error. Cannot process this request due to " + error);
+    alert("Error cannot process this request due to " + error);
   });
 
   promise.then(() => { 
