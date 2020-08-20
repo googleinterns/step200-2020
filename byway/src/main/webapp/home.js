@@ -62,7 +62,7 @@ function createPastTrip(){
         mapContainer.id = "map-" + trip.keyString;
         pastTrip.append(mapContainer);
         container.append(pastTrip);
-        initMap(trip.start, trip.start, trip.destinations, trip.keyString);
+        initMap(trip.start, trip.start, trip.route, trip.keyString);
         title.innerText = "Trip #" + tripNum;
         title.href = configureTripKeyForPath(tripKey, "routepage.html")
       }
@@ -71,11 +71,11 @@ function createPastTrip(){
   })
 }
 
-function initMap(start, end, destinations, keyString) {
+function initMap(start, end, route, keyString) {
   const directionsService = new google.maps.DirectionsService();
   const directionsRenderer = new google.maps.DirectionsRenderer();
   let waypoints = [];
-  destinations.forEach(destination => {
+  route.forEach(destination => {
     waypoints.push({
         location: {placeId: destination },
         stopover: true

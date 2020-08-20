@@ -3,7 +3,7 @@
 // object that communicates with the GMaps API service
 /** Script that contains shared functions and variables */
 
-// map object used in the route page
+// map object used in the route page 
 let map; 
 
 /**
@@ -31,4 +31,4 @@ function findPlace(placeId) {
 }
 
 /* exported findPlace, map, placesService */
-/* global placesService:true */
+/* global placesService*/
