@@ -22,7 +22,6 @@ const defaultCenter = Object.freeze({
 });
 
 let userlatlng = {lat:null , lng: null};
-//map;
 let placesService;
 
 function initializeDestinationsPage(){
