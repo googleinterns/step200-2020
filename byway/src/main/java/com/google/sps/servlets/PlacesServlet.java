@@ -73,8 +73,10 @@ public final class PlacesServlet extends HttpServlet {
               "secondary_school",
               "storage",
               "taxi_stand"));
+
+  // Formatted to be space delimited with a capital first letter.
   private final HashSet<String> customInterests =
-      new HashSet<String>(Arrays.asList("animals", "fashion", "nature", "night_life"));
+      new HashSet<String>(Arrays.asList("Animals", "Fashion", "Nature", "Night life"));
 
   /* Distinguishes null values from empty lists in DatastoreService. */
   @Override
@@ -92,10 +94,7 @@ public final class PlacesServlet extends HttpServlet {
         places.add(place);
       }
     }
-    for (String customInterest : customInterests) {
-      String customPlace = formatPlace(customInterest);
-      places.add(customPlace);
-    }
+    places.addAll(customInterests);
     Collections.sort(places);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(places));
