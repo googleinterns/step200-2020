@@ -24,6 +24,9 @@ import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +44,37 @@ public final class PlacesServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final HashSet<String> nonInterests =
+      new HashSet<String>(
+          Arrays.asList(
+              "accounting",
+              "atm",
+              "cemetery",
+              "courthouse",
+              "dentist",
+              "electrician",
+              "electronics_store",
+              "fire_station",
+              "funeral_home",
+              "hardware_store",
+              "home_goods_store",
+              "insurance_agency",
+              "hospital",
+              "lawyer",
+              "locksmith",
+              "moving_company",
+              "painter",
+              "physiotherapist",
+              "plumber",
+              "police",
+              "primary_school",
+              "real_estate_agency",
+              "roofing_contractor",
+              "secondary_school",
+              "storage",
+              "taxi_stand"));
+  private final HashSet<String> customInterests =
+      new HashSet<String>(Arrays.asList("animals", "fashion", "nature", "night_life"));
 
   /* Distinguishes null values from empty lists in DatastoreService. */
   @Override
