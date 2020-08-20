@@ -1,16 +1,7 @@
 /** Script that contains shared functions and variables */
 
-// object that communicates with the GMaps API service
-let directionsService;
- 
-// object that renders display results on the map
-let directionsRenderer;
-
 // map object used in the route page
 let map; 
-
-// object that communicates with the Places API service
-let placesService;
 
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
@@ -28,15 +19,15 @@ function findPlace(placeId) {
         resolve(result);
       } else {
         alert("Status: " + status);
-        reject(error);
+        reject(new Error("Could not retrieve place result object from request."));
       }
     })
   }).catch(error => {
-    alert("Error.Cannot process this request due to " + error);
+      alert(error);
   });
 
   return result;
 }
 
-/* exported findPlace */
-/* global google */
+/* exported findPlace, map, placesService */
+/* global placesService:true */
