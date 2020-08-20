@@ -65,7 +65,7 @@ function initMap() {
   placesService = new google.maps.places.PlacesService(map);
   
 }
-//  new google.maps.LatLng(0,0)
+
 /** Displays route containing waypoints overtop the map. */
 function calcRoute() {
   let request = {
@@ -169,7 +169,7 @@ function getRouteOnload(){
   .then(async (trip) => {
     if(trip != null){
       try{
-        let res = await findPlace(trip.start);
+        let res = await findPlace(trip.start, placesService);
         start = end = res;
    
       } catch (error) {
@@ -178,7 +178,7 @@ function getRouteOnload(){
       
       for(let destinationId of trip.destinations){
         try{
-          let destinationAsPlaceObj = await findPlace(destinationId);
+          let destinationAsPlaceObj = await findPlace(destinationId, placesService);
           destinations.push(destinationAsPlaceObj);
         } catch (error) {
           console.error("Could not retrieve destinations due to: ", error);
@@ -187,7 +187,7 @@ function getRouteOnload(){
 
       for(let waypointId of trip.route){
         try{
-          let waypointAsPlaceObj = await findPlace(waypointId);
+          let waypointAsPlaceObj = await findPlace(waypointId, placesService);
           route.push(waypointAsPlaceObj);
         } catch (error) {
           console.error("Could not retrieve route due to: ", error);
@@ -221,14 +221,12 @@ function createRouteButton(waypoint){
     routeBtn.className =  "btn destination-btn";
   } else {
     routeBtn.className =  "btn stop-btn";
-  }
-  routeBtn.addEventListener("click", function() {
-    // only delete if the waypoint is only a stop, not a destination
-    if(!destinations.some(destination => destination.name === waypoint.name)){
+    routeBtn.addEventListener("click", function() {
       route = route.filter(stop => stop.name != waypoint.name);
       calcRoute();
-    }
-  });
+    });
+  }
+ 
   return routeBtn;
 }
 
@@ -256,7 +254,7 @@ function getRecsOnload() {
   .then(async (recommendations) => {
     for (let recommendationId of recommendations){
       try{
-        let recommendationAsPlaceObj = await findPlace(recommendationId);
+        let recommendationAsPlaceObj = await findPlace(recommendationId, placesService);
         recs.push(recommendationAsPlaceObj);
       } catch (error){
           console.error("Could not retrieve recommended stops due to: ", error);
@@ -293,4 +291,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, placesService */
-/* global google:true, map:true, findPlace:true, getTripKeyFromUrl, configureTripKeyForPath */
+/* global google:true, map:true, findPlace, getTripKeyFromUrl, configureTripKeyForPath */

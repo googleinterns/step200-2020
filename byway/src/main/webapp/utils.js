@@ -8,7 +8,7 @@ let map;
  * @param {String} placeId a textual identifier that uniquely identifies a place
  * @return {Promise} result a Place Result object with fields name, geometry, id, etc.
  */
-function findPlace(placeId) {
+function findPlace(placeId, placesService) {
   console.log(placeId);
   const request = {
     placeId: placeId,
@@ -29,4 +29,3 @@ function findPlace(placeId) {
 }
 
 /* exported findPlace, map, placesService */
-/* global placesService:true */
