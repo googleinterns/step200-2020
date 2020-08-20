@@ -35,6 +35,8 @@ let directionsRenderer;
 // object that communicates with the Places API service
 let placesService;
 
+let tripKey; 
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -43,6 +45,8 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
  
 /** Used to restore route and recommendations upon load or refresh */
 function loadData(){
+  tripKey = getTripKeyFromUrl();
+  console.log("tripKey " + tripKey);
   getRecsOnload();
   getRouteOnload();
 }
@@ -161,7 +165,7 @@ function clearRoute(){
 /** Get trip info from datastore onload */
 function getRouteOnload(){
   clearRoute();
-  fetch('/api/stop')
+  fetch(configureTripKeyForPath(tripKey, "/api/stop"))
   .then(response => response.json())
   .then(async (trip) => {
     if(trip != null){
@@ -290,4 +294,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, placesService */
-/* global google:true, map:true, findPlace:true */
+/* global google:true, map:true, findPlace:true, getTripKeyFromUrl, configureTripKeyForPath */
