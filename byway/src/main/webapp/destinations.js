@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, map, placesService, findPlace*/
+/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, findPlace, map:true */
 
 
 const defaultCenter = Object.freeze({
@@ -22,8 +22,8 @@ const defaultCenter = Object.freeze({
 });
 
 let userlatlng = {lat:null , lng: null};
-//let map;
-//let placesService;
+//map;
+let placesService;
 
 function initializeDestinationsPage(){
   initAutocomplete(); 
