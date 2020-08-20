@@ -244,7 +244,7 @@ window.onload = function(){
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    savePlaceId();
+    savePlaceIds();
   });
 }
 
@@ -253,7 +253,7 @@ window.onload = function(){
 * elementName indicates which search box to get from, param indicates which param to save as
 * @param {String} elementName
 */
-function savePlaceId(){
+function savePlaceIds(){
   let formData = new FormData();
 
   const destRequest = {
@@ -265,14 +265,20 @@ function savePlaceId(){
     fields: ["place_id"]
   };
 
-  let promise = new Promise((resolve) => {
+  let promise = new Promise((resolve,reject) => {
     placesService.findPlaceFromQuery(destRequest, (results, status) => {
     console.log(status);
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         formData.append("destinations-search-box", results[0].place_id);
-        resolve("done");
+        resolve(results);
+      }
+      else{
+        alert("Status: " + status);
+        reject(error);
       }
     });
+  }).catch(error => {
+    alert("Error. Cannot process this request due to " + error);
   });
 
   promise.then(() => { 
