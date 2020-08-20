@@ -30,5 +30,5 @@ function findPlace(placeId) {
   return result;
 }
 
-/* exported findPlace, map */
+/* exported findPlace, map, placesService */
 /* global placesService:true */
