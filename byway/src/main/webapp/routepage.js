@@ -46,7 +46,6 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 /** Used to restore route and recommendations upon load or refresh */
 function loadData(){
   tripKey = getTripKeyFromUrl();
-  console.log("tripKey " + tripKey);
   getRecsOnload();
   getRouteOnload();
 }
