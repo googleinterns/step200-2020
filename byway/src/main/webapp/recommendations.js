@@ -23,7 +23,7 @@ if(document.readyState === 'loading') {
 }
 
 // Holds recommendations as PlaceResult objects
-let recs = new Set();
+let recs = [];
 
 let placesService;
 
@@ -200,7 +200,7 @@ function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
     placeMarker(place);
-    recs.add(place);
+    recs.push(place);
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;

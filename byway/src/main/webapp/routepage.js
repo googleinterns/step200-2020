@@ -85,9 +85,9 @@ function generateRoute() {
   clearRoute();
   const routeList = document.getElementById('route-list');
   routeList.appendChild(createRouteButton(start));
-  route.forEach((waypoint)=>{
+  for(let waypoint of route){
     routeList.appendChild(createRouteButton(waypoint));
-  });
+  }
   routeList.appendChild(createRouteButton(end));
 }
 
