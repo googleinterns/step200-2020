@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath*/
+/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, map, placesService, findPlace*/
 
 
 const defaultCenter = Object.freeze({
@@ -35,7 +35,6 @@ function initializeDestinationsPage(){
   }); 
 }
 
-const urlParams = new URLSearchParams(window.location.search);
 const tripKey = getTripKeyFromUrl();
 
 /**

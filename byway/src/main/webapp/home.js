@@ -1,3 +1,6 @@
+/* global google, configureTripKeyForPath, setLogoutLink*/
+/* exported placesService*/
+
 let placesService;
 
 if(!!window.performance && window.performance.navigation.type == 2)
@@ -71,7 +74,7 @@ function createPastTrip(){
 function initMap(start, end, destinations, keyString) {
   const directionsService = new google.maps.DirectionsService();
   const directionsRenderer = new google.maps.DirectionsRenderer();
-  waypoints = [];
+  let waypoints = [];
   destinations.forEach(destination => {
     waypoints.push({
         location: {placeId: destination },
