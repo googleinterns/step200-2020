@@ -218,48 +218,64 @@ window.onload = function(){
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    sendPlaceId("destinations-search-box");
-    sendPlaceId("start-search-box");
+    savePlaceIds();
   });
 }
 
 /** 
 * gets User Input from search box and sends the Place Id of user input to the server
 * elementName indicates which search box to get from, param indicates which param to save as
-* @param {String} elementName
+* 
 */
-function sendPlaceId(elementName){
+function savePlaceIds(){
   let formData = new FormData();
-  const request = {
-    query: String(document.getElementById(elementName).value),
+  const destRequest = {
+    query: String(document.getElementById("destinations-search-box").value),
     fields: ["place_id"]
   };
-  placesService.findPlaceFromQuery(request, (results, status) => {
-    console.log(status);
+  const startRequest = {
+    query: String(document.getElementById("start-search-box").value),
+    fields: ["place_id"]
+  };
+
+  findPlaceFromQuery(destRequest)
+  .then(({result,status}) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        formData.append("destinations-search-box", result[0].place_id);
+      }
+      else{
+        alert("Status: " + status);
+      }
+  })
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
+  })
+  .then(() => findPlaceFromQuery(startRequest))
+  .then(({result,status}) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      formData.append(elementName, results[0].place_id);
-      fetch(configureTripKeyForPath(tripKey, "/api/destinations"), {method: 'POST', body:formData})
+      formData.append("start-search-box", result[0].place_id);
+      fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
       .then((response)=>
         response.json())
       .then(locationData => {
-        if (elementName == "start-search-box"){
-          updateStartDestination(locationData);
-        }
-        else{
-          updateLocations(locationData);
-        }
+        updateLocations(locationData);
+        updateStartDestination(locationData);
       }); 
     }
     else{
-      alert("Location Invalid:" + status);
+      alert("Status: " + status);
     }
+  })
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
   });
 }
 
-
-
-
-
+function findPlaceFromQuery(request) {
+  return new Promise(resolve => {
+    placesService.findPlaceFromQuery(request, (result, status) => resolve({result, status}));
+  });
+}
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
