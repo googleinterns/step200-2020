@@ -281,19 +281,19 @@ function savePlaceIds(){
     alert("Error: cannot process this request due to " + error);
   })
   .then(({result,status}) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        formData.append("start-search-box", result[0].place_id);
-        fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
-        .then((response)=>
-          response.json())
-        .then(locationData => {
-          updateLocations(locationData);
-          updateStartDestination(locationData);
-        }); 
-      }
-      else{
-        alert("Status: " + status);
-      }
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      formData.append("start-search-box", result[0].place_id);
+      fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
+      .then((response)=>
+        response.json())
+      .then(locationData => {
+        updateLocations(locationData);
+        updateStartDestination(locationData);
+      }); 
+    }
+    else{
+      alert("Status: " + status);
+    }
   });
 }
 
