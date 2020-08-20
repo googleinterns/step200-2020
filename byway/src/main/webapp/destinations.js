@@ -244,8 +244,7 @@ window.onload = function(){
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    savePlaceId("destinations-search-box");
-    savePlaceId("start-search-box");
+    savePlaceId();
   });
 }
 
@@ -254,36 +253,46 @@ window.onload = function(){
 * elementName indicates which search box to get from, param indicates which param to save as
 * @param {String} elementName
 */
-function savePlaceId(elementName){
+function savePlaceId(){
   let formData = new FormData();
-  const request = {
-    query: String(document.getElementById(elementName).value),
+
+  const destRequest = {
+    query: String(document.getElementById("destinations-search-box").value),
     fields: ["place_id"]
   };
-  placesService.findPlaceFromQuery(request, (results, status) => {
-    console.log(status);
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      formData.append(elementName, results[0].place_id);
-      fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
-      .then((response)=>
-        response.json())
-      .then(locationData => {
-        updateDom(locationData, elementName)
-      }); 
-    }
-    else{
-      alert("Location Invalid:" + status);
-    }
-  });
-}
+  const startRequest = {
+    query: String(document.getElementById("start-search-box").value),
+    fields: ["place_id"]
+  };
 
-function updateDom(locationData,elementName){
-  if (elementName == "start-search-box"){
-    updateStartDestination(locationData);
-  }
-  else{
-    updateLocations(locationData);
-  }
+  let promise = new Promise((resolve) => {
+    placesService.findPlaceFromQuery(destRequest, (results, status) => {
+    console.log(status);
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        formData.append("destinations-search-box", results[0].place_id);
+        resolve("done");
+      }
+    });
+  });
+
+  promise.then(() => { 
+    placesService.findPlaceFromQuery(startRequest, (results, status) => {
+      console.log(status);
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        formData.append("start-search-box", results[0].place_id);
+        fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
+        .then((response)=>
+          response.json())
+        .then(locationData => {
+          updateLocations(locationData);
+          updateStartDestination(locationData);
+        }); 
+      }
+      else{
+        alert("Location Invalid:" + status);
+      }
+    });
+  });
 }
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
