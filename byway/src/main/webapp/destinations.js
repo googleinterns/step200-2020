@@ -274,7 +274,7 @@ function savePlaceIds(){
       }
       else{
         alert("Status: " + status);
-        reject(error);
+        reject(new Error("Could not find place:" + status));
       }
     });
   }).catch(error => {
