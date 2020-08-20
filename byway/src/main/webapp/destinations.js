@@ -265,9 +265,6 @@ function savePlaceIds(){
   };
 
   findPlaceFromQuery(destRequest)
-  .catch(error => {
-    alert("Error: cannot process this request due to " + error);
-  })
   .then(({result,status}) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         formData.append("destinations-search-box", result[0].place_id);
@@ -276,10 +273,10 @@ function savePlaceIds(){
         alert("Status: " + status);
       }
   })
-  .then(() => findPlaceFromQuery(startRequest))
   .catch(error => {
     alert("Error: cannot process this request due to " + error);
   })
+  .then(() => findPlaceFromQuery(startRequest))
   .then(({result,status}) => {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       formData.append("start-search-box", result[0].place_id);
@@ -294,6 +291,9 @@ function savePlaceIds(){
     else{
       alert("Status: " + status);
     }
+  })
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
   });
 }
 
