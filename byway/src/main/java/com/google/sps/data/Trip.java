@@ -88,6 +88,16 @@ public final class Trip {
   }
 
   /**
+   * Sets the route of the trip with a list of stops and destinations as plain text.
+   *
+   * @param route list of user-selected stops and destinations
+   */
+  public void setRoute(Collection<String> route) {
+    this.route.clear();
+    this.route.addAll(route);
+  }
+
+  /**
    * Retrieves the destinations of the trip as a list with plain text containing the name of the
    * destinations.
    */
@@ -126,7 +136,8 @@ public final class Trip {
   /**
    * Creates an entity using the properties from the Trip class instance.
    *
-   * @return entity representing the trip
+   * @return tripEntity entity with propoerties set from this Trip instance to be put into the
+   *     datastore
    */
   public Entity toEntity() {
     Entity tripEntity = new Entity(this.getKey());
@@ -142,6 +153,7 @@ public final class Trip {
    * make a valid Trip instance.
    *
    * @param tripEntity entity from datastore
+   * @return Trip object of with properties copied from provided entity
    */
   public static Trip fromEntity(Entity tripEntity) {
     checkNotNull(tripEntity, "tripEntity");

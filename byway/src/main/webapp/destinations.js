@@ -27,6 +27,7 @@ let userlatlng = {lat:null , lng: null};
 
 function initializeDestinationsPage(){
   initAutocomplete(); 
+  setLogoutLink();
   setProgressBar(1); 
   fetchDestinations().then(response => {
     updateLocations(response);
@@ -254,7 +255,10 @@ function sendPlaceId(elementName){
     }
   });
 }
-   
+
+
+
+
 
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet

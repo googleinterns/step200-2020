@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global getTripIdFromUrl, configureTripIdForNextPage */
+/* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar*/
 
 let interestsChosen = new Set();
-let tripId;
+let tripKey;
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadContent);
@@ -25,18 +25,19 @@ if(document.readyState === 'loading') {
 
 /**
  * Loads the content of the page by loading the trip
- * id of the user and the buttons with interests
+ * key of the user and the buttons with interests
  * they can select.
  */
 function loadContent() {
-  configureTripId();
+  configureTripKey();
   loadButtonsWithInterests();
 }
 
-/* Gets the trip id from the url and sets it for the next page. */
-function configureTripId() {
-  tripId = getTripKeyFromUrl();
-  configureTripKeyForPath(tripId, "/generator.html");
+/* Gets the trip key from the url and sets it for the next page. */
+function configureTripKey() {
+  let nextPage = document.getElementById("next-button");
+  tripKey = getTripKeyFromUrl();
+  nextPage.href = configureTripKeyForPath(tripKey, "/generator.html");
 }
 
 /** 
@@ -61,9 +62,10 @@ function updateStatus(place, elem) {
  * Load interest values through a fetch request.
  */
 function loadButtonsWithInterests() {
-  fetchPlaces(tripId)
+  setProgressBar(2);
+  fetchPlaces(tripKey)
   .then((places) => {
-    let buttonSection = document.getElementById("interests-section");
+    let buttonSection = document.getElementById("interests-buttons");
     places.forEach((place) => {
       let button = createButtonForPlace(place);
       buttonSection.appendChild(button);
@@ -83,7 +85,7 @@ function createButtonForPlace(place) {
   button.innerText = place;
   button.addEventListener('click', () => {
       updateStatus(place, button);
-      fetchPlaces(tripId, interestsChosen);
+      fetchPlaces(tripKey, interestsChosen);
   });
   button.className = "interestBtn";
   return button;
@@ -91,14 +93,14 @@ function createButtonForPlace(place) {
 
 /**
  * Gets all potential interests from server to load or sets the user's
- * specific interests for their trip with tripId. userInterests
+ * specific interests for their trip with tripKey. userInterests
  * may be any type that is convertible to an array via Array.from. It will
  * be sent to the server as JSON in the post body.
- * @param {String} tripId value for tripId
+ * @param {String} tripKey value for tripKey
  * @param {Array} [userInterests] interests selected by user
  */
-function fetchPlaces(tripId, /* optional */ userInterests) {
-  const url = '/api/places?' + new URLSearchParams({tripId}).toString();
+function fetchPlaces(tripKey, /* optional */ userInterests) {
+  const url = configureTripKeyForPath(tripKey, "/api/places");
   if(userInterests === undefined) {
       return fetch(url).then(response => response.json());
   }

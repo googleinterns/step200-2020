@@ -47,7 +47,6 @@ function createPastTrip(){
           title.href = configureTripKeyForPath(tripKey, "destinations.html")
         }
         else {
-          title.innerText = trip.destinations
           info.innerText = "Interests missing";
           title.href = configureTripKeyForPath(tripKey, "interests.html")
         }
