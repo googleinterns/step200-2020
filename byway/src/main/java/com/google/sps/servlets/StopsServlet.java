@@ -47,7 +47,6 @@ public final class StopsServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     try {
-      // trip = Trip.fromEntity(datastore.get(key));
       trip = Trip.getTrip(datastore, (String) request.getParameter("tripKey"));
 
     } catch (NullPointerException e) {
