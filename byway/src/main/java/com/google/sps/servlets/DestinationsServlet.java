@@ -40,10 +40,15 @@ public class DestinationsServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    String start = request.getParameter("start-location");
-    String destination = request.getParameter("destinations");
-    trip.setStart(start);
-    trip.addDestination(destination);
+    String start = request.getParameter("start-search-box");
+    if (start != null) {
+      trip.setStart(start);
+    }
+    String destination = request.getParameter("destinations-search-box");
+    if (destination != null) {
+      trip.addDestination(destination);
+      trip.addToRoute(destination);
+    }
     datastore.put(trip.toEntity());
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(trip));
