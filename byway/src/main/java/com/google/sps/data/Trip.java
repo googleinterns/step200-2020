@@ -133,6 +133,11 @@ public final class Trip {
     destinations.add(destination);
   }
 
+  /* Adds a destination point of the trip as plain text. */
+  public void addToRoute(String destination) {
+    route.add(destination);
+  }
+
   /**
    * Creates an entity using the properties from the Trip class instance.
    *

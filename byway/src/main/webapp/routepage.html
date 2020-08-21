@@ -1,60 +1,70 @@
 <!DOCTYPE html>
 <html>
-    <head>
-  <meta charset="UTF-8">
-  <title>Route Generator</title>
-  <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places&v=weekly"
-    defer></script>
-  <script src="routepage.js"></script>
-  <script src="recommendations.js"></script>
-  <link rel="stylesheet" href="routepage.css">
-</head>
-<body>
-  <p>Place holder button to draw route </p>
-  <button id = "route"  onclick = "generateRoute()">Done Adding Recommendations</button>
-  <div class = "route-container">
-    <div class = "map-style">
-      <div id= "map"></div>
-      <div id="message-container">
-        <p id="general-message">Showing limited results due to: </p>
-        <p id="statuses"></p>
-      </div>
+  <head>
+    <meta charset="UTF-8">
+    <title>Route Generator</title>
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="base.js"></script>
+    <script src="routepage.js"></script>
+    <script src="recommendations.js"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places,geometry"
+      defer></script>
+    <script src="utils.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="routepage.css">
+  </head>
+  <body>
+    <div id="message-container">
+      <p id="general-message">Showing limited results due to: </p>
+      <p id="statuses"></p>
     </div>
-    <div class = "column">
-      <div class = "box-outline">
-        <div class = "title" id="schedule">
-          <h3>Schedule</h3>
+    <div class = "route-container">
+      <div class = "map-style">
+        <div id= "map"></div>
+      </div>
+      <div class = "column">
+        <div class = "box-outline">
+          <div class = "title" id="schedule">
+            <h3>Schedule</h3>
+          </div>
+          <div class = "center" id="route-list"></div>
         </div>
-        <div class = "center" id="route-list"></div>
-       </div>
        <div class = "time-distance-outline">
-        <div class = "time-distance-title">
-          <p>Travel Distance:</p>
-        </div>
-        <div class = "time-distance-field">
-          <p id = "distance"></p>
-        </div>
+         <div class = "time-distance-title">
+           <p>Travel Distance:</p>
+         </div>
+         <div class = "time-distance-field">
+           <p id = "distance"></p>
+         </div>
 
-        <div class = "time-distance-title">
-          <p>Estimated Travel Time:</p>
-        </div>
-        <div class = "time-distance-field">
-          <p id = "duration"></p>
-        </div>
-
+         <div class = "time-distance-title">
+           <p>Estimated Travel Time:</p>
+         </div>
+         <div class = "time-distance-field">
+           <p id = "duration"></p>
+         </div>
       </div>
     </div>
     
-    <div class="box-outline" id="box-outline-stops">
-      <div class= "panel-title" id="stops">
-        <h3>Recommended Stops</h3>
+    <div class = "column">
+      <div class="box-outline" id="box-outline-stops">
+        <div class= "panel-title" id="stops">
+          <h3>Recommended Stops</h3>
+        </div>
+        <div class="center place-list" id="rec-list"></div>
       </div>
-      <div class="center" id="rec-list"></div>
+      <div class = "row">
+        <div class= "email-section"> 
+          <button class = "route btn finish-btn" onclick = "generateRoute()">Finish Adding Stops</button>
+        </div>
+        <div class = "email-section">
+          <button class="icon fa fa-envelope fa-4x email-btn" style= "color:orange"></button> 
+        </div>
+      </div>
     </div>
   </div>
-</body>
-
+  </body>
 </html>
