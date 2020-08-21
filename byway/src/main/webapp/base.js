@@ -18,13 +18,13 @@ function setProgressBar(pageNumber){
  * @return String of trip key
  */
 function getTripKeyFromUrl() {
-  const url = new URLSearchParams(location.search).get('tripKey');
-  if(url === null) {
+  const tripKey = new URLSearchParams(location.search).get('tripKey');
+  if(tripKey === null) {
     alert("tripKey not created! Create a new trip.");
     window.location.href = '/index.html';
     return "";
   } else {
-    return url;
+    return tripKey;
   }
 }
 
