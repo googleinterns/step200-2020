@@ -21,7 +21,7 @@ function initializeHomePage(){
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
       let tripKey = trip.keyString;
-      window.location.href = configureTripKeyForPath(tripKey, "destinations.html");
+      window.location.href = configureTripKeyForPath(tripKey, "/destinations.html");
     });
   });
 }
@@ -53,15 +53,15 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
   let info =  document.createElement('p');
   if (isDestinationsMissing && isInterestsMissing){
     info.innerText = "Destinations and Interests missing";
-    title.href = configureTripKeyForPath(trip.keyString, "destinations.html")
+    title.href = configureTripKeyForPath(trip.keyString, "/destinations.html")
   }
   else if (isDestinationsMissing && !isInterestsMissing){
     info.innerText = "Destinations missing";
-    title.href = configureTripKeyForPath(trip.keyString, "destinations.html")
+    title.href = configureTripKeyForPath(trip.keyString, "/destinations.html")
   }
   else {
     info.innerText = "Interests missing";
-    title.href = configureTripKeyForPath(trip.keyString, "interests.html")
+    title.href = configureTripKeyForPath(trip.keyString, "/interests.html")
   }
   pastTrip.append(info);
   container.append(pastTrip);
@@ -80,7 +80,7 @@ function showCompleteTrip(tripNum, trip){
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
   title.innerText = "Trip #" + tripNum;
-  title.href = configureTripKeyForPath(trip.keyString, "routepage.html");
+  title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
 function initMap(start, end, route, keyString) {
