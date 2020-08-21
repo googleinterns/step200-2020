@@ -133,6 +133,7 @@ h3.box-outline{
 
 #message-container {
   text-align: center;
+  visibility: hidden;
 }
  
 .icon{

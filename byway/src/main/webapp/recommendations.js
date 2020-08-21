@@ -73,13 +73,8 @@ function calcMainRoute() {
 
 /* Resets the alerts found in a previous attempt to load recommendations. */
 function resetUserAlerts() {
-  document.getElementById("message-container").style.visibility = 'hidden';
-  document.getElementById("general-message").style.visibility = 'hidden';
-  let statusesContainer = document.getElementById("statuses");
-  while(statusesContainer.hasChildNodes()) {
-    statusesContainer.removeChild(statusesContainer.firstChild);
-  }
-  statusesContainer.style.visibility = 'hidden';
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'hidden';
 }
 
 /**
@@ -120,7 +115,7 @@ function delayPromise(delayMs) {
  * textSearch repeatedly from the PlacesService.
  */
 async function loadRecommendations() {
-  let statuses = new Set();
+  let statuses = [];
   for(let interest of interests) {
     for(let region of regions) {
       const request = {
@@ -142,7 +137,7 @@ async function loadRecommendations() {
       }
     }
   }
-  if(statuses.size !== 0) alertUser(statuses);
+  if(statuses.length !== 0) alertUser(statuses);
   renderRecsList();
 }
 
@@ -171,20 +166,28 @@ function findPlacesWithTextSearch(request, statuses) {
 
 /**
  * Reveals status codes if there was an issue with a request.
- * TODO: Make a class to indicate as a "warning" and make text red.
- * Also, organize on front end.
- * @param {Set} statuses String elements with status codes from placesService
+ * @param {Array} statuses String elements with status codes from placesService
  */
 function alertUser(statuses) {
-  document.getElementById("message-container").style.visibility = 'visible';
-  document.getElementById("general-message").style.visibility = 'visible';
-  let statusesContainer = document.getElementById("statuses");
-  statusesContainer.style.visibility = 'visible';
-  for(let status of statuses) {
-    let statusElement = document.createElement('ul');
-    statusElement.innerText = status;
-    statusesContainer.appendChild(statusElement);
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'visible';
+  const allStatuses = formatStatusMessages(statuses);
+  msgContainer.innerText = "Showing limited results due to: " + allStatuses;
+}
+
+/**
+ * Go through status messages and add punctuation to make a sentence.
+ * @param {Array} statuses String elements with status codes from placesService
+ * @return String with punctuation as it lists all status codes.
+ */
+function formatStatusMessages(statuses) {
+  if(statuses.length < 1) return "";
+  let statusMsg = "";
+  for(let i = 0; i < statuses.length - 1; i++) {
+    statusMsg += statuses[i] + ", ";
   }
+  statusMsg += statuses[statuses.length - 1] + ".";
+  return statusMsg;
 }
 
 /**
