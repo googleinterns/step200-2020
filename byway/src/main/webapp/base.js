@@ -9,6 +9,10 @@ function setProgressBar(pageNumber){
   for(let i=0; i < pageNumber;i++){
     items[i].className = 'active';
   }
+  let tripKey = getTripKeyFromUrl();
+  document.getElementById('choose-destinations-progress-bar').href = configureTripKeyForPath(tripKey, '/destinations.html');
+  document.getElementById('choose-interests-progress-bar').href = configureTripKeyForPath(tripKey, '/interests.html');
+  document.getElementById('view-route-progress-bar').href = configureTripKeyForPath(tripKey, '/routepage.html');
 }
 
 /**
