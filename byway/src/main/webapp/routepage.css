@@ -1,4 +1,6 @@
 #map{
+
+  border: solid 2px;
   height:500px; /* change to 40 vw */
   width:500px; /* 5 vw padding*/
 }
@@ -101,4 +103,21 @@ h3.box-outline{
   width: 300px;
   padding: 5px;
   margin: 0 auto 10px auto;
+}
+
+#message-container {
+  text-align: center;
+  visibility: hidden;
+  border: solid 2px #c2edda;
+  border-radius: 10px;
+  background-color: #c2edda;
+  height: 130px;
+  width: 500px;
+  margin: 10px 0 10px 0;
+  overflow-y: auto;
+}
+
+#statuses {
+  text-align: left;
+  columns: 2;
 }
