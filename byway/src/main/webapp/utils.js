@@ -6,6 +6,7 @@ let map;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
+ * @param {Places Service Object} placesService object that communicates with the Places API service
  * @return {Promise} result a Place Result object with fields name, geometry, id, etc.
  */
 function findPlace(placeId, placesService) {
