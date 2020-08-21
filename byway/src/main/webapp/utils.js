@@ -1,7 +1,6 @@
 /** Script that contains shared functions and variables*/
 
-// map object used in the route page
-let map; 
+
 
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
@@ -29,4 +28,4 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
-/* exported findPlace, map, placesService */
+/* exported findPlace */

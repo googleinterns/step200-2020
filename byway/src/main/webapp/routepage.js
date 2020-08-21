@@ -37,6 +37,9 @@ let placesService;
 
 let tripKey; 
 
+// map object used in the route page
+let map; 
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -226,7 +229,6 @@ function createRouteButton(waypoint){
       calcRoute();
     });
   }
- 
   return routeBtn;
 }
 
@@ -290,5 +292,5 @@ function createRecButton(rec){
   return recBtn;
 }
 
-/* exported initMap, generateRoute, placesService */
-/* global google:writeable, map:writeable, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
+/* exported initMap, generateRoute, placesService, map */
+/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
