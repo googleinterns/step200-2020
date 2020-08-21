@@ -1,8 +1,5 @@
 /** Script that contains shared functions and variables*/
 
-// map object used in the route page
-let map; 
-
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
@@ -27,4 +24,4 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
-/* exported findPlace, map*/
+/* exported findPlace */
