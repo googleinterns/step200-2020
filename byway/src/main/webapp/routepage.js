@@ -291,4 +291,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, placesService */
-/* global google:true, map:true, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
+/* global google:writeable, map:writeable, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
