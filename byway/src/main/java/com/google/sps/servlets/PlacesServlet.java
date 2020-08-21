@@ -42,9 +42,7 @@ public final class PlacesServlet extends HttpServlet {
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
 
-  private final Gson gson = new Gson();
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final HashSet<String> nonInterests =
+  private static final HashSet<String> NON_INTERESTS =
       new HashSet<String>(
           Arrays.asList(
               "accounting",
@@ -75,8 +73,12 @@ public final class PlacesServlet extends HttpServlet {
               "taxi_stand"));
 
   // Formatted to be space delimited with a capital first letter.
-  private final HashSet<String> customInterests =
-      new HashSet<String>(Arrays.asList("Animals", "Fashion", "Nature", "Night life"));
+  private static final HashSet<String> CUSTOM_INTERESTS =
+      new HashSet<String>(
+          Arrays.asList("Animals", "Beach", "Lake", "Fashion", "Nature", "Night life"));
+
+  private final Gson gson = new Gson();
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   /* Distinguishes null values from empty lists in DatastoreService. */
   @Override
@@ -89,12 +91,12 @@ public final class PlacesServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> places = new ArrayList<String>();
     for (PlaceType location : PlaceType.values()) {
-      if (!nonInterests.contains(location.toString())) {
+      if (!NON_INTERESTS.contains(location.toString())) {
         String place = formatPlace(location.toString());
         places.add(place);
       }
     }
-    places.addAll(customInterests);
+    places.addAll(CUSTOM_INTERESTS);
     Collections.sort(places);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(places));
