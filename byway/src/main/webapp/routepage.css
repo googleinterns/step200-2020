@@ -127,26 +127,12 @@ h3.box-outline{
   height: 75px;
   width: 330px;
   padding: 5px;
-<<<<<<< HEAD
   margin-left: 30px;
   font-family: 'Noto Sans JP', sans-serif;
 }
 
 #message-container {
   text-align: center;
-  visibility: hidden;
-  border: solid 2px #c2edda;
-  border-radius: 10px;
-  background-color: #c2edda;
-  height: 130px;
-  width: 500px;
-  margin: 10px 0 10px 0;
-  overflow-y: auto;
-}
-
-#statuses {
-  text-align: left;
-  columns: 2;
 }
  
 .icon{
