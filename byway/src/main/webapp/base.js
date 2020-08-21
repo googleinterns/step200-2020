@@ -12,29 +12,29 @@ function setProgressBar(pageNumber){
 }
 
 /**
- * Go through url to retrieve the trip key. If the trip key is null,
- * redirects the user to the page where they can make a new trip
- * and have a valid trip key to reference.
+ * Go through url to retrieve the trip key.
  * @return String of trip key
  */
 function getTripKeyFromUrl() {
-  const url = new URLSearchParams(location.search).get('tripKey');
-  if(url === null) {
-    alert("tripKey not created! Create a new trip.");
-    window.location.href = '/index.html';
-    return "";
-  } else {
-    return url;
-  }
+  return new URLSearchParams(location.search).get('tripKey');
 }
 
 /**
  * Uses the trip key passed in to create a modified path from
- * the path parameter.
+ * the path parameter. If the trip key is null, redirects the
+ * user to the page where they can make a new trip and have
+ * a valid trip key to reference.
  * @param {String} tripKey unique value for a trip
  * @param {String} path to send tripKey across
  * @return String of path with tripKey in query params
  */
 function configureTripKeyForPath(tripKey, path) {
-  return path + "?" + new URLSearchParams({tripKey}).toString();
+  if(tripKey === null) {
+    // Send back to page where a trip can be made
+    alert("tripKey not created! Create a new trip.");
+    window.location.href = '/index.html';
+    return "";
+  } else {
+    return path + "?" + new URLSearchParams({tripKey}).toString();
+  }
 }
