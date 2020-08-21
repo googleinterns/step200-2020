@@ -16,13 +16,13 @@
 /* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, findPlace, map:true */
 
 
+
 const defaultCenter = Object.freeze({
   lat: 40.712776,
   lng:-74.005974
 });
 
 let userlatlng = {lat:null , lng: null};
-let placesService;
 
 function initializeDestinationsPage(){
   initAutocomplete(); 
@@ -35,6 +35,7 @@ function initializeDestinationsPage(){
 }
 
 const tripKey = getTripKeyFromUrl();
+let placesService;
 
 /**
 * Creates map and search boxes with autocomplete
@@ -130,8 +131,10 @@ function addMarker(searchBox){
 }
 
 /** 
-* fetches start location and destinations from DestinationsServlet and adds to DOM
+* fetches destinations from DestinationsServlet and adds to DOM
+ * @param {json object} locationData
 */
+
 function updateLocations(locationData){
     const container = document.getElementById('destinations-container');
     container.innerText = "";
@@ -140,11 +143,13 @@ function updateLocations(locationData){
       findPlace(destination).then((placeDetails) =>{
         addLocationToDom(placeDetails, container);
       }); 
-    }) 
+    });
 }
 
 /** 
 * adds Users Input Destinations to DOM with image and address
+* @param {Place object} place
+* @param {HTML element}  container
 */
 function addLocationToDom(place,container){
   let destinationToAdd = document.createElement('div');
@@ -167,8 +172,10 @@ function addLocationToDom(place,container){
   destinationToAdd.appendChild(destinationInfo);
 }
 
-/**  
-* fills Start location Searchbox with previously input
+/** 
+* fetches start destination from DestinationsServlet and 
+* fills start-search-box with users previouslt input start
+* @param {json object} locationData
 */
 function updateStartDestination(locationData){
     if (locationData.start == "" || locationData.start == null){
@@ -210,9 +217,10 @@ function getCurrentAddress(){
 * add event listener for submit button
 */
 window.onload = function(){
+  
   let nextButton = document.getElementById('next-button');
   nextButton.addEventListener('click', () => {
-      nextButton.href = configureTripKeyForPath(tripKey,"interests.html");
+      nextButton.href = configureTripKeyForPath(tripKey, '/interests.html');
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();

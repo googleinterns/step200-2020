@@ -26,8 +26,6 @@ import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,12 +39,12 @@ public final class StopsServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  // TODO: get key from query string params
   private final Key key = KeyFactory.createKey(Trip.DATASTORE_ENTITY_KIND, 1234);
 
   /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> stops = Collections.emptyList();
     Trip trip;
     try {
       trip = Trip.fromEntity(datastore.get(key));
@@ -56,7 +54,8 @@ public final class StopsServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    response.setContentType("application/json;");
+
+    response.setContentType("application/json");
     response.getWriter().println(gson.toJson(trip));
   }
 
