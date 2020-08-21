@@ -27,4 +27,4 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
-/* exported findPlace, map, placesService */
+/* exported findPlace, map*/
