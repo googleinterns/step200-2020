@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar */
+/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath */
 
 
 const defaultCenter = Object.freeze({
@@ -33,8 +33,9 @@ function initializeDestinationsPage(){
   }); 
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const tripKey = urlParams.get('tripKey');
+const tripKey = getTripKeyFromUrl();
+let placesService;
+
 /**
 * Creates map and search boxes with autocomplete
 */
@@ -44,6 +45,7 @@ function initAutocomplete() {
     zoom: 13,
     mapTypeId: "roadmap"
   });
+  placesService = new google.maps.places.PlacesService(map);
 
   //navigator is an HTML geolocation API variable to get information about the users current location
   if (navigator.geolocation) {
@@ -129,24 +131,26 @@ function addMarker(searchBox){
 }
 
 /** 
-* fetches start location and destinations from DestinationsServlet and adds to DOM
+* fetches destinations from DestinationsServlet and adds to DOM
+ * @param {json object} locationData
 */
+
 function updateLocations(locationData){
     const container = document.getElementById('destinations-container');
     container.innerText = "";
-    let destinationArray= locationData.destinations;
+    let destinationArray = locationData.destinations;
     destinationArray.forEach((destination) => {
       const request = {
-        query: destination,
-        fields: ["name", "photos", "formatted_address", "rating", "business_status"]
+        placeId: destination,
+        fields: ["name", "photos", "formatted_address"]
       };
-      let service = new google.maps.places.PlacesService(map);
-      service.findPlaceFromQuery(request, (results, status) => {
+      placesService.getDetails(request, (place, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          addLocationToDom(results, container);
+          addLocationToDom(place, container);
         }
         else{
-          alert("Location Invalid");
+          alert("Location Invalid:" + status);
+          
         }
       });  
     }) 
@@ -154,19 +158,21 @@ function updateLocations(locationData){
 
 /** 
 * adds Users Input Destinations to DOM with image and address
+* @param {Place object} place
+* @param {HTML element}  container
 */
-function addLocationToDom(results,container){
+function addLocationToDom(place,container){
   let destinationToAdd = document.createElement('div');
   destinationToAdd.className = 'location';
   
   let destinationPhoto = document.createElement('img');
-  destinationPhoto.src = results[0].photos[0].getUrl();
+  destinationPhoto.src = place.photos[0].getUrl();
   let destinationInfo = document.createElement('p');
   destinationInfo.className = 'destination-info';
   let destinationName = document.createElement('p');
-  destinationName.innerText = results[0].name;
+  destinationName.innerText = place.name;
   let destinationAddress= document.createElement('p');
-  destinationAddress.innerText = results[0].formatted_address;
+  destinationAddress.innerText = place.formatted_address;
 
   destinationInfo.appendChild(destinationName);
   destinationInfo.appendChild(destinationAddress);
@@ -176,15 +182,28 @@ function addLocationToDom(results,container){
   destinationToAdd.appendChild(destinationInfo);
 }
 
-/**  
-* fills Start location Searchbox with previously input
+/** 
+* fetches start destination from DestinationsServlet and 
+* fills start-search-box with users previouslt input start
+* @param {json object} locationData
 */
 function updateStartDestination(locationData){
-    if (locationData.start == null){
+    if (locationData.start == "" || locationData.start == null){
       document.getElementById('start-search-box').value = "";
     }
     else{
-      document.getElementById('start-search-box').value = locationData.start;
+      const request = {
+        placeId: locationData.start,
+        fields: ["formatted_address"]
+      };
+      placesService.getDetails(request, (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          document.getElementById('start-search-box').value = place.formatted_address;
+        }
+        else{
+          alert("Location Invalid:" + status);
+        }
+      });
     }
 }
 
@@ -193,7 +212,7 @@ function updateStartDestination(locationData){
 */
 function fetchDestinations(){
     
-  return fetch(buildUrlWithParams("/api/destinations", {tripKey})).then(response => response.json());
+  return fetch(configureTripKeyForPath(tripKey, "/api/destinations")).then(response => response.json());
 }
 
 /** 
@@ -218,21 +237,71 @@ function getCurrentAddress(){
 * add event listener for submit button
 */
 window.onload = function(){
+  
   let nextButton = document.getElementById('next-button');
   nextButton.addEventListener('click', () => {
-      nextButton.href = buildUrlWithParams("/interests.html", {tripKey});
+      nextButton.href = configureTripKeyForPath(tripKey, '/interests.html');
   });
   document.getElementById('user-input-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const formData = new  FormData(document.getElementById("user-input-form"));
-    fetch(buildUrlWithParams("/api/destinations", {tripKey}), {method: 'POST', body:formData}).then((response)=>
-        response.json()).then(locationData => {
-        updateLocations(locationData);
-        updateStartDestination(locationData);
-      });
-    });
+    savePlaceIds();
+  });
 }
 
+/** 
+* gets User Input from search box and sends the Place Id of user input to the server
+* elementName indicates which search box to get from, param indicates which param to save as
+* 
+*/
+function savePlaceIds(){
+  let formData = new FormData();
+  const destRequest = {
+    query: String(document.getElementById("destinations-search-box").value),
+    fields: ["place_id"]
+  };
+  const startRequest = {
+    query: String(document.getElementById("start-search-box").value),
+    fields: ["place_id"]
+  };
+
+  findPlaceFromQuery(destRequest)
+  .then(({result,status}) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        formData.append("destinations-search-box", result[0].place_id);
+      }
+      else{
+        alert("Status: " + status);
+      }
+  })
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
+  })
+  .then(() => findPlaceFromQuery(startRequest))
+  .then(({result,status}) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      formData.append("start-search-box", result[0].place_id);
+      fetch(configureTripKeyForPath(tripKey, '/api/destinations'), {method: 'POST', body:formData})
+      .then((response)=>
+        response.json())
+      .then(locationData => {
+        updateLocations(locationData);
+        updateStartDestination(locationData);
+      }); 
+    }
+    else{
+      alert("Status: " + status);
+    }
+  })
+  .catch(error => {
+    alert("Error: cannot process this request due to " + error);
+  });
+}
+
+function findPlaceFromQuery(request) {
+  return new Promise(resolve => {
+    placesService.findPlaceFromQuery(request, (result, status) => resolve({result, status}));
+  });
+}
 
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', initializeDestinationsPage)
@@ -241,10 +310,6 @@ else{
   initializeDestinationsPage();
 }
 
-/** Adds a tripId parameter to a URL string. Assumes the URL has no existing parameters. */
-function buildUrlWithParams(baseUrl, params) {
-  return baseUrl + "?" + new URLSearchParams(params).toString();
-}
 
     
 
