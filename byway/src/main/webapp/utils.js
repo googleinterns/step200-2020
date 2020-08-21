@@ -1,4 +1,4 @@
-/** Script that contains shared functions and variables */
+/** Script that contains shared functions and variables*/
 
 // map object used in the route page
 let map; 
@@ -6,9 +6,9 @@ let map;
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
- * @return {Promise} result a Place object
+ * @return {Promise} result a Place Result object with fields name, geometry, id, etc.
  */
-function findPlace(placeId) {
+function findPlace(placeId, placesService) {
   const request = {
     placeId: placeId,
     fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address']
@@ -28,4 +28,3 @@ function findPlace(placeId) {
 }
 
 /* exported findPlace, map, placesService */
-/* global placesService:true */
