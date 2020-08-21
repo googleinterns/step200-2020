@@ -20,8 +20,8 @@ function initializeHomePage(){
   createPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
-      let tripKey = trip.keyString
-      window.location.href = configureTripKeyForPath(tripKey, "destinations.html") 
+      let tripKey = trip.keyString;
+      window.location.href = configureTripKeyForPath(tripKey, "destinations.html");
     });
   });
 }
@@ -30,45 +30,57 @@ function createPastTrip(){
   fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
     let tripNum = 1;
     tripIds.forEach(trip => {
-      let container = document.getElementById("past-trips-container");
-      let pastTrip = document.createElement('div');
-      pastTrip.className = "past-trip";
-      let title = document.createElement('a');
-      pastTrip.append(title);
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
-      let tripKey = trip.keyString;
       if(isDestinationsMissing|| isInterestsMissing) { //TODO: check if interests or route is empty too
-        title.innerText = "Trip #" + tripNum + ": In-Progress";
-        let info =  document.createElement('p');
-        if (isDestinationsMissing && isInterestsMissing){
-          info.innerText = "Destinations and Interests missing";
-          title.href = configureTripKeyForPath(tripKey, "destinations.html")
-        }
-        else if (isDestinationsMissing && !isInterestsMissing){
-          info.innerText = "Destinations missing";
-          title.href = configureTripKeyForPath(tripKey, "destinations.html")
-        }
-        else {
-          info.innerText = "Interests missing";
-          title.href = configureTripKeyForPath(tripKey, "interests.html")
-        }
-        pastTrip.append(info);
-        container.append(pastTrip);
+        showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing);
       } 
       else{
-        let mapContainer = document.createElement('div');
-        mapContainer.className = 'map';
-        mapContainer.id = "map-" + trip.keyString;
-        pastTrip.append(mapContainer);
-        container.append(pastTrip);
-        initMap(trip.start, trip.start, trip.route, trip.keyString);
-        title.innerText = "Trip #" + tripNum;
-        title.href = configureTripKeyForPath(tripKey, "routepage.html")
+        showCompleteTrip(tripNum, trip)
       }
       tripNum++;
     });
   })
+}
+
+function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
+  let container = document.getElementById("past-trips-container");
+  let pastTrip = document.createElement('div');
+  pastTrip.className = "past-trip";
+  let title = document.createElement('a');
+  pastTrip.append(title);
+  title.innerText = "Trip #" + tripNum + ": In-Progress";
+  let info =  document.createElement('p');
+  if (isDestinationsMissing && isInterestsMissing){
+    info.innerText = "Destinations and Interests missing";
+    title.href = configureTripKeyForPath(trip.keyString, "destinations.html")
+  }
+  else if (isDestinationsMissing && !isInterestsMissing){
+    info.innerText = "Destinations missing";
+    title.href = configureTripKeyForPath(trip.keyString, "destinations.html")
+  }
+  else {
+    info.innerText = "Interests missing";
+    title.href = configureTripKeyForPath(trip.keyString, "interests.html")
+  }
+  pastTrip.append(info);
+  container.append(pastTrip);
+}
+
+function showCompleteTrip(tripNum, trip){
+  let container = document.getElementById("past-trips-container");
+  let pastTrip = document.createElement('div');
+  pastTrip.className = "past-trip";
+  let title = document.createElement('a');
+  pastTrip.append(title);
+  let mapContainer = document.createElement('div');
+  mapContainer.className = 'map';
+  mapContainer.id = "map-" + trip.keyString
+  pastTrip.append(mapContainer);
+  container.append(pastTrip);
+  initMap(trip.start, trip.start, trip.route, trip.keyString);
+  title.innerText = "Trip #" + tripNum;
+  title.href = configureTripKeyForPath(trip.keyString, "routepage.html");
 }
 
 function initMap(start, end, route, keyString) {

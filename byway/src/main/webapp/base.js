@@ -13,14 +13,18 @@ function setProgressBar(pageNumber){
 }
 
 function setLogoutLink(){
-    fetch("/api/login").then(response => response.json()).then((login) =>{
-    if (login.isLoggedIn) {
+    fetch("/api/login").then(response => response.json()).then((loginStatus) =>{
+    if (loginStatus.isLoggedIn) {
       let logoutLink = document.createElement("a");
       logoutLink.id = "logout-button";
-      logoutLink.href = login.url;
+      logoutLink.href = loginStatus.url;
       logoutLink.innerText = "LOGOUT";
       let container = document.getElementById("logout-link");
       container.append(logoutLink);
+    }
+    else{
+        alert("User not logged in! Please login.");
+        window.location.href = '/index.html';    
     }
   });
 }
