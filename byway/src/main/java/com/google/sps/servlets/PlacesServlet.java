@@ -17,6 +17,7 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
@@ -24,9 +25,7 @@ import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,40 +41,42 @@ public final class PlacesServlet extends HttpServlet {
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
 
-  private static final HashSet<String> NON_INTERESTS =
-      new HashSet<String>(
-          Arrays.asList(
-              "accounting",
-              "atm",
-              "cemetery",
-              "courthouse",
-              "dentist",
-              "electrician",
-              "electronics_store",
-              "fire_station",
-              "funeral_home",
-              "hardware_store",
-              "home_goods_store",
-              "insurance_agency",
-              "hospital",
-              "lawyer",
-              "locksmith",
-              "moving_company",
-              "painter",
-              "physiotherapist",
-              "plumber",
-              "police",
-              "primary_school",
-              "real_estate_agency",
-              "roofing_contractor",
-              "secondary_school",
-              "storage",
-              "taxi_stand"));
+  /**
+   * Formatted to be all lowercase, delimited by an underscore. Follows the format used for
+   * PlaceType objects.
+   */
+  private static final ImmutableSet<String> NON_INTERESTS =
+      ImmutableSet.of(
+          "accounting",
+          "atm",
+          "cemetery",
+          "courthouse",
+          "dentist",
+          "electrician",
+          "electronics_store",
+          "fire_station",
+          "funeral_home",
+          "hardware_store",
+          "home_goods_store",
+          "insurance_agency",
+          "hospital",
+          "lawyer",
+          "locksmith",
+          "moving_company",
+          "painter",
+          "physiotherapist",
+          "plumber",
+          "police",
+          "primary_school",
+          "real_estate_agency",
+          "roofing_contractor",
+          "secondary_school",
+          "storage",
+          "taxi_stand");
 
   // Formatted to be space delimited with a capital first letter.
-  private static final HashSet<String> CUSTOM_INTERESTS =
-      new HashSet<String>(
-          Arrays.asList("Animals", "Beach", "Lake", "Fashion", "Nature", "Night life"));
+  private static final ImmutableSet<String> CUSTOM_INTERESTS =
+      ImmutableSet.of("Animals", "Beach", "Lake", "Fashion", "Nature", "Night life");
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
