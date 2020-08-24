@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
@@ -42,37 +43,36 @@ public final class PlacesServlet extends HttpServlet {
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
 
   /**
-   * Formatted to be all lowercase, delimited by an underscore. Follows the format used for
-   * PlaceType objects.
+   * Immutable set of the PlaceType enumerator values containing interests. Labelled as non
+   * interests to filter from other interests contained in the Places API.
    */
-  private static final ImmutableSet<String> NON_INTERESTS =
-      ImmutableSet.of(
-          "accounting",
-          "atm",
-          "cemetery",
-          "courthouse",
-          "dentist",
-          "electrician",
-          "electronics_store",
-          "fire_station",
-          "funeral_home",
-          "hardware_store",
-          "home_goods_store",
-          "insurance_agency",
-          "hospital",
-          "lawyer",
-          "locksmith",
-          "moving_company",
-          "painter",
-          "physiotherapist",
-          "plumber",
-          "police",
-          "primary_school",
-          "real_estate_agency",
-          "roofing_contractor",
-          "secondary_school",
-          "storage",
-          "taxi_stand");
+  private static final ImmutableSet<PlaceType> NON_INTERESTS_FROM_PLACETYPES =
+      Sets.immutableEnumSet(
+          PlaceType.ACCOUNTING,
+          PlaceType.CEMETERY,
+          PlaceType.COURTHOUSE,
+          PlaceType.DENTIST,
+          PlaceType.ELECTRICIAN,
+          PlaceType.ELECTRONICS_STORE,
+          PlaceType.FIRE_STATION,
+          PlaceType.FUNERAL_HOME,
+          PlaceType.HARDWARE_STORE,
+          PlaceType.HOME_GOODS_STORE,
+          PlaceType.INSURANCE_AGENCY,
+          PlaceType.HOSPITAL,
+          PlaceType.LAWYER,
+          PlaceType.LOCKSMITH,
+          PlaceType.MOVING_COMPANY,
+          PlaceType.PAINTER,
+          PlaceType.PHYSIOTHERAPIST,
+          PlaceType.PLUMBER,
+          PlaceType.POLICE,
+          PlaceType.PRIMARY_SCHOOL,
+          PlaceType.REAL_ESTATE_AGENCY,
+          PlaceType.ROOFING_CONTRACTOR,
+          PlaceType.SECONDARY_SCHOOL,
+          PlaceType.STORAGE,
+          PlaceType.TAXI_STAND);
 
   // Formatted to be space delimited with a capital first letter.
   private static final ImmutableSet<String> CUSTOM_INTERESTS =
@@ -92,7 +92,7 @@ public final class PlacesServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> places = new ArrayList<String>();
     for (PlaceType location : PlaceType.values()) {
-      if (!NON_INTERESTS.contains(location.toString())) {
+      if (!NON_INTERESTS_FROM_PLACETYPES.contains(location)) {
         String place = formatPlace(location.toString());
         places.add(place);
       }
