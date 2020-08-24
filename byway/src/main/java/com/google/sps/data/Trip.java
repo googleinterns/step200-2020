@@ -97,10 +97,7 @@ public final class Trip {
     this.route.addAll(route);
   }
 
-  /**
-   * Retrieves the destinations of the trip as a list with place Ids of the
-   * destinations.
-   */
+  /** Retrieves the destinations of the trip as a list with place Ids of the destinations. */
   public List<String> getDestinations() {
     return Collections.unmodifiableList(this.destinations);
   }
