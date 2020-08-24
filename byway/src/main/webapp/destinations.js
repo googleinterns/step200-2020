@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, findPlace */
+/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setupLogoutLink, findPlace */
 
 
 

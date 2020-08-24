@@ -1,4 +1,4 @@
-/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setLogoutLink */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink */
 
 /** 
 * Sets Progress Bar to correct location based on the page number
