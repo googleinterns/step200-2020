@@ -14,48 +14,34 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.sps.data.Trip;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that handles data for stops */
+/** Servlet that handles data for emails */
 @WebServlet("/api/email")
 public final class EmailServlet extends HttpServlet {
-  private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   private final Gson gson = new Gson();
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserService userService = UserServiceFactory.getUserService();
-
-  private Trip trip;
-  private String keyAsString;
 
   /* Passes saved trip object to show route in the schedule panel, start/end in request */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String userEmail = userService.getCurrentUser().getEmail();
-    if (userEmail== null) {
-      logger.atInfo().log(
-          "Could not retrieve user email");
+    if (userEmail == null) {
+      logger.atInfo().log("Could not retrieve user email");
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
     response.setContentType("application/json");
     response.getWriter().println(gson.toJson(userEmail));
   }
-
-  
 }
