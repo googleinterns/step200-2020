@@ -36,6 +36,8 @@ public final class StopsServlet extends HttpServlet {
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
+  private String tripKeyString;
+
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   // TODO: get key from query string params
@@ -44,7 +46,7 @@ public final class StopsServlet extends HttpServlet {
   /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String tripKeyString = request.getParameter("tripKey");
+    tripKeyString = request.getParameter("tripKey");
     Trip trip = Trip.getTrip(datastore, tripKeyString);
     if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -59,7 +61,6 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    String tripKeyString = request.getParameter("tripKey");
     Trip trip = Trip.getTrip(datastore, tripKeyString);
     if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);

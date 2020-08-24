@@ -61,10 +61,10 @@ function initMap() {
 /** Displays route containing waypoints overtop the map. */
 function calcRouteWithRecs() {
   let request = {
-    origin:  start,
-    destination: end,
+    origin:  start.name,
+    destination: end.name,
     travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint})),
+    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
@@ -156,16 +156,36 @@ function clearRoute(){
 /** Get trip info from datastore onload */
 function getRouteOnload(){
   clearRoute();
-  fetch(configureTripKeyforPath(tripKey, '/api/stop'))
+  fetch(configureTripKeyForPath(tripKey, '/api/stop'))
   .then(response => response.json())
-  .then((trip) => {
-    if(trip != null){
-      start = end = trip.start;
-      destinations = trip.destinations;
-      route.push(...trip.route);
+  .then(async (trip) => {
+    if(trip != null) {
+      try {
+        let res = await findPlace(trip.start, placesService);
+        start = end = res;
+
+      } catch (error) {
+        console.error("Could not retrieve a start nor end point due to: ", error);
+      }
+
+      for(let destinationId of trip.destinations){
+        try{
+          let destinationAsPlaceObj = await findPlace(destinationId, placesService);
+          destinations.push(destinationAsPlaceObj);
+        } catch (error) {
+          console.error("Could not retrieve destinations due to: ", error);
+        }
+      }
+      for(let waypointId of trip.route){
+        try {
+          let waypointAsPlaceObj = await findPlace(waypointId, placesService);
+          route.push(waypointAsPlaceObj);
+        } catch (error) {
+          console.error("Could not retrieve route due to: ", error);
+        }
+      }
       calcMainRoute();
-    }
-    else{
+    } else{
       console.log("Could not retrieve any routes nor destinations associated with this trip." +
        "Please reload page and try again.");
     }
@@ -187,7 +207,7 @@ function renderRouteList(){
  */
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
-  routeBtn.innerText = waypoint;
+  routeBtn.innerText = waypoint.name;
   if(!destinations.includes(waypoint)){
     routeBtn.className =  "btn stop-btn";
   } else{
@@ -208,7 +228,7 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch(configureTripKeyforPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(Array.from(route))});
+  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(route))});
 }
 
 /** Clear the recommendations panel in the html */
@@ -247,4 +267,4 @@ function createRecButton(rec){
 }
 
 /* exported calcRouteWithRecs, initMap, generateRoute, map, renderRecsList */
-/* global calcMainRoute, configureTripKeyForPath, getTripKeyFromUrl, google, recs */
+/* global calcMainRoute, configureTripKeyForPath, findPlace, getTripKeyFromUrl, google, placesService, recs */

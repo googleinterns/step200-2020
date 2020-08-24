@@ -50,14 +50,13 @@ function initServices() {
 function calcMainRoute() {
   resetUserAlerts();
   const request = {
-    origin:  start,
-    destination: end,
+    origin:  start.name,
+    destination: end.name,
     travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint})),
+    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
     optimizeWaypoints: true
   };
-  regions.push(start);
-  regions.push(...destinations);
+  addMainStopsToRegions();
   directionsService.route(request, function(result, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(result);
@@ -69,6 +68,14 @@ function calcMainRoute() {
       alert("Could not calculate route due to: " + status);
     }
   });
+}
+
+/* Saves the LatLng coords of the start point and destinations to regions array. */
+function addMainStopsToRegions() {
+  regions.push(start.geometry.location);
+  for (let destination of destinations) {
+    regions.push(destination.geometry.location);
+  }
 }
 
 /* Resets the alerts found in a previous attempt to load recommendations. */
