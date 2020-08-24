@@ -26,7 +26,7 @@ let userlatlng = {lat:null , lng: null};
 
 function initializeDestinationsPage(){
   initAutocomplete(); 
-  setLogoutLink();
+  setupLogoutLink();
   setProgressBar(1); 
   fetchDestinations().then(response => {
     updateLocations(response);

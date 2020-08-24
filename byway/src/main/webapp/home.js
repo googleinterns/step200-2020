@@ -17,7 +17,7 @@ else{
 }
 
 function initializeHomePage(){
-  setLogoutLink();
+  setupLogoutLink();
   createPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
