@@ -59,7 +59,6 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    keyAsString = (String) request.getParameter("tripKey");
     trip = Trip.getTrip(datastore, keyAsString);
 
     if (trip == null) {

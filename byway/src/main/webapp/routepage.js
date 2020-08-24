@@ -100,6 +100,15 @@ function generateRoute() {
     routeList.appendChild(createRouteButton(waypoint));
   }
   routeList.appendChild(createRouteButton(end));
+  clearMarkers();
+}
+
+/* Iterate through all markers and set their maps to null. Make Markers array empty. */
+function clearMarkers() {
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  markers = [];
 }
 
 /**
@@ -273,6 +282,6 @@ function createRecButton(rec){
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, renderRecsList */
+    generateRoute, map, markers, renderRecsList */
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs */

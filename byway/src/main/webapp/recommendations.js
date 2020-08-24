@@ -14,7 +14,7 @@
 
 /* global destinations, directionsRenderer, directionsService, end, google,
     interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
-/* exported calcMainRoute, recs */
+/* exported calcMainRoute, markers, recs */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -29,6 +29,9 @@ const MAX_RECOMMENDATIONS = 1;
 // Contains google.maps.LatLng objects.
 // Used as a center point to search around a region.
 let regions = [];
+
+// holds markers as google.maps.Marker objects
+let markers = [];
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -250,4 +253,5 @@ function placeMarker(place) {
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
   });
+  markers.push(marker);
 }
