@@ -15,6 +15,9 @@
 // holds stops and destinations
 let route = [];
 
+// holds user interests as strings
+let interests = [];
+
 // holds destinations 
 let destinations = []; 
  
@@ -160,10 +163,10 @@ function getRouteOnload(){
   .then(response => response.json())
   .then(async (trip) => {
     if(trip != null) {
+      interests = trip.interests;
       try {
         let res = await findPlace(trip.start, placesService);
         start = end = res;
-
       } catch (error) {
         console.error("Could not retrieve a start nor end point due to: ", error);
       }
@@ -266,5 +269,7 @@ function createRecButton(rec){
   return recBtn;
 }
 
-/* exported calcRouteWithRecs, initMap, generateRoute, map, renderRecsList */
-/* global calcMainRoute, configureTripKeyForPath, findPlace, getTripKeyFromUrl, google, placesService, recs */
+/* exported calcRouteWithRecs, initMap, interests,
+    generateRoute, map, renderRecsList */
+/* global calcMainRoute, configureTripKeyForPath, findPlace,
+    getTripKeyFromUrl, google, placesService, recs */

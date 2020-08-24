@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global destinations, directionsRenderer, directionsService, end,
-    google, map, orderWaypoints, renderRecsList, route, start, updateDistanceTime */
+/* global destinations, directionsRenderer, directionsService, end, google,
+    interests, map, orderWaypoints, renderRecsList, route, start, updateDistanceTime */
 /* exported calcMainRoute, recs */
 
 if(document.readyState === 'loading') {
@@ -30,8 +30,6 @@ let placesService;
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
 const MIN_DISTANCE_FOR_STEP_PATH = 4000;
-
-const interests = ["park"];
 
 // Contains google.maps.LatLng objects.
 // Used as a center point to search around a region.
