@@ -38,29 +38,29 @@ function setupLogoutLink(){
 }
 
 /**
- * Go through url to retrieve the trip key.
+ * Go through url to retrieve the trip key. If the trip key is null,
+ * redirects the user to the page where they can make a new trip
+ * and have a valid trip key to reference.
  * @return String of trip key
  */
 function getTripKeyFromUrl() {
-  return new URLSearchParams(location.search).get('tripKey');
+  const tripKey = new URLSearchParams(location.search).get('tripKey');
+  if(tripKey === null) {
+    alert("Invalid Trip. Redirecting to home page.");
+    window.location.href = '/index.html';
+    return undefined;
+  } else {
+    return tripKey;
+  }
 }
 
 /**
  * Uses the trip key passed in to create a modified path from
- * the path parameter. If the trip key is null, redirects the
- * user to the page where they can make a new trip and have
- * a valid trip key to reference.
+ * the path parameter.
  * @param {String} tripKey unique value for a trip
  * @param {String} path to send tripKey across
  * @return String of path with tripKey in query params
  */
 function configureTripKeyForPath(tripKey, path) {
-  if(tripKey === null) {
-    // Send back to page where a trip can be made
-    alert("tripKey not created! Create a new trip.");
-    window.location.href = '/index.html';
-    return "";
-  } else {
-    return path + "?" + new URLSearchParams({tripKey}).toString();
-  }
+  return path + "?" + new URLSearchParams({tripKey}).toString();
 }
