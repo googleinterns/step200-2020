@@ -22,7 +22,7 @@ let route = [];
 // holds destinations 
 let destinations = []; 
  
-// TODO: get from Trip key
+// start and end locations of roadtrip
 let start = "";
 let end = "";
 

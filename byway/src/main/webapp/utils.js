@@ -1,7 +1,5 @@
 /** Script that contains shared functions and variables*/
 
-
-
 /**
  * Uses placeId to retrieve details like coordinates, place name, etc.
  * @param {String} placeId a textual identifier that uniquely identifies a place
