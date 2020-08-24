@@ -39,6 +39,14 @@
   text-transform: uppercase;
 }
 
+#progressbar li a{
+  text-decoration: none;
+  color: black;
+}
+#progressbar li a:hover{
+  color: #3196e2;
+}
+
 #progressbar li:before{
   content:counter(step);
   counter-increment:step;
