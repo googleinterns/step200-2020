@@ -62,6 +62,7 @@ function calcMainRoute() {
     if (status == 'OK') {
       directionsRenderer.setDirections(result);
       findRegions(result);
+      document.getElementById("loading").style.visibility = 'visible';
       loadRecommendations();
       orderWaypoints(result);
       updateDistanceTime(result);
@@ -148,6 +149,7 @@ async function loadRecommendations() {
   }
   if(statuses.size !== 0) alertUser(statuses);
   renderRecsList();
+  document.getElementById("loading").style.visibility = 'hidden';
 }
 
 /**
@@ -156,7 +158,7 @@ async function loadRecommendations() {
  * a chain of promises to store the result directly. If the service
  * returns a non-OK status, reject the promise and alert the user.
  * @param {TextSearchRequest} request object with location, radius and query fields.
- * @param {Array} statuses contains all non-OK statuses
+ * @param {Set} statuses contains all non-OK statuses
  * @return PlaceResult[] results or null if rejected by a status from placesService.
  */
 function findPlacesWithTextSearch(request, statuses) {
@@ -176,7 +178,7 @@ function findPlacesWithTextSearch(request, statuses) {
 
 /**
  * Reveals status codes if there was an issue with a request.
- * @param {Array} statuses String elements with status codes from placesService
+ * @param {Set} statuses String elements with status codes from placesService
  */
 function alertUser(statuses) {
   let msgContainer = document.getElementById("message-container");
