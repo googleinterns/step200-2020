@@ -4,7 +4,7 @@
 let placesService;
 
 // Reloads page if naviated to via back button
-if(!!window.performance && window.performance.navigation.type == 2)
+if(!!window.performance && window.performance.navigation.type == PerformanceNavigation.TYPE_BACK_FORWARD)
 {
     window.location.reload();
 }
