@@ -17,6 +17,8 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
@@ -24,6 +26,7 @@ import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +42,42 @@ public final class PlacesServlet extends HttpServlet {
   /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
 
+  /**
+   * Immutable set of the PlaceType enumerator values containing interests. Labelled as non
+   * interests to filter from other interests contained in the Places API.
+   */
+  private static final ImmutableSet<PlaceType> NON_INTERESTS_FROM_PLACETYPES =
+      Sets.immutableEnumSet(
+          PlaceType.ACCOUNTING,
+          PlaceType.CEMETERY,
+          PlaceType.COURTHOUSE,
+          PlaceType.DENTIST,
+          PlaceType.ELECTRICIAN,
+          PlaceType.ELECTRONICS_STORE,
+          PlaceType.FIRE_STATION,
+          PlaceType.FUNERAL_HOME,
+          PlaceType.HARDWARE_STORE,
+          PlaceType.HOME_GOODS_STORE,
+          PlaceType.INSURANCE_AGENCY,
+          PlaceType.HOSPITAL,
+          PlaceType.LAWYER,
+          PlaceType.LOCKSMITH,
+          PlaceType.MOVING_COMPANY,
+          PlaceType.PAINTER,
+          PlaceType.PHYSIOTHERAPIST,
+          PlaceType.PLUMBER,
+          PlaceType.POLICE,
+          PlaceType.PRIMARY_SCHOOL,
+          PlaceType.REAL_ESTATE_AGENCY,
+          PlaceType.ROOFING_CONTRACTOR,
+          PlaceType.SECONDARY_SCHOOL,
+          PlaceType.STORAGE,
+          PlaceType.TAXI_STAND);
+
+  // Formatted to be space delimited with a capital first letter.
+  private static final ImmutableSet<String> CUSTOM_INTERESTS =
+      ImmutableSet.of("Animals", "Beach", "Lake", "Fashion", "Nature", "Night life");
+
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -51,11 +90,15 @@ public final class PlacesServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> places = new ArrayList<>();
+    ArrayList<String> places = new ArrayList<String>();
     for (PlaceType location : PlaceType.values()) {
-      String place = formatLocation(location);
-      places.add(place);
+      if (!NON_INTERESTS_FROM_PLACETYPES.contains(location)) {
+        String place = formatPlace(location.toString());
+        places.add(place);
+      }
     }
+    places.addAll(CUSTOM_INTERESTS);
+    Collections.sort(places);
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(places));
   }
@@ -63,11 +106,10 @@ public final class PlacesServlet extends HttpServlet {
   /**
    * Format string by capitalizing and adding spaces in-between words.
    *
-   * @param location is a PlaceType that indicates a type of location/interest.
-   * @return is the modified location name.
+   * @param place indicates a type of location/interest.
+   * @return the modified location name.
    */
-  private String formatLocation(PlaceType location) {
-    String place = location.toString();
+  private String formatPlace(String place) {
     place = place.substring(0, 1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
