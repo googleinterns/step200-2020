@@ -3,6 +3,7 @@
 
 let placesService;
 
+// Reloads page if naviated to via back button
 if(!!window.performance && window.performance.navigation.type == 2)
 {
     window.location.reload();
