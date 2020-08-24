@@ -34,8 +34,6 @@ public final class StopsServlet extends HttpServlet {
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-  private String tripKeyString;
-
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private Trip trip;

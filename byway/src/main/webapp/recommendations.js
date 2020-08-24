@@ -16,12 +16,6 @@
     interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
 /* exported calcMainRoute, recs */
 
-if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initServices);
-} else {
-  initServices();
-}
-
 // Holds recommendations as PlaceResult objects
 let recs = [];
 
@@ -35,11 +29,6 @@ const MAX_RECOMMENDATIONS = 1;
 // Contains google.maps.LatLng objects.
 // Used as a center point to search around a region.
 let regions = [];
-
-/* Initializes the webpage with a google PlacesService instance. */
-function initServices() {
-  placesService = new google.maps.places.PlacesService(map);
-}
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
