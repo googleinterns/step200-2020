@@ -18,7 +18,7 @@ else{
 
 function initializeHomePage(){
   setupLogoutLink();
-  createPastTrip();
+  loadPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
     fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
       let tripKey = trip.keyString;
@@ -27,18 +27,13 @@ function initializeHomePage(){
   });
 }
 
-function createPastTrip(){
+function loadPastTrip(){
   fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
     let tripNum = 1;
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
-      if(isDestinationsMissing|| isInterestsMissing) { 
-        showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing);
-      } 
-      else{
-        showCompleteTrip(tripNum, trip)
-      }
+      (isDestinationsMissing|| isInterestsMissing) ? showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing) : showCompleteTrip(tripNum, trip);
       tripNum++;
     });
   })
