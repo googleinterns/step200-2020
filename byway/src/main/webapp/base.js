@@ -16,7 +16,11 @@ function setProgressBar(pageNumber){
   document.getElementById('view-route-progress-bar').href = configureTripKeyForPath(tripKey, '/routepage.html');
 }
 
-function setLogoutLink(){
+/** 
+ * Sets up LogoutLink if user logged in
+ * Sends alert and redirects to login page if user is not logged in
+ */
+function setupLogoutLink(){
     fetch("/api/login").then(response => response.json()).then((loginStatus) =>{
     if (loginStatus.isLoggedIn) {
       let logoutLink = document.createElement("a");
