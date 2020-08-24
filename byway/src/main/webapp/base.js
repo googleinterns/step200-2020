@@ -20,9 +20,9 @@ function setProgressBar(pageNumber){
 function getTripKeyFromUrl() {
   const tripKey = new URLSearchParams(location.search).get('tripKey');
   if(tripKey === null) {
-    alert("tripKey not created! Create a new trip.");
+    alert("Invalid Trip. Redirecting to home page.");
     window.location.href = '/index.html';
-    return "";
+    return undefined;
   } else {
     return tripKey;
   }
