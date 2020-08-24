@@ -132,7 +132,8 @@ h3.box-outline{
 }
  
 .icon{
-  margin-left: 10px;
+  margin-left: 5px;
+  color: orange;
 }
  
 .email-btn{

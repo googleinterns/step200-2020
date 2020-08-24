@@ -82,13 +82,13 @@ public final class Trip {
     return Collections.unmodifiableList(this.interests);
   }
 
-  /** Retrieves the route of the trip with a list of stops and destinations as plain text. */
+  /** Retrieves the route of the trip with a list of stops and destinations as place Ids. */
   public List<String> getRoute() {
     return Collections.unmodifiableList(this.route);
   }
 
   /**
-   * Sets the route of the trip with a list of stops and destinations as plain text.
+   * Sets the route of the trip with a list of stops and destinations as place Ids.
    *
    * @param route list of user-selected stops and destinations
    */
@@ -97,10 +97,7 @@ public final class Trip {
     this.route.addAll(route);
   }
 
-  /**
-   * Retrieves the destinations of the trip as a list with plain text containing the name of the
-   * destinations.
-   */
+  /** Retrieves the destinations of the trip as a list with place Ids of the destinations. */
   public List<String> getDestinations() {
     return Collections.unmodifiableList(this.destinations);
   }
@@ -110,7 +107,7 @@ public final class Trip {
     return this.keyString;
   }
 
-  /* Retrieves the starting point of the trip as plain text. */
+  /* Retrieves the starting point of the trip as place Id. */
   public String getStart() {
     return this.start;
   }
@@ -123,17 +120,17 @@ public final class Trip {
     return KeyFactory.stringToKey(keyString);
   }
 
-  /* Sets the starting point of the trip as plain text. */
+  /* Sets the starting point of the trip as plce Id. */
   public void setStart(String start) {
     this.start = start;
   }
 
-  /* Adds a destination point of the trip as plain text. */
+  /* Adds a destination point of the trip as place Id. */
   public void addDestination(String destination) {
     destinations.add(destination);
   }
 
-  /* Adds a destination point of the trip as plain text. */
+  /* Adds a route point of the trip as place Id. */
   public void addToRoute(String destination) {
     route.add(destination);
   }
