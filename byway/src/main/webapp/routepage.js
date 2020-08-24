@@ -263,5 +263,26 @@ function createRecButton(rec){
   return recBtn;
 }
 
+/**  Creates a URL link to Google Maps based on the start/end point and route
+ *   @returns {String} routeLink url containing query params for the user’s route
+ */
+function generateRouteLink(){
+    let routeLink = "https://www.google.com/maps/dir/?api=1&&travelmode=driving" 
+    routeLink += "&origin=" + start.name.split(' ').join('%20') + "&destination=" + end.name.split(' ').join('%20') +"&waypoints=";
+    for(place of route){
+      routeLink += place.name.split(' ').join('%20') + "|";
+    }
+    
+   return routeLink;
+}
+
+
+function sendEmail(){
+  // fetch('/api/email?tripKey=' + tripKey).then(response => response.json()).then(emailContent =>{ })
+   emailLink = "mailto:" + email + "?subject=Your%20Roadtrip%20Plan&body=Thank%20you%20for%20using%20Byway!%20" +
+   "Your%20destinations%20are%20listed%20below.%20Click%20the%20link%20to%20see%20your%20route%20in%20Google%20Maps.%0D%0A" 
+   + routeLink;
+  window.open('mailto:test@example.com');
+}
 /* exported initMap, generateRoute */
 /* global google */
