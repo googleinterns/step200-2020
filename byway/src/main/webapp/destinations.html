@@ -5,8 +5,9 @@
     <title>Select Destinations</title>
     <link rel="stylesheet" href= "base.css">
     <link rel="stylesheet" href="destinations.css">
-    <script src="destinations.js"></script>
     <script src="base.js"></script>
+    <script src="utils.js"></script>
+    <script src="destinations.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&libraries=places&directions&v=weekly"
@@ -17,15 +18,16 @@
   <body id="destinations-page">
 
     <div class="header">
+      <div id="logout-link"></div>
       <img src="/images/logo.png" alt="logo" class="logo">
       <div id="name">byway.</div>
     </div>
     
     <div id="progressbar-container">
       <ul id="progressbar">
-        <li>Choose Destinations</li>
-        <li>choose interests</li>
-        <li>View route</li>
+        <li><a id="choose-destinations-progress-bar">Choose Destinations</a></li>
+        <li><a id="choose-interests-progress-bar">choose interests</a></li>
+        <li><a id="view-route-progress-bar">View route</a></li>
       </ul>
     </div>
     

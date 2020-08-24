@@ -1,4 +1,5 @@
-/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink */
+
 /** 
 * Sets Progress Bar to correct location based on the page number
 * @param {int} pageNumber
@@ -9,6 +10,31 @@ function setProgressBar(pageNumber){
   for(let i=0; i < pageNumber;i++){
     items[i].className = 'active';
   }
+  let tripKey = getTripKeyFromUrl();
+  document.getElementById('choose-destinations-progress-bar').href = configureTripKeyForPath(tripKey, '/destinations.html');
+  document.getElementById('choose-interests-progress-bar').href = configureTripKeyForPath(tripKey, '/interests.html');
+  document.getElementById('view-route-progress-bar').href = configureTripKeyForPath(tripKey, '/routepage.html');
+}
+
+/** 
+ * Sets up LogoutLink if user logged in
+ * Sends alert and redirects to login page if user is not logged in
+ */
+function setupLogoutLink(){
+    fetch("/api/login").then(response => response.json()).then((loginStatus) =>{
+    if (loginStatus.isLoggedIn) {
+      let logoutLink = document.createElement("a");
+      logoutLink.id = "logout-button";
+      logoutLink.href = loginStatus.url;
+      logoutLink.innerText = "LOGOUT";
+      let container = document.getElementById("logout-link");
+      container.append(logoutLink);
+    }
+    else{
+        alert("User not logged in! Please login.");
+        window.location.href = '/index.html';    
+    }
+  });
 }
 
 /**
