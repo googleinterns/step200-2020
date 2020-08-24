@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* global destinations, directionsRenderer, directionsService, end, google,
-    interests, map, orderWaypoints, renderRecsList, route, start, updateDistanceTime */
+    interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
 /* exported calcMainRoute, recs */
 
 if(document.readyState === 'loading') {
@@ -24,8 +24,6 @@ if(document.readyState === 'loading') {
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
-
-let placesService;
 
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
