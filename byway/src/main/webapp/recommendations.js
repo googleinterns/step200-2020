@@ -31,6 +31,9 @@ let placesService;
 const RADIUS_TO_SEARCH_AROUND = 1000;
 const MIN_DISTANCE_FOR_STEP_PATH = 4000;
 
+// Max recommendations per interest
+const MAX_RECOMMENDATIONS = 1;
+
 // Contains google.maps.LatLng objects.
 // Used as a center point to search around a region.
 let regions = [];
@@ -41,9 +44,9 @@ function initServices() {
 }
 
 /**
- * Creates a route between two points and loads onto the map.
- * Finds points along the path to load the regions Array.
- * Loads recommendations centered around these points.
+ * Creates round-trip route with waypoints that loads onto the map.
+ * Partitions the route into regions, used to load recommendations
+ * around. Orders the waypoints for efficiency and updates trip logistics.
  */
 function calcMainRoute() {
   resetUserAlerts();
@@ -93,10 +96,10 @@ function findRegions(directionResult) {
   const myRoute = directionResult.routes[0];
   for(let leg of myRoute.legs) {
     for(let step of leg.steps) {
-      const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
-      const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
-      const avgLoc = {lat: avgLat, lng: avgLng};
       if(step.distance.value > MIN_DISTANCE_FOR_STEP_PATH) {
+        const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
+        const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
+        const avgLoc = {lat: avgLat, lng: avgLng};
         regions.push(avgLoc);
       }
     }
@@ -106,18 +109,19 @@ function findRegions(directionResult) {
 /**
  * Set a timeout to delay the browser.
  * @param {Number} delayMs number of milliseconds
- * @return empty promise after delayMs milliseconds passed
+ * @return fulfilled promise after delayMs milliseconds passed
  */
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
 }
 
 /**
- * Go through a user's interests and search for places
- * fitting those interests. Search around the regions
- * previously found using textSearch. Prioritize finding
- * past results loaded through sessionStorage to avoid calling
- * textSearch repeatedly from the PlacesService.
+ * Go through a trip's interests and regions to find relevant places
+ * using textSearch from PlacesService. Prioritize finding past results
+ * loaded through sessionStorage to avoid making multiple calls to
+ * textSearch. Additionally, set an intermediate timeout between calls
+ * to findPlacesWithTextSearch with delayPromise to avoid hitting a query limit.
+ * Alert the user of any non-OK status codes from PlacesService.
  */
 async function loadRecommendations() {
   let statuses = [];
@@ -147,11 +151,12 @@ async function loadRecommendations() {
 }
 
 /**
- * Use the textSearch function from PlacesService to find the results
- * fitting the request object passed in. Convert callback function into
- * a chain of promises to return the result directly. If the service
- * returns a status other than OK, reject the promise and alert the user.
+ * Use the textSearch function from PlacesService to find results
+ * fitting the request. Convert callback function into
+ * a chain of promises to store the result directly. If the service
+ * returns a non-OK status, reject the promise and alert the user.
  * @param {TextSearchRequest} request object with location, radius and query fields.
+ * @param {Array} statuses contains all non-OK statuses
  * @return PlaceResult[] results or null if rejected by a status from placesService.
  */
 function findPlacesWithTextSearch(request, statuses) {
@@ -198,13 +203,11 @@ function formatStatusMessages(statuses) {
 /**
  * Places markers on the locations found from textSearch.
  * Temporarily limit the amount of suggestions. Keep track of
- * places found from interests around a location with savePlacesFromInterests function.
- * TODO: Store more results and limit on UI with option to "show more"
+ * places found from interests around a location with sessionStorage.
  * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} placesFound places found with PlaceResult type.
  */
 function addRecommendations(request, placesFound) {
-  const MAX_RECOMMENDATIONS = 1;
   let placesLoaded = [];
   for(let place of placesFound) {
     placeMarker(place);
