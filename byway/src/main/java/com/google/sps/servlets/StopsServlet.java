@@ -16,8 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,8 +45,9 @@ public final class StopsServlet extends HttpServlet {
     keyAsString = (String) request.getParameter("tripKey");
     trip = Trip.getTrip(datastore, keyAsString);
 
-    if(trip == null) {
-      logger.atInfo().log("Could not retrieve trip with key %s while trying to get the stops", keyAsString);
+    if (trip == null) {
+      logger.atInfo().log(
+          "Could not retrieve trip with key %s while trying to get the stops", keyAsString);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
@@ -63,8 +62,9 @@ public final class StopsServlet extends HttpServlet {
     keyAsString = (String) request.getParameter("tripKey");
     trip = Trip.getTrip(datastore, keyAsString);
 
-    if(trip == null) {
-      logger.atInfo().log("Could not retrieve trip with key %s while trying to update the stops", keyAsString);
+    if (trip == null) {
+      logger.atInfo().log(
+          "Could not retrieve trip with key %s while trying to update the stops", keyAsString);
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
