@@ -37,6 +37,8 @@ let map;
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
+  setProgressBar(3);
+  setupLogoutLink();
   loadData();
 }
  

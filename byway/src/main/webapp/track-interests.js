@@ -31,13 +31,14 @@ if(document.readyState === 'loading') {
 function loadContent() {
   configureTripKey();
   loadButtonsWithInterests();
+  setupLogoutLink();
 }
 
 /* Gets the trip key from the url and sets it for the next page. */
 function configureTripKey() {
   let nextPage = document.getElementById("next-button");
   tripKey = getTripKeyFromUrl();
-  nextPage.href = configureTripKeyForPath(tripKey, "/generator.html");
+  nextPage.href = configureTripKeyForPath(tripKey, "/routepage.html");
 }
 
 /** 
