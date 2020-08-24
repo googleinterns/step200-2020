@@ -124,7 +124,7 @@ function delayPromise(delayMs) {
  * Alert the user of any non-OK status codes from PlacesService.
  */
 async function loadRecommendations() {
-  let statuses = [];
+  let statuses = new Set();
   for(let interest of interests) {
     for(let region of regions) {
       const request = {
@@ -146,7 +146,7 @@ async function loadRecommendations() {
       }
     }
   }
-  if(statuses.length !== 0) alertUser(statuses);
+  if(statuses.size !== 0) alertUser(statuses);
   renderRecsList();
 }
 
@@ -187,17 +187,28 @@ function alertUser(statuses) {
 
 /**
  * Go through status messages and add punctuation to make a sentence.
- * @param {Array} statuses String elements with status codes from placesService
+ * @param {Set} statuses contains elements with status codes from placesService
  * @return String with punctuation as it lists all status codes.
  */
 function formatStatusMessages(statuses) {
-  if(statuses.length < 1) return "";
-  let statusMsg = "";
-  for(let i = 0; i < statuses.length - 1; i++) {
-    statusMsg += statuses[i] + ", ";
+  if (statuses.size < 1) return "";
+  if (statuses.size == 1) {
+    for (let singleStatus of statuses) {
+      return singleStatus + ".";
+    }
+  } else {
+    let statusMsg = "";
+    let i = 0;
+    for (let status of statuses) {
+      if (i == statuses.size - 1) {
+        statusMsg += status + "."
+      } else {
+        statusMsg += status + ", ";
+        i++;
+      }
+    }
+    return statusMsg;
   }
-  statusMsg += statuses[statuses.length - 1] + ".";
-  return statusMsg;
 }
 
 /**
