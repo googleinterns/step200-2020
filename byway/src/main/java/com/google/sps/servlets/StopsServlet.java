@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.flogger.FluentLogger;
@@ -45,12 +44,9 @@ public final class StopsServlet extends HttpServlet {
   /* Passes saved route to be shown in the schedule panel */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Trip trip;
-    try {
-      trip = Trip.fromEntity(datastore.get(key));
-    } catch (EntityNotFoundException e) {
-      logger.atInfo().withCause(e).log(
-          "Could not retrieve Entity for Trip with key %s while trying to get the stops", key);
+    String tripKeyString = request.getParameter("tripKey");
+    Trip trip = Trip.getTrip(datastore, tripKeyString);
+    if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
@@ -63,13 +59,9 @@ public final class StopsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    Trip trip;
-    try {
-      trip = Trip.fromEntity(datastore.get(key));
-
-    } catch (EntityNotFoundException e) {
-      logger.atInfo().withCause(e).log(
-          "Could not retrieve Entity for Trip with key %s while trying to update the stops", key);
+    String tripKeyString = request.getParameter("tripKey");
+    Trip trip = Trip.getTrip(datastore, tripKeyString);
+    if (trip == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       return;
     }

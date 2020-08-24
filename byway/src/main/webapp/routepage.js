@@ -24,9 +24,10 @@ let directionsService;
 // object that renders display results on the map
 let directionsRenderer;
  
-// TODO: get from Trip key
-let start = "";
-let end = "";
+let tripKey;
+
+let start;
+let end;
  
 let map; 
 
@@ -38,6 +39,7 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
  
 /** Used to restore route and recommendations upon load or refresh */
 function loadData(){
+  tripKey = getTripKeyFromUrl();
   getRouteOnload();
 }
  
@@ -154,7 +156,7 @@ function clearRoute(){
 /** Get trip info from datastore onload */
 function getRouteOnload(){
   clearRoute();
-  fetch('/api/stop')
+  fetch(configureTripKeyforPath(tripKey, '/api/stop'))
   .then(response => response.json())
   .then((trip) => {
     if(trip != null){
@@ -206,7 +208,7 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch('/api/stop', {method: "POST", body: JSON.stringify(Array.from(route))});
+  fetch(configureTripKeyforPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(Array.from(route))});
 }
 
 /** Clear the recommendations panel in the html */
@@ -245,4 +247,4 @@ function createRecButton(rec){
 }
 
 /* exported calcRouteWithRecs, initMap, generateRoute, map, renderRecsList */
-/* global calcMainRoute, google, recs */
+/* global calcMainRoute, configureTripKeyForPath, getTripKeyFromUrl, google, recs */
