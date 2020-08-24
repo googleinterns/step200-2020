@@ -32,7 +32,7 @@ function createPastTrip(){
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
-      if(isDestinationsMissing|| isInterestsMissing) { //TODO: check if interests or route is empty too
+      if(isDestinationsMissing|| isInterestsMissing) { 
         showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing);
       } 
       else{

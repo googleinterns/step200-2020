@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* exported initAutocomplete, getCurrentAddress */
-/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, findPlace, map:true */
+/* global google, setProgressBar, getTripKeyFromUrl, configureTripKeyForPath, setLogoutLink, findPlace */
 
 
 
@@ -35,6 +35,7 @@ function initializeDestinationsPage(){
 }
 
 const tripKey = getTripKeyFromUrl();
+let map;
 let placesService;
 
 /**
@@ -140,7 +141,7 @@ function updateLocations(locationData){
     container.innerText = "";
     let destinationArray = locationData.destinations;
     destinationArray.forEach((destination) => {
-      findPlace(destination).then((placeDetails) =>{
+      findPlace(destination, placesService).then((placeDetails) =>{
         addLocationToDom(placeDetails, container);
       }); 
     });
@@ -182,7 +183,7 @@ function updateStartDestination(locationData){
       document.getElementById('start-search-box').value = "";
     }
     else{
-      findPlace(locationData.start).then((placeDetails) =>{
+      findPlace(locationData.start, placesService).then((placeDetails) =>{
         document.getElementById('start-search-box').value = placeDetails.formatted_address;
       });
     }
