@@ -37,7 +37,7 @@ function loadContent() {
 function configureTripKey() {
   let nextPage = document.getElementById("next-button");
   tripKey = getTripKeyFromUrl();
-  nextPage.href = configureTripKeyForPath(tripKey, "/generator.html");
+  nextPage.href = configureTripKeyForPath(tripKey, "/routepage.html");
 }
 
 /** 
