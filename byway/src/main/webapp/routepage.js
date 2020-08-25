@@ -233,7 +233,7 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch('/api/stop', {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
+  fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
 
 /** Clear the recommendations panel in the html */

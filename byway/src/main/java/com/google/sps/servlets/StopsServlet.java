@@ -36,14 +36,12 @@ public final class StopsServlet extends HttpServlet {
 
   private final Gson gson = new Gson();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private Trip trip;
-  private String keyAsString;
 
   /* Passes saved trip object to show route in the schedule panel, start/end in request */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    keyAsString = (String) request.getParameter("tripKey");
-    trip = Trip.getTrip(datastore, keyAsString);
+    String keyAsString = request.getParameter("tripKey");
+    Trip trip = Trip.getTrip(datastore, keyAsString);
 
     if (trip == null) {
       logger.atInfo().log(
@@ -58,8 +56,9 @@ public final class StopsServlet extends HttpServlet {
   /* Modifies the route array of Trip object */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String keyAsString = request.getParameter("tripKey");
     ArrayList<String> stops = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    trip = Trip.getTrip(datastore, keyAsString);
+    Trip trip = Trip.getTrip(datastore, keyAsString);
 
     if (trip == null) {
       logger.atInfo().log(
