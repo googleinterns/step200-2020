@@ -51,6 +51,8 @@ function loadData(){
   tripKey = getTripKeyFromUrl();
   getRecsOnload();
   getRouteOnload();
+  setProgressBar(3);
+  setupLogoutLink();
 }
  
 /** Initializes map on the page */
@@ -293,4 +295,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, placesService, map */
-/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
+/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath, setProgressBar, setupLogoutLink */
