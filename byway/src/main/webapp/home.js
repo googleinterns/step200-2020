@@ -130,7 +130,7 @@ function initMap(start, end, route, keyString) {
 
 
 /**
- * Creates a div containing a map and title for complete trip
+ * Calculates route  with given start, end and waypoints
  * @param {DirectionsService} directionsService
  * @param {DirectionsRenderer} directionsRenderer
  * @param {String} start placeId as string
