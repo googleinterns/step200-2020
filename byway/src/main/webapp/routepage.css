@@ -130,7 +130,12 @@ h3.box-outline{
   margin-left: 30px;
   font-family: 'Noto Sans JP', sans-serif;
 }
- 
+
+#message-container {
+  text-align: center;
+  visibility: hidden;
+}
+
 .icon{
   margin-left: 10px;
 }

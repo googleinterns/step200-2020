@@ -102,12 +102,6 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 /* Resets the alerts found in a previous attempt to load recommendations. */
 function resetUserAlerts() {
   document.getElementById("message-container").style.visibility = 'hidden';
-  document.getElementById("general-message").style.visibility = 'hidden';
-  let statusesContainer = document.getElementById("statuses");
-  while(statusesContainer.hasChildNodes()) {
-    statusesContainer.removeChild(statusesContainer.firstChild);
-  }
-  statusesContainer.style.visibility = 'hidden';
 }
 
 /**
@@ -170,7 +164,7 @@ async function loadRecommendations() {
       }
     }
   }
-  alertUser(statuses);
+  if(statuses.size !== 0) alertUser(statuses);
 }
 
 /**
@@ -198,19 +192,35 @@ function findPlacesWithTextSearch(request, statuses) {
 
 /**
  * Reveals status codes if there was an issue with a request.
- * TODO: Make a class to indicate as a "warning" and make text red.
- * Also, organize on front end.
  * @param {Set} statuses String elements with status codes from placesService
  */
 function alertUser(statuses) {
-  document.getElementById("message-container").style.visibility = 'visible';
-  document.getElementById("general-message").style.visibility = 'visible';
-  let statusesContainer = document.getElementById("statuses");
-  statusesContainer.style.visibility = 'visible';
-  for(let status of statuses) {
-    let statusElement = document.createElement('ul');
-    statusElement.innerText = status;
-    statusesContainer.appendChild(statusElement);
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'visible';
+  const allStatuses = formatStatusMessages(statuses);
+  msgContainer.innerText = "Showing limited results due to: " + allStatuses;
+}
+
+/**
+ * Go through status messages and add punctuation to make a sentence.
+ * @param {Set} statuses contains elements with status codes from placesService
+ * @return String with punctuation as it lists all status codes.
+ */
+function formatStatusMessages(statuses) {
+  if (statuses.size < 1) {
+      return "";
+  } else {
+    let statusMsg = "";
+    let i = 0;
+    for (let status of statuses) {
+      if (i == statuses.size - 1) {
+        statusMsg += status + "."
+      } else {
+        statusMsg += status + ", ";
+        i++;
+      }
+    }
+    return statusMsg;
   }
 }
 
