@@ -293,19 +293,22 @@ function createRecButton(rec){
 }
 
 
-/**  Creates a URL link to Google Maps based on the start/end point and route
- *   @returns {String} routeLink url containing query params for the user’s route
+/** Creates a URL link to Google Maps based on the start/end point and route
+ *  @returns {String} routeLink url containing query params for the user’s route
  */
 function generateRouteLink(){
     let routeLink = "https://www.google.com/maps/dir/?api=1&travelmode=driving" 
-    routeLink += "&origin=" + start.name.split(' ').join('%20') + "&destination=" + end.name.split(' ').join('%20') +"&waypoints=";
+    routeLink += "&origin=" + start.name.split(' ').join('%20') + "&destination=" + 
+      end.name.split(' ').join('%20') + "&waypoints=";
     for(let place of route){
       routeLink += place.name.split(' ').join('%20') + "|";
     }
    return routeLink;
 }
 
-
+/** Opens a new window of an email client with prefilled to, subject, and body field 
+ *  containing a Google Maps link of the user's route 
+ */
 function sendEmail(){
   fetch('/api/email')
   .then(response => response.json())
