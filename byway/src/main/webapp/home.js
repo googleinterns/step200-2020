@@ -52,7 +52,7 @@ function loadPastTrip(){
  * Creates div indicating which inputs are missing for specific trip
  * @param {Number} tripNum
  * @param {Trip} trip
- * @param {boolea} isDestinationsMissing
+ * @param {boolean} isDestinationsMissing
  * @param {boolean} isInterestsMissing
  */
 function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
