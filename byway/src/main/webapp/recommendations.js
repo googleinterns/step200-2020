@@ -26,8 +26,7 @@ const MIN_DISTANCE_FOR_STEP_PATH = 4000;
 // Max recommendations per interest
 const MAX_RECOMMENDATIONS = 1;
 
-// Contains google.maps.LatLng objects.
-// Used as a center point to search around a region.
+// Holds regions google.maps.LatLng objects
 let regions = [];
 
 // holds markers as google.maps.Marker objects
@@ -70,18 +69,16 @@ function addMainStopsToRegions() {
   }
 }
 
-/* Resets the alerts found in a previous attempt to load recommendations. */
+/* Resets the alerts found in a previous attempt to load recommendations and reveals loading bar. */
 function resetUserAlerts() {
-  let msgContainer = document.getElementById("message-container");
-  msgContainer.style.visibility = 'hidden';
+  document.getElementById("message-container").style.visibility = 'hidden';
+  document.getElementById("loading").style.visibility = 'visible';
 }
 
 /**
  * Goes through steps of every leg along route to find the average location
- * between a step's start and end location. Store these points
- * in the regions Array.
- * @param {DirectionsResult} directionResult contains directions
- * for the route made.
+ * between a step's start and end location. Store LatLng coords in the regions Array.
+ * @param {DirectionsResult} directionResult contains directions for the trip
  */
 function findRegions(directionResult) {
   const myRoute = directionResult.routes[0];
@@ -109,8 +106,7 @@ function delayPromise(delayMs) {
 /**
  * Go through a trip's interests and regions to find relevant places
  * using textSearch from PlacesService. Prioritize finding past results
- * loaded through sessionStorage to avoid making multiple calls to
- * textSearch. Additionally, set an intermediate timeout between calls
+ * loaded through sessionStorage and set an intermediate timeout between calls
  * to findPlacesWithTextSearch with delayPromise to avoid hitting a query limit.
  * Alert the user of any non-OK status codes from PlacesService.
  */
@@ -127,8 +123,6 @@ async function loadRecommendations() {
       if(recommendationsSaved !== null) {
         addRecommendations(request, JSON.parse(recommendationsSaved));
       } else{
-        // Set an intermediate timeout between calls to findPlacesWithTextSearch
-        // to prevent hitting the query limit from the google maps API
         await delayPromise(250);
         const placesFound = await findPlacesWithTextSearch(request, statuses);
         if(placesFound !== null) {
@@ -144,12 +138,11 @@ async function loadRecommendations() {
 
 /**
  * Use the textSearch function from PlacesService to find results
- * fitting the request. Convert callback function into
- * a chain of promises to store the result directly. If the service
- * returns a non-OK status, reject the promise and alert the user.
+ * fitting the request. Store the result through a chain of promises.
+ * If the service returns a non-OK status, reject the promise and alert the user.
  * @param {TextSearchRequest} request object with location, radius and query fields.
  * @param {Set} statuses contains all non-OK statuses
- * @return PlaceResult[] results or null if rejected by a status from placesService.
+ * @return {PlaceResult[]} results or null if rejected by a status from placesService.
  */
 function findPlacesWithTextSearch(request, statuses) {
   return new Promise((resolve, reject) => {
@@ -183,8 +176,9 @@ function alertUser(statuses) {
  * @return String with punctuation as it lists all status codes.
  */
 function formatStatusMessages(statuses) {
-  if (statuses.size < 1) return "";
-  if (statuses.size == 1) {
+  if (statuses.size < 1) {
+      return "";
+  } else if (statuses.size == 1) {
     for (let singleStatus of statuses) {
       return singleStatus + ".";
     }
@@ -205,8 +199,7 @@ function formatStatusMessages(statuses) {
 
 /**
  * Places markers on the locations found from textSearch.
- * Temporarily limit the amount of suggestions. Keep track of
- * places found from interests around a location with sessionStorage.
+ * Save places found from interests around a location in sessionStorage.
  * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} placesFound places found with PlaceResult type.
  */
