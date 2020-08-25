@@ -51,6 +51,8 @@ function loadData(){
   tripKey = getTripKeyFromUrl();
   getRecsOnload();
   getRouteOnload();
+  setProgressBar(3);
+  setupLogoutLink();
 }
  
 /** Initializes map on the page */
@@ -102,6 +104,7 @@ function generateRoute() {
     routeList.appendChild(createRouteButton(waypoint));
   });
   routeList.appendChild(createRouteButton(end));
+  clearMarkers();
 }
 
 /**
@@ -293,4 +296,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, placesService, map */
-/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
+/* global clearMarkers, google, findPlace, getTripKeyFromUrl, configureTripKeyForPath, setProgressBar, setupLogoutLink */
