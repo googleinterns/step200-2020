@@ -24,7 +24,9 @@ function initializeHomePage(){
   setupLogoutLink();
   loadPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
-    fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
+    fetch('/api/createtrip', {method: 'POST'})
+    .then((response) => response.json())
+    .then((trip) =>{
       let tripKey = trip.keyString;
       window.location.href = configureTripKeyForPath(tripKey, "/destinations.html");
     });
@@ -35,7 +37,9 @@ function initializeHomePage(){
  * For each of user's past trips, creates a div with either a complete trip or a trip missing some inputs
  */
 function loadPastTrip(){
-  fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
+  fetch('/api/gettrips')
+  .then((response) => response.json())
+  .then((tripIds) => {
     let tripNum = 1;
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
@@ -150,7 +154,8 @@ function calcRoute(directionsService, directionsRenderer, start, end, waypoints)
       directionsRenderer.setDirections(response);
     } 
     else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
-      delayPromise(1000).then(() => calcRoute(directionsService,directionsRenderer,start,end,waypoints));
+      delayPromise(1000)
+      .then(() => calcRoute(directionsService,directionsRenderer,start,end,waypoints));
     }
     else {
       window.alert("Could not calculate route due to: " + status);
