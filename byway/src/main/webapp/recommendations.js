@@ -13,6 +13,7 @@
 // limitations under the License.
 
 /* global google */
+/* exported clearMarkers */
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initServices);
