@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar*/
+/* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink*/
 
 let interestsChosen = new Set();
 let tripKey;

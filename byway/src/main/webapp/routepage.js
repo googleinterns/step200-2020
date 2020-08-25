@@ -295,4 +295,4 @@ function createRecButton(rec){
 }
 
 /* exported initMap, generateRoute, placesService, map */
-/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath */
+/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath, setProgressBar, setupLogoutLink */
