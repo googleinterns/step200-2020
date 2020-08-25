@@ -49,6 +49,8 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 function loadData(){
   tripKey = getTripKeyFromUrl();
   getRouteOnload();
+  setProgressBar(3);
+  setupLogoutLink();
 }
  
 /** Initializes map on the page */
@@ -272,6 +274,6 @@ function createRecButton(rec){
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, renderRecsList */
-/* global calcMainRoute, configureTripKeyForPath,
-    findPlace, getTripKeyFromUrl, google, recs */
+    generateRoute, map, placesService, renderRecsList */
+/* global calcMainRoute, configureTripKeyForPath, findPlace,
+    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
