@@ -90,6 +90,7 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
   };
   directionsService.route(request, function(result, status) {
     if (status == 'OK') {
+      document.getElementById("loading").style.visibility = 'visible';
       directionsRenderer.setDirections(result);
       findRegions(result);
       loadRecommendations();
@@ -102,6 +103,7 @@ function calcRoute(directionsService, directionsRenderer, start, end) {
 /* Resets the alerts found in a previous attempt to load recommendations. */
 function resetUserAlerts() {
   document.getElementById("message-container").style.visibility = 'hidden';
+  document.getElementById("loading").style.visibility = 'visible';
 }
 
 /**
@@ -165,6 +167,7 @@ async function loadRecommendations() {
     }
   }
   if(statuses.size !== 0) alertUser(statuses);
+  document.getElementById("loading").style.visibility = 'hidden';
 }
 
 /**

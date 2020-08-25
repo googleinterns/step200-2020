@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="base.js"></script>
+    <script src="recommendations.js"></script>
     <script src="routepage.js"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places,geometry"
@@ -19,6 +20,10 @@
   </head>
   <body>
     <div id = "message-container" class = "alert alert-warning"></div>
+    <div id = "loading" class = "loading d-flex justify-content-center">
+      <div class = "spinner-border mr-4" role="status"></div>
+      <p class = "ml-5">Loading...</p>
+    </div>
     <div class = "route-container">
       <div class = "map-style">
         <div id= "map"></div>
