@@ -306,19 +306,30 @@ function generateRouteLink(){
    return routeLink;
 }
 
+/** Determines if email address is valid using regex patterns
+ *  @params {String} email email address 
+ *  @returns {boolean} is the email a valid email address
+ */
+function validateEmail(email) {
+    // TO DO: figure out way to break line to under 100 chars
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 /** Opens a new window of an email client with prefilled to, subject, and body field 
  *  containing a Google Maps link of the user's route 
  */
 function sendEmail(){
-  fetch('/api/email')
-  .then(response => response.json())
-  .then(email =>{ 
-    let emailLink = "mailto:" + email + "?subject=Your%20Roadtrip%20Plan&body=Thank%20you%20for%20using%20Byway!%20" +
-      "Your%20route%20is%20listed%20below.%20Click%20the%20link%20to%20see%20your%20roadtrip%20map%20in%20Google%20Maps.%0D%0A" 
-      + encodeURIComponent(generateRouteLink());
+  let emailAddress = document.getElementById("email-address").value;
+  let emailLink = "mailto:" + emailAddress + "?subject=Your%20Roadtrip%20Plan&body=Thank%20you%20for%20using%20Byway!%20" +
+    "Your%20route%20is%20listed%20below.%20Click%20the%20link%20to%20see%20your%20roadtrip%20map%20in%20Google%20Maps.%0D%0A" 
+    + encodeURIComponent(generateRouteLink());
+    
+  if(validateEmail(emailAddress)){
     window.open(emailLink);
-  })
-
+  } else{ // TO DO: Use alerts to notify user
+    console.log("Please enter a valid email address.");
+  }
 }
 
 /* exported initMap, generateRoute, placesService, map, sendEmail */
