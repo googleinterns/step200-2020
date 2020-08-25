@@ -150,7 +150,7 @@ function calcRoute(directionsService, directionsRenderer, start, end, waypoints)
       directionsRenderer.setDirections(response);
     } 
     else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
-      delayPromise(1000).then (() => calcRoute(directionsService,directionsRenderer,start,end,waypoints));
+      delayPromise(1000).then(() => calcRoute(directionsService,directionsRenderer,start,end,waypoints));
     }
     else {
       window.alert("Could not calculate route due to: " + status);
