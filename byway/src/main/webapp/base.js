@@ -1,4 +1,4 @@
-/** Script that contains functions shared and used across all pages*/
+/** Script that contains functions shared and used across all pages */
 
 /* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace */
 
@@ -92,4 +92,3 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
-/* exported findPlace */
