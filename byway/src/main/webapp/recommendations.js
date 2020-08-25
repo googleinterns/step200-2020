@@ -48,7 +48,6 @@ function calcMainRoute() {
     if (status == 'OK') {
       directionsRenderer.setDirections(result);
       findRegions(result);
-      document.getElementById("loading").style.visibility = 'visible';
       loadRecommendations();
       orderWaypoints(result);
       updateDistanceTime(result);
