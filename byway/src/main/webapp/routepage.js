@@ -89,7 +89,6 @@ function calcRouteWithRecs() {
 }
 
 /** Add the start/end location back to the schedule panel
- *  TODO: Delete markers for recommended stops not selected.
  *  TODO: Disable usage after? Don't want to keep adding to list. 
  */
 function generateRoute() {
@@ -101,14 +100,6 @@ function generateRoute() {
   }
   routeList.appendChild(createRouteButton(end));
   clearMarkers();
-}
-
-/* Iterate through all markers and set their maps to null. Make Markers array empty. */
-function clearMarkers() {
-  for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-  }
-  markers = [];
 }
 
 /**
@@ -283,5 +274,5 @@ function createRecButton(rec){
 
 /* exported calcRouteWithRecs, initMap, interests,
     generateRoute, map, markers, renderRecsList */
-/* global calcMainRoute, configureTripKeyForPath, findPlace,
-    getTripKeyFromUrl, google, recs */
+/* global calcMainRoute, clearMarkers, configureTripKeyForPath,
+    findPlace, getTripKeyFromUrl, google, markers, recs */

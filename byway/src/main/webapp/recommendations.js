@@ -14,7 +14,7 @@
 
 /* global destinations, directionsRenderer, directionsService, end, google,
     interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
-/* exported calcMainRoute, markers, recs */
+/* exported calcMainRoute, clearMarkers, markers, recs */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -178,10 +178,6 @@ function alertUser(statuses) {
 function formatStatusMessages(statuses) {
   if (statuses.size < 1) {
       return "";
-  } else if (statuses.size == 1) {
-    for (let singleStatus of statuses) {
-      return singleStatus + ".";
-    }
   } else {
     let statusMsg = "";
     let i = 0;
@@ -247,4 +243,12 @@ function placeMarker(place) {
     infoWindow.open(map, marker);
   });
   markers.push(marker);
+}
+
+/* Iterate through all markers and set their maps to null. Make Markers array empty. */
+function clearMarkers() {
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  markers = [];
 }
