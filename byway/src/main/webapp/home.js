@@ -3,8 +3,6 @@
 
 let placesService;
 
-// used in calcRoute to increment the delay if OVER_QUERY_LIMIT occurs
-let delay = 0;
 
 // Reloads page if naviated to via back button
 if(!!window.performance && window.performance.navigation.type == PerformanceNavigation.TYPE_BACK_FORWARD)
