@@ -3,6 +3,9 @@
 
 let placesService;
 
+// used in calcRoute to increment the delay if OVER_QUERY_LIMIT occurs
+let delay = 0;
+
 // Reloads page if naviated to via back button
 if(!!window.performance && window.performance.navigation.type == PerformanceNavigation.TYPE_BACK_FORWARD)
 {
@@ -16,6 +19,9 @@ else{
   initializeHomePage();
 }
 
+/**
+ * Initiliazes users past trips and sets up logout link
+ */
 function initializeHomePage(){
   setupLogoutLink();
   loadPastTrip();
@@ -27,6 +33,9 @@ function initializeHomePage(){
   });
 }
 
+/**
+ * For each of user's past trips, creates a div with either a complete trip or a trip missing some inputs
+ */
 function loadPastTrip(){
   fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
     let tripNum = 1;
@@ -39,6 +48,13 @@ function loadPastTrip(){
   })
 }
 
+/**
+ * Creates div indicating which inputs are missing for specific trip
+ * @param {Number} tripNum
+ * @param {Trip} trip
+ * @param {boolea} isDestinationsMissing
+ * @param {boolean} isInterestsMissing
+ */
 function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
@@ -63,6 +79,11 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
   container.append(pastTrip);
 }
 
+/**
+ * Creates a div containing a map and title for complete trip
+ * @param {Number} tripNum 
+ * @param {Trip} trip
+ */
 function showCompleteTrip(tripNum, trip){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
@@ -79,6 +100,13 @@ function showCompleteTrip(tripNum, trip){
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
+/**
+ * Initializes a map 
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {ArrayList<String>} route arraylist of placeIds as strings
+ * @param {String} keyString key of trip as string
+ */
 function initMap(start, end, route, keyString) {
   const directionsService = new google.maps.DirectionsService();
   const directionsRenderer = new google.maps.DirectionsRenderer();
@@ -99,6 +127,16 @@ function initMap(start, end, route, keyString) {
   calcRoute(directionsService, directionsRenderer, start, end, waypoints);
 }
 
+
+
+/**
+ * Creates a div containing a map and title for complete trip
+ * @param {DirectionsService} directionsService
+ * @param {DirectionsRenderer} directionsRenderer
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {Array} [waypoints] array of waypoint objects
+ */
 function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
   let request = {
     origin:  {placeId : start},
@@ -110,7 +148,14 @@ function calcRoute(directionsService, directionsRenderer, start, end, waypoints)
   directionsService.route(request, function(response, status) {
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
-    } else {
+    } 
+    else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+      delay++;
+      setTimeout(function () {
+        calcRoute(directionsService,directionsRenderer, start, end, waypoints);
+      }, delay * 1000);
+    }
+    else {
       window.alert("Could not calculate route due to: " + status);
     }
   });
