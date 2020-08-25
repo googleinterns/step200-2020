@@ -99,7 +99,6 @@ function generateRoute() {
     routeList.appendChild(createRouteButton(waypoint));
   }
   routeList.appendChild(createRouteButton(end));
-  clearMarkers();
 }
 
 /**
@@ -273,6 +272,6 @@ function createRecButton(rec){
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, markers, renderRecsList */
-/* global calcMainRoute, clearMarkers, configureTripKeyForPath,
-    findPlace, getTripKeyFromUrl, google, markers, recs */
+    generateRoute, map, renderRecsList */
+/* global calcMainRoute, configureTripKeyForPath,
+    findPlace, getTripKeyFromUrl, google, recs */

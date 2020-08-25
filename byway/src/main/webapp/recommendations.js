@@ -14,7 +14,7 @@
 
 /* global destinations, directionsRenderer, directionsService, end, google,
     interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
-/* exported calcMainRoute, clearMarkers, markers, recs */
+/* exported calcMainRoute, recs */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -28,9 +28,6 @@ const MAX_RECOMMENDATIONS = 1;
 
 // Holds regions google.maps.LatLng objects
 let regions = [];
-
-// holds markers as google.maps.Marker objects
-let markers = [];
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -72,7 +69,12 @@ function addMainStopsToRegions() {
 /* Resets the alerts found in a previous attempt to load recommendations and reveals loading bar. */
 function resetUserAlerts() {
   document.getElementById("message-container").style.visibility = 'hidden';
-  document.getElementById("loading").style.visibility = 'visible';
+  document.getElementById("general-message").style.visibility = 'hidden';
+  let statusesContainer = document.getElementById("statuses");
+  while(statusesContainer.hasChildNodes()) {
+    statusesContainer.removeChild(statusesContainer.firstChild);
+  }
+  statusesContainer.style.visibility = 'hidden';
 }
 
 /**
@@ -97,7 +99,7 @@ function findRegions(directionResult) {
 /**
  * Set a timeout to delay the browser.
  * @param {Number} delayMs number of milliseconds
- * @return fulfilled promise after delayMs milliseconds passed
+ * @return empty promise after delayMs milliseconds passed
  */
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
@@ -133,7 +135,6 @@ async function loadRecommendations() {
   }
   if(statuses.size !== 0) alertUser(statuses);
   renderRecsList();
-  document.getElementById("loading").style.visibility = 'hidden';
 }
 
 /**
@@ -164,32 +165,14 @@ function findPlacesWithTextSearch(request, statuses) {
  * @param {Set} statuses String elements with status codes from placesService
  */
 function alertUser(statuses) {
-  let msgContainer = document.getElementById("message-container");
-  msgContainer.style.visibility = 'visible';
-  const allStatuses = formatStatusMessages(statuses);
-  msgContainer.innerText = "Showing limited results due to: " + allStatuses;
-}
-
-/**
- * Go through status messages and add punctuation to make a sentence.
- * @param {Set} statuses contains elements with status codes from placesService
- * @return String with punctuation as it lists all status codes.
- */
-function formatStatusMessages(statuses) {
-  if (statuses.size < 1) {
-      return "";
-  } else {
-    let statusMsg = "";
-    let i = 0;
-    for (let status of statuses) {
-      if (i == statuses.size - 1) {
-        statusMsg += status + "."
-      } else {
-        statusMsg += status + ", ";
-        i++;
-      }
-    }
-    return statusMsg;
+  document.getElementById("message-container").style.visibility = 'visible';
+  document.getElementById("general-message").style.visibility = 'visible';
+  let statusesContainer = document.getElementById("statuses");
+  statusesContainer.style.visibility = 'visible';
+  for(let status of statuses) {
+    let statusElement = document.createElement('ul');
+    statusElement.innerText = status;
+    statusesContainer.appendChild(statusElement);
   }
 }
 
@@ -242,13 +225,4 @@ function placeMarker(place) {
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
   });
-  markers.push(marker);
-}
-
-/* Iterate through all markers and set their maps to null. Make Markers array empty. */
-function clearMarkers() {
-  for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-  }
-  markers = [];
 }
