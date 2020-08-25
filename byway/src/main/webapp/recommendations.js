@@ -34,6 +34,9 @@ let destinations = new Set();
 // Used as a center point to search around a region.
 let regions = [];
 
+// holds markers as google.maps.Marker objects
+let markers = [];
+
 /**
  * Initializes the webpage with a map and other google
  * services. Creates a route between two endpoints.
@@ -278,4 +281,13 @@ function placeMarker(place) {
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
   });
+  markers.push(marker);
+}
+
+/* Iterate through all markers and set their maps to null. Make Markers array empty. */
+function clearMarkers() {
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  markers = [];
 }
