@@ -137,7 +137,7 @@ function initMap(start, end, route, keyString) {
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
  */
-function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
+async function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
   let request = {
     origin:  {placeId : start},
     destination: {placeId : end},
@@ -146,18 +146,19 @@ function calcRoute(directionsService, directionsRenderer, start, end, waypoints)
     optimizeWaypoints: true
   };
   directionsService.route(request, function(response, status) {
+    // Set an intermediate timeout between calls to findPlacesWithTextSearch
+    // to prevent hitting the query limit from the google maps API
+    await delayPromise(1000);
     if (status == 'OK') {
       directionsRenderer.setDirections(response);
     } 
-    else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
-      delay++;
-      setTimeout(function () {
-        calcRoute(directionsService,directionsRenderer, start, end, waypoints);
-      }, delay * 1000);
-    }
     else {
       window.alert("Could not calculate route due to: " + status);
     }
   });
+}
+
+function delayPromise(delayMs) {
+  return new Promise(resolve => setTimeout(resolve, delayMs));
 }
 
