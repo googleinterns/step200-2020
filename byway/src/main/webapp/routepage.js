@@ -300,7 +300,6 @@ function generateRouteLink(){
     let routeLink = "https://www.google.com/maps/dir/?api=1&travelmode=driving" 
     routeLink += "&origin=" + start.name.split(' ').join('%20') + "&destination=" + end.name.split(' ').join('%20') +"&waypoints=";
     for(let place of route){
-      console.log(place);
       routeLink += place.name.split(' ').join('%20') + "|";
     }
    return routeLink;
@@ -312,9 +311,8 @@ function sendEmail(){
   .then(response => response.json())
   .then(email =>{ 
     let emailLink = "mailto:" + email + "?subject=Your%20Roadtrip%20Plan&body=Thank%20you%20for%20using%20Byway!%20" +
-      "Your%20destinations%20are%20listed%20below.%20Click%20the%20link%20to%20see%20your%20route%20in%20Google%20Maps.%0D%0A" 
+      "Your%20route%20is%20listed%20below.%20Click%20the%20link%20to%20see%20your%20roadtrip%20map%20in%20Google%20Maps.%0D%0A" 
       + encodeURIComponent(generateRouteLink());
-   
     window.open(emailLink);
   })
 
