@@ -12,99 +12,65 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google */
-/* exported clearMarkers */
+/* global destinations, directionsRenderer, directionsService,
+    end, google, interests, map, orderWaypoints, placesService,
+    renderRecsList, route, start, updateDistanceTime */
+/* exported calcMainRoute, clearMarkers, recs */
 
-if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initServices);
-} else {
-  initServices();
-}
-
-let map;
-let placesService;
+// Holds recommendations as PlaceResult objects
+let recs = [];
 
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
 const MIN_DISTANCE_FOR_STEP_PATH = 4000;
 
-const interests = ["park"];
-let destinations = new Set();
+// Max recommendations per interest
+const MAX_RECOMMENDATIONS = 1;
 
-// Contains google.maps.LatLng objects.
-// Used as a center point to search around a region.
+// Holds regions google.maps.LatLng objects
 let regions = [];
 
 // holds markers as google.maps.Marker objects
 let markers = [];
 
 /**
- * Initializes the webpage with a map and other google
- * services. Creates a route between two endpoints.
- * Note: Temp setup to mimic a route between two endpoints.
- * TODO: Link/adapt with Justine's third page, which handles
- * initializing the map and other google services.
+ * Creates round-trip route with waypoints that loads onto the map.
+ * Partitions the route into regions, used to load recommendations
+ * around. Orders the waypoints for efficiency and updates trip logistics.
  */
-function initServices() {
-  // Modified version of Justine's implementation
-  let directionsService = new google.maps.DirectionsService();
-  let directionsRenderer = new google.maps.DirectionsRenderer();
-  const start = new google.maps.LatLng(37.7699298, -122.4469157);
-  const end = new google.maps.LatLng(37.7683909618184, -122.51089453697205);
-  const mapOptions = {
-    zoom: 14,
-    center: start
-  }
-  addDestinations(start, end);
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  directionsRenderer.setMap(map);
-  document.getElementById("route").addEventListener("click", () => {
-    calcRoute(directionsService, directionsRenderer, start, end);
-  });
-  placesService = new google.maps.places.PlacesService(map);
-}
-
-/**
- * Add start and end points of the route to regions to search around.
- * Temporary set up to mimic adding several endpoints between legs.
- * @param {google.maps.LatLng} start coordinate of route's startpoint
- * @param {google.maps.LatLng} end coordinate of route's endpoint
- */
-function addDestinations(start, end) {
-  destinations.add(start);
-  destinations.add(end);
-  regions.push(...destinations);
-}
-
-/**
- * Creates a route between two points and loads onto the map.
- * Finds points along the path to load the regions Array.
- * Loads recommendations centered around these points.
- * @param {DirectionsService} directionsService finds directions
- * @param {DirectionsRenderer} directionsRenderer renders the route
- * @param {LatLng} start starting point location
- * @param {LatLng} end ending point location
- */
-function calcRoute(directionsService, directionsRenderer, start, end) {
+function calcMainRoute() {
   resetUserAlerts();
   const request = {
-      origin:  start,
-      destination: end,
-      travelMode: 'DRIVING'
+    origin:  start.name,
+    destination: end.name,
+    travelMode: 'DRIVING',
+    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
+    optimizeWaypoints: true
   };
+  addMainStopsToRegions();
   directionsService.route(request, function(result, status) {
     if (status == 'OK') {
       document.getElementById("loading").style.visibility = 'visible';
       directionsRenderer.setDirections(result);
       findRegions(result);
       loadRecommendations();
+      orderWaypoints(result);
+      updateDistanceTime(result);
     } else {
       alert("Could not calculate route due to: " + status);
     }
   });
 }
 
-/* Resets the alerts found in a previous attempt to load recommendations. */
+/* Saves the LatLng coords of the start point and destinations to regions array. */
+function addMainStopsToRegions() {
+  regions.push(start.geometry.location);
+  for (let destination of destinations) {
+    regions.push(destination.geometry.location);
+  }
+}
+
+/* Resets the alerts found in a previous attempt to load recommendations and reveals loading bar. */
 function resetUserAlerts() {
   document.getElementById("message-container").style.visibility = 'hidden';
   document.getElementById("loading").style.visibility = 'visible';
@@ -112,19 +78,17 @@ function resetUserAlerts() {
 
 /**
  * Goes through steps of every leg along route to find the average location
- * between a step's start and end location. Store these points
- * in the regions Array.
- * @param {DirectionsResult} directionResult contains directions
- * for the route made.
+ * between a step's start and end location. Store LatLng coords in the regions Array.
+ * @param {DirectionsResult} directionResult contains directions for the trip
  */
 function findRegions(directionResult) {
   const myRoute = directionResult.routes[0];
   for(let leg of myRoute.legs) {
     for(let step of leg.steps) {
-      const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
-      const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
-      const avgLoc = {lat: avgLat, lng: avgLng};
       if(step.distance.value > MIN_DISTANCE_FOR_STEP_PATH) {
+        const avgLat = (step.start_location.lat() + step.end_location.lat()) / 2;
+        const avgLng = (step.start_location.lng() + step.end_location.lng()) / 2;
+        const avgLoc = {lat: avgLat, lng: avgLng};
         regions.push(avgLoc);
       }
     }
@@ -141,11 +105,11 @@ function delayPromise(delayMs) {
 }
 
 /**
- * Go through a user's interests and search for places
- * fitting those interests. Search around the regions
- * previously found using textSearch. Prioritize finding
- * past results loaded through sessionStorage to avoid calling
- * textSearch repeatedly from the PlacesService.
+ * Go through a trip's interests and regions to find relevant places
+ * using textSearch from PlacesService. Prioritize finding past results
+ * loaded through sessionStorage and set an intermediate timeout between calls
+ * to findPlacesWithTextSearch with delayPromise to avoid hitting a query limit.
+ * Alert the user of any non-OK status codes from PlacesService.
  */
 async function loadRecommendations() {
   let statuses = new Set();
@@ -160,8 +124,6 @@ async function loadRecommendations() {
       if(recommendationsSaved !== null) {
         addRecommendations(request, JSON.parse(recommendationsSaved));
       } else{
-        // Set an intermediate timeout between calls to findPlacesWithTextSearch
-        // to prevent hitting the query limit from the google maps API
         await delayPromise(250);
         const placesFound = await findPlacesWithTextSearch(request, statuses);
         if(placesFound !== null) {
@@ -171,16 +133,17 @@ async function loadRecommendations() {
     }
   }
   if(statuses.size !== 0) alertUser(statuses);
+  renderRecsList();
   document.getElementById("loading").style.visibility = 'hidden';
 }
 
 /**
- * Use the textSearch function from PlacesService to find the results
- * fitting the request object passed in. Convert callback function into
- * a chain of promises to return the result directly. If the service
- * returns a status other than OK, reject the promise and alert the user.
+ * Use the textSearch function from PlacesService to find results
+ * fitting the request. Store the result through a chain of promises.
+ * If the service returns a non-OK status, reject the promise and alert the user.
  * @param {TextSearchRequest} request object with location, radius and query fields.
- * @return PlaceResult[] results or null if rejected by a status from placesService.
+ * @param {Set} statuses contains all non-OK statuses
+ * @return {PlaceResult[]} results or null if rejected by a status from placesService.
  */
 function findPlacesWithTextSearch(request, statuses) {
   return new Promise((resolve, reject) => {
@@ -233,17 +196,15 @@ function formatStatusMessages(statuses) {
 
 /**
  * Places markers on the locations found from textSearch.
- * Temporarily limit the amount of suggestions. Keep track of
- * places found from interests around a location with savePlacesFromInterests function.
- * TODO: Store more results and limit on UI with option to "show more"
+ * Save places found from interests around a location in sessionStorage.
  * @param {TextSearchRequest} request with unique location and interest
- * @param {PlaceResults[]} results places found with PlaceResult type.
+ * @param {PlaceResults[]} placesFound places found with PlaceResult type.
  */
 function addRecommendations(request, placesFound) {
-  const MAX_RECOMMENDATIONS = 1;
   let placesLoaded = [];
   for(let place of placesFound) {
     placeMarker(place);
+    recs.push(place);
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;
