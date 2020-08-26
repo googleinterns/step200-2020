@@ -109,7 +109,7 @@ function showCompleteTrip(tripNum, trip){
  * @param {ArrayList<String>} route arraylist of placeIds as strings
  * @param {String} keyString key of trip as string
  */
-function initMap(start, end, route, keyString) {
+async function initMap(start, end, route, keyString) {
   const directionsService = new google.maps.DirectionsService();
   const directionsRenderer = new google.maps.DirectionsRenderer();
   let waypoints = [];
@@ -126,7 +126,29 @@ function initMap(start, end, route, keyString) {
   const tripMap = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
   placesService = new google.maps.places.PlacesService(tripMap);
   directionsRenderer.setMap(tripMap);
-  calcRoute(directionsService, directionsRenderer, start, end, waypoints);
+  await setRoute(directionsService, directionsRenderer, start, end, waypoints);
+}
+
+/**
+ * Sets directions on map
+ * @param {DirectionsService} directionsService
+ * @param {DirectionsRenderer} directionsRenderer
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {Array} [waypoints] array of waypoint objects
+ */
+async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
+  for(let i = 0; i<10; i++){
+    try{
+      let result = await getDirections(directionsService, start, end, waypoints)
+      directionsRenderer.setDirections(result);
+      return;
+    }catch(error){
+      if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
+        await delayPromise(1000);
+      }
+    }
+  }   
 }
 
 function delayPromise(delayMs) {
@@ -134,35 +156,23 @@ function delayPromise(delayMs) {
 }
 
 /**
- * Calculates route  with given start, end and waypoints
+ * Class used to throw error in getDirections() with both message and status
+ */
+class MapStatusError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = 'MapStatusError';
+        this.status = status;
+    }
+}
+
+/**
+ * Get directions with given start, end and waypoints
  * @param {DirectionsService} directionsService
- * @param {DirectionsRenderer} directionsRenderer
  * @param {String} start placeId as string
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
  */
-/*function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
-  let request = {
-    origin:  {placeId : start},
-    destination: {placeId : end},
-    waypoints: waypoints,
-    travelMode: 'DRIVING',
-    optimizeWaypoints: true
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == 'OK') {
-      directionsRenderer.setDirections(response);
-    } 
-    else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
-      delayPromise(1000)
-      .then(() => calcRoute(directionsService,directionsRenderer,start,end,waypoints));
-    }
-    else {
-      window.alert("Could not calculate route due to: " + status);
-    }
-  });
-}*/
-
 function getDirections(directionsService, start, end, waypoints) {
    let request = {
     origin:  {placeId : start},
@@ -177,24 +187,14 @@ function getDirections(directionsService, start, end, waypoints) {
         resolve(result);
       }
       else {
-        reject(new Error("Could not calculate route from request."));
+        reject(new MapStatusError("Could not calculate route from request.", status));
       }
   });
 });
 return result;
 }
 
-async function calcRoute(directionsService, directionsRenderer, start, end, waypoints){
-  for(i = 0; i<2; i++){
-    getDirections(directionsService, start, end, waypoints)
-    .then((result) => {
-      directionsRenderer.setDirections(result);
-      return;
-    }).catch(()=>{
-       delayPromise(1000);
-    });
-  }   
-}
+
 
  
 
