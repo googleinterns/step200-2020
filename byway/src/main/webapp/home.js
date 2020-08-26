@@ -141,7 +141,7 @@ function delayPromise(delayMs) {
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
  */
-function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
+/*function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
   let request = {
     origin:  {placeId : start},
     destination: {placeId : end},
@@ -161,7 +161,41 @@ function calcRoute(directionsService, directionsRenderer, start, end, waypoints)
       window.alert("Could not calculate route due to: " + status);
     }
   });
+}*/
+
+function getDirections(directionsService, start, end, waypoints) {
+   let request = {
+    origin:  {placeId : start},
+    destination: {placeId : end},
+    waypoints: waypoints,
+    travelMode: 'DRIVING',
+    optimizeWaypoints: true
+  };
+  const result = new Promise((resolve,reject) => {
+    directionsService.route(request, (result, status) => {
+      if (status == 'OK') {
+        resolve(result);
+      }
+      else {
+        reject(new Error("Could not calculate route from request."));
+      }
+  });
+});
+return result;
 }
 
+async function calcRoute(directionsService, directionsRenderer, start, end, waypoints){
+  for(i = 0; i<2; i++){
+    getDirections(directionsService, start, end, waypoints)
+    .then((result) => {
+      directionsRenderer.setDirections(result);
+      return;
+    }).catch(()=>{
+       delayPromise(1000);
+    });
+  }   
+}
+
+ 
 
 
