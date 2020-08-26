@@ -210,6 +210,7 @@ function renderRouteList(){
   route.forEach((waypoint)=>{
     routeList.appendChild(createRouteButton(waypoint));
   })
+  
 }
 
 /** Creates a button in the schedule panel in the html
@@ -225,8 +226,10 @@ function createRouteButton(waypoint){
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
       route = route.filter(stop => stop.name != waypoint.name);
+      document.getElementById(waypoint.place_id).className = "btn rec-btn";
       calcRouteWithRecs();
     });
+
   }
   return routeBtn;
 }
@@ -263,12 +266,21 @@ function renderRecsList(){
 function createRecButton(rec){
   const recBtn = document.createElement('button');
   recBtn.innerText = rec.name;
-  recBtn.className =  "btn rec-btn";
+  recBtn.id = rec.place_id;
+  if(!route.some(waypoint => waypoint.name === rec.name)){
+    console.log("not in route");
+    recBtn.className =  "btn rec-btn";
+  } else{
+    console.log("in route already");
+    recBtn.className =  "hidden-rec-btn";
+  }
   recBtn.addEventListener("click", function() {
     if(!route.some(waypoint => waypoint.name === rec.name)){
       route.push(rec);
+      recBtn.className =  "hidden-rec-btn";
       calcRouteWithRecs();
     }
+
   });
   return recBtn;
 }

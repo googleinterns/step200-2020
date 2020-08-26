@@ -99,8 +99,13 @@ h3.box-outline{
  
 .rec-btn{
   border: solid 5px #ffc05f;
+  display: block;
 }
- 
+
+.hidden-rec-btn{
+  display: none;
+}
+
 .stop-btn{
   border: solid 5px #ff826c;
 }
