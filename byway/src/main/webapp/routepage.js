@@ -297,13 +297,17 @@ function createRecButton(rec){
  *  @returns {String} routeLink url containing query params for the user’s route
  */
 function generateRouteLink(){
-    let routeLink = "https://www.google.com/maps/dir/?api=1&travelmode=driving" 
-    routeLink += "&origin=" + start.name.split(' ').join('%20') + "&destination=" + 
-      end.name.split(' ').join('%20') + "&waypoints=";
-    for(let place of route){
-      routeLink += place.name.split(' ').join('%20') + "|";
-    }
-   return routeLink;
+  let routeRoot = "https://www.google.com/maps/dir/?" 
+  let routeParams = new URLSearchParams({
+                      api = 1,
+                      travelmode: "driving",
+                      origin: start.name,
+                      destination: end.name,
+                      waypoints: route.join("|")
+                    }).toString()
+  
+  routeLink = routeRoot + routeParams;
+  return routeLink;
 }
 
 /** Determines if email address is valid using regex patterns
@@ -320,10 +324,14 @@ function validateEmail(email) {
  */
 function sendEmail(){
   let emailAddress = document.getElementById("email-address").value;
-  let emailLink = "mailto:" + emailAddress + "?subject=Your%20Roadtrip%20Plan&body=Thank%20you%20for%20using%20Byway!%20" +
-    "Your%20route%20is%20listed%20below.%20Click%20the%20link%20to%20see%20your%20roadtrip%20map%20in%20Google%20Maps.%0D%0A" 
-    + encodeURIComponent(generateRouteLink());
-
+  let emailRoot = "mailto:" + emailAddress + "?";
+  let emailParams = new URLSearchParams({
+                      subject: "Your roadtrip plan",
+                      body:   "Your route is listed below. Click the link to see your roadtrip"
+                      + "map in Google Maps: " + generateRouteLink(),
+                    }).toString()
+  let emailLink = emailRoot + emailParams;
+  
   if(validateEmail(emailAddress)){
     window.open(emailLink);
   } else{ // TO DO: Use alerts to notify user
