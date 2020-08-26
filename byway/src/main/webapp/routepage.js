@@ -311,7 +311,7 @@ function generateRouteLink(){
  *  @returns {boolean} is the email a valid email address
  */
 function validateEmail(email) {
-    const re = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
+    const re = /^[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
     return re.test(String(email).toLowerCase());
 }
 
