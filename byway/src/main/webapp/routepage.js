@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
- 
-// copies of recommendations and route, stored as sets for synchronous updating
-let recs = [];
-
 // holds stops and destinations
 let route = [];
+
+// holds user interests as strings
+let interests = [];
 
 // holds destinations 
 let destinations = []; 
@@ -49,7 +48,6 @@ if (document.readyState === 'loading') {  // Loading hasn't finished yet
 /** Used to restore route and recommendations upon load or refresh */
 function loadData(){
   tripKey = getTripKeyFromUrl();
-  getRecsOnload();
   getRouteOnload();
   setProgressBar(3);
   setupLogoutLink();
@@ -72,7 +70,7 @@ function initMap() {
 }
 
 /** Displays route containing waypoints overtop the map. */
-function calcRoute() {
+function calcRouteWithRecs() {
   let request = {
     origin:  start.name,
     destination: end.name,
@@ -93,16 +91,15 @@ function calcRoute() {
 }
 
 /** Add the start/end location back to the schedule panel
- *  TODO: Delete markers for recommended stops not selected.
  *  TODO: Disable usage after? Don't want to keep adding to list. 
  */
 function generateRoute() {
   clearRoute();
   const routeList = document.getElementById('route-list');
   routeList.appendChild(createRouteButton(start));
-  route.forEach((waypoint)=>{
+  for(let waypoint of route){
     routeList.appendChild(createRouteButton(waypoint));
-  });
+  }
   routeList.appendChild(createRouteButton(end));
 }
 
@@ -173,6 +170,7 @@ function getRouteOnload(){
   .then(response => response.json())
   .then(async (trip) => {
     if(trip != null){
+      interests = trip.interests;
       try{
         let res = await findPlace(trip.start, placesService);
         start = end = res;
@@ -198,9 +196,8 @@ function getRouteOnload(){
           console.error("Could not retrieve route due to: ", error);
         }
       }
-      calcRoute();
-    }
-    else{
+      calcMainRoute();
+    } else{
       console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
   });
@@ -228,7 +225,7 @@ function createRouteButton(waypoint){
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
       route = route.filter(stop => stop.name != waypoint.name);
-      calcRoute();
+      calcRouteWithRecs();
     });
   }
   return routeBtn;
@@ -238,7 +235,7 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch('/api/stop', {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
+  fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
 
 /** Clear the recommendations panel in the html */
@@ -249,25 +246,7 @@ function clearRecs(){
     recList.innerText = "";
   }
 }
- 
-/** Get the new list of recommendations from servlet onload */
-function getRecsOnload() {
-  clearRecs();
-  fetch('/api/recs')
-  .then(response => response.json())
-  .then(async (recommendations) => {
-    for (let recommendationId of recommendations){
-      try{
-        let recommendationAsPlaceObj = await findPlace(recommendationId, placesService);
-        recs.push(recommendationAsPlaceObj);
-      } catch (error){
-          console.error("Could not retrieve recommended stops due to: ", error);
-      }
-    }
-    renderRecsList();
-  })
-}
- 
+
 /** Re-render recs list synchronously */
 function renderRecsList(){
   clearRecs();
@@ -278,7 +257,7 @@ function renderRecsList(){
 }
  
 /** Creates a button in the recommendations panel in the html 
- *  @param {PlaceResult} rec a PlaceResult object whose name property is added as a button 
+ *  @param {PlaceResult} rec a PlaceResult object whose name property is added as a button
  *  @return {button} recBtn a button showing a recommended place
  */
 function createRecButton(rec){
@@ -288,11 +267,13 @@ function createRecButton(rec){
   recBtn.addEventListener("click", function() {
     if(!route.some(waypoint => waypoint.name === rec.name)){
       route.push(rec);
-      calcRoute();
+      calcRouteWithRecs();
     }
   });
   return recBtn;
 }
 
-/* exported initMap, generateRoute, placesService, map */
-/* global google, findPlace, getTripKeyFromUrl, configureTripKeyForPath, setProgressBar, setupLogoutLink */
+/* exported calcRouteWithRecs, initMap, interests,
+    generateRoute, map, placesService, renderRecsList */
+/* global calcMainRoute, configureTripKeyForPath, findPlace,
+    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
