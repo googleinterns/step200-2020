@@ -7,6 +7,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="base.js"></script>
     <script src="routepage.js"></script>
+    <script src="recommendations.js"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places,geometry"
       defer></script>
@@ -17,6 +18,22 @@
     <link rel="stylesheet" href="routepage.css">
   </head>
   <body>
+    <div class="header">
+      <div id="logout-link"></div>
+      <img src="/images/logo.png" alt="logo" class="logo">
+      <div id="name">byway.</div>
+    </div>
+    <div id="progressbar-container">
+      <ul id="progressbar">
+        <li><a id="choose-destinations-progress-bar">Choose Destinations</a></li>
+        <li><a id="choose-interests-progress-bar">choose interests</a></li>
+        <li><a id="view-route-progress-bar">View route</a></li>
+      </ul>
+    </div>
+    <div id="message-container">
+      <p id="general-message">Showing limited results due to: </p>
+      <p id="statuses"></p>
+    </div>
     <div class = "route-container">
       <div class = "map-style">
         <div id= "map"></div>
@@ -68,6 +85,6 @@
       </div>
     </div>
   </div>
-
+  
   </body>
 </html>
