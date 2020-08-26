@@ -39,7 +39,6 @@ let markers = [];
  * around. Orders the waypoints for efficiency and updates trip logistics.
  */
 function calcMainRoute() {
-  resetUserAlerts();
   const request = {
     origin:  start.name,
     destination: end.name,
@@ -68,12 +67,6 @@ function addMainStopsToRegions() {
   for (let destination of destinations) {
     regions.push(destination.geometry.location);
   }
-}
-
-/* Resets the alerts found in a previous attempt to load recommendations and reveals loading bar. */
-function resetUserAlerts() {
-  document.getElementById("message-container").style.visibility = 'hidden';
-  document.getElementById("loading").style.visibility = 'visible';
 }
 
 /**
@@ -167,31 +160,8 @@ function findPlacesWithTextSearch(request, statuses) {
 function alertUser(statuses) {
   let msgContainer = document.getElementById("message-container");
   msgContainer.style.visibility = 'visible';
-  const allStatuses = formatStatusMessages(statuses);
-  msgContainer.innerText = "Showing limited results due to: " + allStatuses;
-}
-
-/**
- * Go through status messages and add punctuation to make a sentence.
- * @param {Set} statuses contains elements with status codes from placesService
- * @return String with punctuation as it lists all status codes.
- */
-function formatStatusMessages(statuses) {
-  if (statuses.size < 1) {
-      return "";
-  } else {
-    let statusMsg = "";
-    let i = 0;
-    for (let status of statuses) {
-      if (i == statuses.size - 1) {
-        statusMsg += status + "."
-      } else {
-        statusMsg += status + ", ";
-        i++;
-      }
-    }
-    return statusMsg;
-  }
+  const statusCodes = Array.from(statuses).join();
+  msgContainer.innerText = "Showing limited results due to: " + statusCodes + ".";
 }
 
 /**
