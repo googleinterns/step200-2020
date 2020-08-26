@@ -16,7 +16,7 @@
 
 let interestsChosen = new Set();
 let interestsSaved = new Set();
-let tripKey;
+const tripKey = getTripKeyFromUrl();
 
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadContent);
@@ -30,17 +30,11 @@ if(document.readyState === 'loading') {
  * they can select.
  */
 async function loadContent() {
-  configureTripKey();
+  let nextPage = document.getElementById("next-button");
+  nextPage.href = configureTripKeyForPath(tripKey, "/routepage.html");
   interestsSaved = await getTripInterests();
   loadButtonsWithInterests();
   setupLogoutLink();
-}
-
-/* Gets the trip key from the url and sets it for the next page. */
-function configureTripKey() {
-  let nextPage = document.getElementById("next-button");
-  tripKey = getTripKeyFromUrl();
-  nextPage.href = configureTripKeyForPath(tripKey, "/routepage.html");
 }
 
 /** 
