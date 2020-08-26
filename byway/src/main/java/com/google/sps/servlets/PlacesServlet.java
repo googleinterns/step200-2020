@@ -33,14 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that returns all PlaceTypes from Places API. Stores which placeTypes, or interests, user
- * selects in datastore with their specific Trip Entity.
+ * Servlet that returns all PlaceTypes from Places API as a list of strings. Formatted to be space delimited, with first-letter capitalization.
  */
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
-
-  /** {@link Type} of an {@link ArrayList} containing {@link String}, for gson decoding. */
-  private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
 
   /**
    * Immutable set of the PlaceType enumerator values containing interests. Labelled as non
@@ -113,18 +109,5 @@ public final class PlacesServlet extends HttpServlet {
     place = place.substring(0, 1).toUpperCase() + place.substring(1);
     place = place.replace('_', ' ');
     return place;
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String tripKeyString = request.getParameter("tripKey");
-    ArrayList<String> interests = gson.fromJson(request.getReader(), ARRAYLIST_STRING);
-    Trip trip = Trip.getTrip(datastore, tripKeyString);
-    if (trip == null) {
-      response.setStatus(response.SC_NOT_FOUND);
-      return;
-    }
-    trip.setInterests(interests);
-    datastore.put(trip.toEntity());
   }
 }

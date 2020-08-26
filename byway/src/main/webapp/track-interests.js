@@ -15,6 +15,7 @@
 /* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink*/
 
 let interestsChosen = new Set();
+let interestsSaved = new Set();
 let tripKey;
 
 if(document.readyState === 'loading') {
@@ -28,8 +29,9 @@ if(document.readyState === 'loading') {
  * key of the user and the buttons with interests
  * they can select.
  */
-function loadContent() {
+async function loadContent() {
   configureTripKey();
+  interestsSaved = await getTripInterests();
   loadButtonsWithInterests();
   setupLogoutLink();
 }
@@ -59,12 +61,32 @@ function updateStatus(place, elem) {
 }
 
 /**
+ * Finds the list of interests that were set for the trip.
+ * If it is a new trip, no interests are listed. If the trip
+ * had previously-saved interests, return them.
+ * @return fulfilled promise containing the list of interests
+ */
+function getTripInterests() {
+  return new Promise(resolve => {
+    let tripInterests = new Set();
+    fetchInterests(tripKey)
+    .then((trip) => {
+      for (let interest of trip.interests) {
+        tripInterests.add(interest);
+      }
+      resolve(tripInterests);
+      });
+  });
+}
+
+/**
  * Display all the buttons onscreen with independent onClick events.
  * Load interest values through a fetch request.
  */
 function loadButtonsWithInterests() {
   setProgressBar(2);
-  fetchPlaces(tripKey)
+  fetch(configureTripKeyForPath(tripKey, "/api/places"))
+  .then(response => response.json())
   .then((places) => {
     let buttonSection = document.getElementById("interests-buttons");
     places.forEach((place) => {
@@ -86,22 +108,24 @@ function createButtonForPlace(place) {
   button.innerText = place;
   button.addEventListener('click', () => {
       updateStatus(place, button);
-      fetchPlaces(tripKey, interestsChosen);
+      fetchInterests(tripKey, interestsChosen);
   });
   button.className = "interestBtn";
+  if (interestsSaved.has(place)) updateStatus(place, button);
   return button;
 }
 
 /**
- * Gets all potential interests from server to load or sets the user's
- * specific interests for their trip with tripKey. userInterests
- * may be any type that is convertible to an array via Array.from. It will
+ * Gets past interests or sets the interests through a server for a
+ * specific trip using tripKey. These two requests are differentiated
+ * by an optional userInterests parameter. userInterests may be any
+ * type that is convertible to an array via Array.from. It will
  * be sent to the server as JSON in the post body.
  * @param {String} tripKey value for tripKey
  * @param {Array} [userInterests] interests selected by user
  */
-function fetchPlaces(tripKey, /* optional */ userInterests) {
-  const url = configureTripKeyForPath(tripKey, "/api/places");
+function fetchInterests(tripKey, /* optional */ userInterests) {
+  const url = configureTripKeyForPath(tripKey, "/api/interests");
   if(userInterests === undefined) {
       return fetch(url).then(response => response.json());
   }
