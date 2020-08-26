@@ -17,22 +17,21 @@ package com.google.maps;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.maps.model.PlaceType;
 import com.google.sps.data.Trip;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that stores which interests the user selected for their trip in datastore. Also updates the interests in POST requests. */
+/**
+ * Servlet that stores which interests the user selected for their trip in datastore. Also updates
+ * the interests in POST requests.
+ */
 @WebServlet("/api/interests")
 public final class InterestsServlet extends HttpServlet {
 

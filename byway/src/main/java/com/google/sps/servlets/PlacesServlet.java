@@ -20,11 +20,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.maps.model.PlaceType;
-import com.google.sps.data.Trip;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that returns all PlaceTypes from Places API as a list of strings. Formatted to be space delimited, with first-letter capitalization.
+ * Servlet that returns all PlaceTypes from Places API as a list of strings. Formatted to be space
+ * delimited, with first-letter capitalization.
  */
 @WebServlet("/api/places")
 public final class PlacesServlet extends HttpServlet {
