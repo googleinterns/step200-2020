@@ -268,20 +268,19 @@ function createRecButton(rec){
   recBtn.innerText = rec.name;
   recBtn.id = rec.place_id;
   if(!route.some(waypoint => waypoint.name === rec.name)){
-    console.log("not in route");
     recBtn.className =  "btn rec-btn";
+    recBtn.addEventListener("click", function() {
+      route.push(rec);
+      recBtn.className =  "hidden-rec-btn";
+      calcRouteWithRecs();
+    });
+    console.log("not in route");
+    
   } else{
     console.log("in route already");
     recBtn.className =  "hidden-rec-btn";
   }
-  recBtn.addEventListener("click", function() {
-    if(!route.some(waypoint => waypoint.name === rec.name)){
-      route.push(rec);
-      recBtn.className =  "hidden-rec-btn";
-      calcRouteWithRecs();
-    }
-
-  });
+  
   return recBtn;
 }
 
