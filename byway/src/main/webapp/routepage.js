@@ -273,7 +273,7 @@ function createRecButton(rec){
   return recBtn;
 }
 
-/* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList */
+/* exported calcRouteWithRecs, initMap, interests, generateRoute,
+    map, placesService, renderRecsList, updateRoute */
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */

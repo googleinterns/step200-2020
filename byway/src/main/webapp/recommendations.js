@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global destinations, directionsRenderer, directionsService, end, google,
-    interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
+/* global calcRouteWithRecs, destinations, directionsRenderer, directionsService,
+    end, google, interests, map, orderWaypoints, placesService,
+    renderRecsList, route, start, updateDistanceTime, updateRoute */
 /* exported calcMainRoute, recs */
 
 // Holds recommendations as PlaceResult objects
@@ -54,6 +55,7 @@ function calcMainRoute() {
     } else {
       alert("Could not calculate route due to: " + status);
     }
+    updateRoute();
   });
 }
 
@@ -204,7 +206,9 @@ function savePlacesFromInterests(request, placesLoaded) {
 }
 
 /**
- * Places a marker onto the map at the specified location.
+ * Places a marker onto the map at the specified location. When clicked,
+ * shows information about the place. When double clicked, adds as
+ * a destination and calculates a new route.
  * @param {PlaceResult} place contains information about a place
  */
 function placeMarker(place) {
@@ -223,5 +227,15 @@ function placeMarker(place) {
   });
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
+  });
+  marker.addListener("dblclick", () => {
+    if(!route.some(waypoint => waypoint.name === place.name)){
+      route.push(place);
+      marker.setMap(null);
+    } else {
+      route = route.filter(stop => stop.name != place.name);
+      marker.setMap(map);
+    }
+    calcRouteWithRecs();
   });
 }
