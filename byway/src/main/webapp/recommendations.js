@@ -230,9 +230,11 @@ function placeMarker(place) {
   });
   marker.addListener("dblclick", () => {
     if(!route.some(waypoint => waypoint.name === place.name)){
+      // add to the route and remove as a recommendation marker
       route.push(place);
       marker.setMap(null);
     } else {
+      // remove from the route and add recommendation marker back to the map
       route = route.filter(stop => stop.name != place.name);
       marker.setMap(map);
     }
