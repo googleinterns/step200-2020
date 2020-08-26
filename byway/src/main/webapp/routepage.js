@@ -279,14 +279,14 @@ function createRecButton(rec){
 function generateRouteLink(){
   let routeRoot = "https://www.google.com/maps/dir/?" 
   let routeParams = new URLSearchParams({
-                      api = "1",
+                      api : 1,
                       travelmode: "driving",
                       origin: start.name,
                       destination: end.name,
                       waypoints: route.join("|")
                     }).toString()
   
-  routeLink = routeRoot + routeParams;
+  let routeLink = routeRoot + routeParams;
   return routeLink;
 }
 
@@ -320,7 +320,7 @@ function sendEmail(){
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList */
+    generateRoute, map, placesService, renderRecsList, sendEmail */
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
 
