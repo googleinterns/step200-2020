@@ -62,8 +62,9 @@ h3.box-outline{
   margin: 30px 0 5px 10px;
   color: white;
   font-size: 16px;
-  width: 100px;
   font-family: 'Noto Sans JP', sans-serif;
+  text-align: center;
+
 }
  
 .time-distance-outline{
@@ -113,11 +114,28 @@ h3.box-outline{
   overflow-y: scroll;
   max-height: 450px
 }
- 
-.email-section{
+
+input[type=text] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #f7dbb0;
+}
+
+#email-address{
+  display: block;
+  border: solid #ffc05f;
+  border-radius: 10px;
+  height: 75px;
+  width: 330px;
+  margin-left: 30px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.finish-section{
   margin: 10px 0 10px 30px;
 }
- 
+
 .finish-btn{
   display: block;
   border: solid #ffc05f;
@@ -125,7 +143,7 @@ h3.box-outline{
   background-color: #f7dbb0;
   color:white;
   height: 75px;
-  width: 330px;
+  width: 450px;
   padding: 5px;
   margin-left: 30px;
   font-family: 'Noto Sans JP', sans-serif;

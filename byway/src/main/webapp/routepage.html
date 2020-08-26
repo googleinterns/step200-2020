@@ -3,19 +3,37 @@
   <head>
     <meta charset="UTF-8">
     <title>Route Generator</title>
-    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+    
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="base.js"></script>
     <script src="routepage.js"></script>
+    <script src="recommendations.js"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places,geometry"
       defer></script>
     <script src="utils.js"></script>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="routepage.css">
   </head>
   <body>
+    <div class="header">
+      <div id="logout-link"></div>
+      <img src="/images/logo.png" alt="logo" class="logo">
+      <div id="name">byway.</div>
+    </div>
+    <div id="progressbar-container">
+      <ul id="progressbar">
+        <li><a id="choose-destinations-progress-bar">Choose Destinations</a></li>
+        <li><a id="choose-interests-progress-bar">choose interests</a></li>
+        <li><a id="view-route-progress-bar">View route</a></li>
+      </ul>
+    </div>
+    <div id="message-container">
+      <p id="general-message">Showing limited results due to: </p>
+      <p id="statuses"></p>
+    </div>
     <div class = "route-container">
       <div class = "map-style">
         <div id= "map"></div>
@@ -25,7 +43,7 @@
           <div class = "panel-title" id="schedule">
             <h3>Your Route</h3>
           </div>
-          <div class = "center" id="route-list"></div>
+          <div class = "center place-list" id="route-list"></div>
         </div>
        <div class = "time-distance-outline">
          <div class = "time-distance-title">
@@ -52,15 +70,27 @@
         <div class="center place-list" id="rec-list"></div>
       </div>
       <div class = "row">
-        <div class= "email-section"> 
-          <button class = "route btn finish-btn" onclick = "generateRoute()">Finish Adding Stops</button>
+        <div class= "finish-section"> 
+          <button class = "btn finish-btn" onclick = "generateRoute()">Finish Adding Stops</button>
         </div>
-        <div class = "email-section">
+        
+      </div>
+      
+      <div class = "row">
+        <div class= "finish-section"> 
+          <input type="text" id="email-address" name="email-address" value = "Enter email address">
+        </div>
+        <div class = "finish-section">
           <button class="icon fa fa-envelope fa-4x email-btn" onclick = "sendEmail()"></button> 
+        </div>
+      </div>
+      <div class = "row">
+        <div class= "finish-section"> 
+          <button class = "btn finish-btn" onclick = "openInGMaps()">Open in Google Maps</button>
         </div>
       </div>
     </div>
   </div>
-
+  
   </body>
 </html>
