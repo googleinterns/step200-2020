@@ -15,7 +15,7 @@
 /* global destinations, directionsRenderer, directionsService,
     end, google, interests, map, orderWaypoints, placesService,
     renderRecsList, route, start, updateDistanceTime */
-/* exported calcMainRoute, clearMarkers, recs */
+/* exported calcMainRoute, showMarkers, recs */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -216,10 +216,15 @@ function placeMarker(place) {
   markers.push(marker);
 }
 
-/* Iterate through all markers and set their maps to null. Make Markers array empty. */
-function clearMarkers() {
+/**
+ * Iterate through all markers and hide or show based on the boolean
+ * pass in. Either set the marker canvas to null with false, or set
+ * to the google.maps object with true.
+ * @param {Boolean} isNull indicates to remove markers by setting their map to null.
+ */
+function showMarkers(isNull) {
+  let canvas = (isNull) ? null : map;
   for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
+    markers[i].setMap(canvas);
   }
-  markers = [];
 }
