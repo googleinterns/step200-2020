@@ -279,7 +279,7 @@ function createRecButton(rec){
 function generateRouteLink(){
   let routeRoot = "https://www.google.com/maps/dir/?" 
   let routeParams = new URLSearchParams({
-                      api = 1,
+                      api = "1",
                       travelmode: "driving",
                       origin: start.name,
                       destination: end.name,
