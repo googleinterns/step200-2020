@@ -275,10 +275,7 @@ function createRecButton(rec){
       recBtn.className =  "hidden-rec-btn";
       calcRouteWithRecs();
     });
-    console.log("not in route");
-    
   } else{
-    console.log("in route already");
     recBtn.className =  "hidden-rec-btn";
   }
   
