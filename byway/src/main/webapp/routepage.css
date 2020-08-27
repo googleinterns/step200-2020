@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
  
-#map{
-  height: 750px; 
-  width: 700px; 
-}
- 
 .route-container{
   width: 1750px;
   padding: 0 15px 0 15px;
@@ -61,9 +56,10 @@ h3.box-outline{
   float: left;
   margin: 30px 0 5px 10px;
   color: white;
-  font-size: 20px;
-  width: 100px;
+  font-size: 16px;
   font-family: 'Noto Sans JP', sans-serif;
+  text-align: center;
+
 }
  
 .time-distance-outline{
@@ -113,11 +109,28 @@ h3.box-outline{
   overflow-y: scroll;
   max-height: 450px
 }
- 
-.email-section{
-  margin: 20px 0 10px 30px;
+
+input[type=text] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #f7dbb0;
 }
- 
+
+#email-address{
+  display: block;
+  border: solid #ffc05f;
+  border-radius: 10px;
+  height: 75px;
+  width: 330px;
+  margin-left: 30px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.finish-section{
+  margin: 10px 0 10px 30px;
+}
+
 .finish-btn{
   display: block;
   border: solid #ffc05f;
@@ -125,7 +138,7 @@ h3.box-outline{
   background-color: #f7dbb0;
   color:white;
   height: 75px;
-  width: 330px;
+  width: 450px;
   padding: 5px;
   margin-left: 30px;
   font-family: 'Noto Sans JP', sans-serif;
@@ -137,7 +150,8 @@ h3.box-outline{
 }
 
 .icon{
-  margin-left: 10px;
+  margin-left: 5px;
+  color: orange;
 }
  
 .email-btn{

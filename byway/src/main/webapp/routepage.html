@@ -39,10 +39,10 @@
       </div>
       <div class = "column">
         <div class = "box-outline">
-          <div class = "title" id="schedule">
-            <h3>Schedule</h3>
+          <div class = "panel-title" id="schedule">
+            <h3>Your Route</h3>
           </div>
-          <div class = "center" id="route-list"></div>
+          <div class = "center place-list" id="route-list"></div>
         </div>
        <div class = "time-distance-outline">
          <div class = "time-distance-title">
@@ -69,11 +69,17 @@
         <div class="center place-list" id="rec-list"></div>
       </div>
       <div class = "row">
-        <div class= "email-section"> 
-          <button class = "route btn finish-btn" onclick = "generateRoute()">Finish Adding Stops</button>
+        <div class= "finish-section"> 
+          <button class = "btn finish-btn" onclick = "generateRoute()">Finish Adding Stops</button>
         </div>
-        <div class = "email-section">
-          <button class="icon fa fa-envelope fa-4x email-btn" style= "color:orange"></button> 
+        
+      </div>
+      <div class = "row">
+        <div class= "finish-section"> 
+          <input type="text" id="email-address" name="email-address" value = "Enter email address">
+        </div>
+        <div class = "finish-section">
+          <button class="icon fa fa-envelope fa-4x email-btn" onclick = "sendEmail()"></button> 
         </div>
       </div>
     </div>
