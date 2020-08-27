@@ -92,6 +92,22 @@ function createButtonForPlace(place) {
   return button;
 }
 
+/* Hide or display list of interests to match user input. */
+function filterInterests() {
+  const searchField = document.getElementById("search-interest");
+  const searchValue = searchField.value.toLowerCase();
+  const interestBtnsElement = document.getElementById("interests-buttons");
+  let interestBtns = interestBtnsElement.getElementsByClassName("interestBtn");
+  for (let i = 0; i < interestBtns.length; i++) {
+    const btnValue = interestBtns[i].innerText;
+    if (btnValue.toLowerCase().indexOf(searchValue) !== -1) {
+      interestBtns[i].style.display = "";
+    } else {
+      interestBtns[i].style.display = "none";
+    }
+  }
+}
+
 /**
  * Gets all potential interests from server to load or sets the user's
  * specific interests for their trip with tripKey. userInterests
