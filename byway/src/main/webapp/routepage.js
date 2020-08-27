@@ -277,7 +277,6 @@ function createRecButton(rec){
   } else{
     recBtn.className =  "hidden-rec-btn";
   }
-  
   return recBtn;
 }
 
@@ -326,6 +325,7 @@ function sendEmail(){
   } else{ // TO DO: Use alerts to notify user
     console.log("Please enter a valid email address.");
   }
+
 }
 
 /** Opens route on Google Maps */
