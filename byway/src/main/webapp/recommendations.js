@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /* global destinations, directionsRenderer, directionsService, end, google,
-    interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime, updateRoute */
+    interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
 /* exported calcMainRoute, recs */
 
 // Holds recommendations as PlaceResult objects
@@ -55,7 +55,7 @@ function calcMainRoute() {
       alert("Could not calculate route due to: " + status);
     }
   });
-  updateRoute();
+
 }
 
 /* Saves the LatLng coords of the start point and destinations to regions array. */

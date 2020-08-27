@@ -7,8 +7,8 @@
  
 .route-container{
   width: 1750px;
-  padding: 0 15px 0 15px;
-  margin: 100px auto 0 auto;
+  padding: 0 15px 0px 15px;
+  margin: 0px auto 0 auto;
   margin-right:auto;
   margin-left:auto;
   display:flex;

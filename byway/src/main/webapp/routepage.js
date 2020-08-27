@@ -197,6 +197,7 @@ function getRouteOnload(){
         }
       }
       calcMainRoute();
+      renderRouteList();
     } else{
       console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
@@ -225,7 +226,7 @@ function createRouteButton(waypoint){
   } else {
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
-      route = route.filter(stop => stop.name != waypoint.name);
+      route = route.filter(stop => stop.place_id != waypoint.place_id);
       document.getElementById(waypoint.place_id).className = "btn rec-btn";
       calcRouteWithRecs();
     });
