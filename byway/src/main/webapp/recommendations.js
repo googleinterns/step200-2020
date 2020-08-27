@@ -16,7 +16,7 @@
     end, google, interests, map, orderWaypoints, placesService,
     renderRecsList, start, updateDistanceTime, updateRoute */
 /* global route:writeable */
-/* exported calcMainRoute, recs, removeMarkers */
+/* exported calcMainRoute, recs, toggleRecMarkers */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -35,7 +35,7 @@ const MAX_RECOMMENDATIONS = 1;
 let regions = [];
 
 // Boolean to determine when to toggle markers
-let isNull = true;
+let isHiding = true;
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -248,16 +248,16 @@ function placeRecMarker(place, showMarker) {
 }
 
 /**
- * Iterate through all markers and hide or show based on the boolean
- * pass in. Either set the marker canvas to null with false, or set
- * to the google.maps object with true.
+ * Iterate through all markers and hide or show based on the 
+ * boolean tracking the toggle state. Only affect rec markers,
+ * not ones added to the route.
  */
 function toggleRecMarkers() {
-  let canvas = (isNull) ? null : map;
+  let canvas = (isHiding) ? null : map;
   for (let i = 0; i < markers.length; i++) {
     if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
       markers[i].setMap(canvas);
     }
   }
-  isNull = !isNull;
+  isHiding = !isHiding;
 }
