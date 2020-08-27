@@ -240,17 +240,8 @@ function placeRecMarker(place, showMarker) {
     infoWindow.open(map, marker);
   });
   marker.addListener("dblclick", () => {
-    if(!route.some(waypoint => waypoint.name === place.name)){
-      // add to the route and remove as a recommendation marker
-      route.push(place);
-      marker.setMap(null);
-      markers = markers.filter(singleMarker => singleMarker !== marker)
-    } else {
-      // remove from the route and add recommendation marker back to the map
-      route = route.filter(stop => stop.name != place.name);
-      marker.setMap(map);
-      markers.push(marker);
-    }
+    route.push(place);
+    marker.setMap(null);
     calcRouteWithRecs();
   });
   markers.push(marker);
