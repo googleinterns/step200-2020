@@ -211,7 +211,6 @@ function renderRouteList(){
   route.forEach((waypoint)=>{
     routeList.appendChild(createRouteButton(waypoint));
   })
-  
 }
 
 /** Creates a button in the schedule panel in the html
@@ -333,7 +332,6 @@ function sendEmail(){
 function openInGMaps(){
   window.open(generateRouteLink());
 }
-
 
 /* exported calcRouteWithRecs, initMap, interests,
     generateRoute, map, placesService, renderRecsList, sendEmail */
