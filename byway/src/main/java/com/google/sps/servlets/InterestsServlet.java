@@ -57,7 +57,7 @@ public final class InterestsServlet extends HttpServlet {
       return;
     }
     response.setContentType("application/json");
-    response.getWriter().println(gson.toJson(trip));
+    response.getWriter().println(gson.toJson(trip.getInterests()));
   }
 
   @Override
