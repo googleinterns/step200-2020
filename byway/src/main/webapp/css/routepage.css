@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
+ 
+.route-container{
+  width: 1750px;
+  padding: 0 15px 0 15px;
+  margin: 100px auto 0 auto;
+  margin-right:auto;
+  margin-left:auto;
+  display:flex;
+}
+ 
+.box-outline {
+  border: solid 5px  #3196E2;
+  border-radius: 10px;
+  background-color: white;
+  height: 550px;
+  width: 450px;
+  margin: 0 0 0 40px;
+}
+ 
+.panel-title{
+  border-radius: 10px;
+  height: 70px;
+  width: 100%;
+  margin: 0 0 15px 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-align: center;
+}
+.panel-title h3{
+  margin: 10px 0 10px 0;
+}
+ 
+#box-outline-stops{
+  border: solid 5px #ffc05f;
+}
+ 
+#schedule{
+  border: solid 2px  #3196E2;
+  border-radius: 5px;
+  background-color: rgba(49, 149, 226, 0.445);
+  color: white 
+}
+ 
+#stops{
+  border: solid 2px #ffc05f;
+  border-radius: 5px;
+  background-color: #f7dbb0; 
+  color:  white;
+}
+ 
+h3.box-outline{
+  text-align: center;
+}
+ 
+.time-distance-title{
+  float: left;
+  margin: 30px 0 5px 10px;
+  color: white;
+  font-size: 16px;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-align: center;
+
+}
+ 
+.time-distance-outline{
+  vertical-align: top;
+  border: solid 2px #7ce7b7;
+  border-radius: 10px;
+  background-color: #c2edda;
+  height: 180px;
+  width: 450px;
+  margin: 10px 0 10px 40px;
+}
+  
+.time-distance-field{
+  float: right;
+  border: solid 2px #c2edda;
+  border-radius: 10px;
+  height: 50px;
+  width: 150px;
+  background-color: white;
+  margin: 20px 10px 10px 20px;
+}
+ 
+.btn{
+  display:block;
+  border-radius: 10px;
+  background-color: white;
+  height: 75px;
+  width: 350px;
+  padding: 5px;
+  margin: 0 auto 10px auto;
+}
+ 
+.rec-btn{
+  border: solid 5px #ffc05f;
+}
+ 
+.stop-btn{
+  border: solid 5px #ff826c;
+}
+ 
+.destination-btn{
+  border: solid 5px #53d2dc;
+}
+ 
+.place-list{
+  margin: 10px 0 0 0;
+  overflow-y: scroll;
+  max-height: 450px
+}
+
+input[type=text] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  color: #f7dbb0;
+}
+
+#email-address{
+  display: block;
+  border: solid #ffc05f;
+  border-radius: 10px;
+  height: 75px;
+  width: 330px;
+  margin-left: 30px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.finish-section{
+  margin: 10px 0 10px 30px;
+}
+
+.finish-btn{
+  display: block;
+  border: solid #ffc05f;
+  border-radius: 10px;
+  background-color: #f7dbb0;
+  color:white;
+  height: 75px;
+  width: 450px;
+  padding: 5px;
+  margin-left: 30px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+ 
+.icon{
+  margin-left: 5px;
+  color: orange;
+}
+ 
+.email-btn{
+  display: block;
+  border: solid #ffc05f;
+  border-radius: 10px;
+  background-color: #f7dbb0;
+  color:white;
+}
