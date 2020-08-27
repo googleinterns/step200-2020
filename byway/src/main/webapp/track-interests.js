@@ -14,7 +14,7 @@
 
 /* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink*/
 
-let interestsChosen = new Set();
+let newInterests = new Set();
 let interestsSaved = new Set();
 const tripKey = getTripKeyFromUrl();
 
@@ -38,18 +38,18 @@ function loadContent() {
 }
 
 /** 
- * Check if a button's value is stored in the set interestsChosen.
+ * Check if a button's value is stored in the set newInterests.
  * Remove from the set and remove the active class if the interest
  * was previously chosen and add if the interest was not included.
  * @param {String} place text value of the button's interest
  * @param {Element} elem tracks the current button element chosen.
  */
 function updateStatus(place, elem) {
-  if(interestsChosen.has(place)) {
-    interestsChosen.delete(place);
+  if(newInterests.has(place)) {
+    newInterests.delete(place);
     elem.classList.remove('active');
   } else {
-    interestsChosen.add(place);
+    newInterests.add(place);
     elem.classList.add('active');
   }
 }
@@ -98,7 +98,7 @@ function createButtonForPlace(place) {
   button.innerText = place;
   button.addEventListener('click', () => {
       updateStatus(place, button);
-      fetchInterests(tripKey, interestsChosen);
+      fetchInterests(tripKey, newInterests);
   });
   button.className = "interestBtn";
   if (interestsSaved.has(place)) updateStatus(place, button);
