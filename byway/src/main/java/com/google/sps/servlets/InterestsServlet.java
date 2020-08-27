@@ -71,5 +71,6 @@ public final class InterestsServlet extends HttpServlet {
     }
     trip.setInterests(interests);
     datastore.put(trip.toEntity());
+    response.setStatus(response.SC_NO_CONTENT);
   }
 }
