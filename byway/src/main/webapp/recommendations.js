@@ -14,11 +14,15 @@
 
 /* global calcRouteWithRecs, destinations, directionsRenderer, directionsService,
     end, google, interests, map, orderWaypoints, placesService,
-    renderRecsList, route, start, updateDistanceTime, updateRoute */
-/* exported calcMainRoute, recs */
+    renderRecsList, start, updateDistanceTime, updateRoute */
+/* global route:writeable */
+/* exported calcMainRoute, recs, removeMarkers */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
+
+// holds markers as google.maps.Marker objects
+let markers = [];
 
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
@@ -29,6 +33,9 @@ const MAX_RECOMMENDATIONS = 1;
 
 // Holds regions google.maps.LatLng objects
 let regions = [];
+
+// Boolean to determine when to toggle markers
+let isNull = true;
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -233,11 +240,27 @@ function placeMarker(place) {
       // add to the route and remove as a recommendation marker
       route.push(place);
       marker.setMap(null);
+      markers = markers.filter(singleMarker => singleMarker !== marker)
     } else {
       // remove from the route and add recommendation marker back to the map
       route = route.filter(stop => stop.name != place.name);
       marker.setMap(map);
+      markers.push(marker);
     }
     calcRouteWithRecs();
   });
+  markers.push(marker);
+}
+
+/**
+ * Iterate through all markers and hide or show based on the boolean
+ * pass in. Either set the marker canvas to null with false, or set
+ * to the google.maps object with true.
+ */
+function toggleMarker() {
+  let canvas = (isNull) ? null : map;
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(canvas);
+  }
+  isNull = !isNull;
 }

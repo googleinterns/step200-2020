@@ -275,5 +275,5 @@ function createRecButton(rec){
 
 /* exported calcRouteWithRecs, initMap, interests, generateRoute,
     map, placesService, renderRecsList, updateRoute */
-/* global calcMainRoute, configureTripKeyForPath, findPlace,
-    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
+/* global calcMainRoute, configureTripKeyForPath, findPlace, getTripKeyFromUrl,
+    google, recs, setProgressBar, setupLogoutLink */
