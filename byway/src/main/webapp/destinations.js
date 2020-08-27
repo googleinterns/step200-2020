@@ -160,7 +160,7 @@ function addLocationToDom(place,container){
     destinationPhoto.src = place.photos[0].getUrl();
   }
   else{
-      destinationPhoto.src = "/images/nophoto.png";
+      destinationPhoto.src = "images/nophoto.png";
   }
   let destinationInfo = document.createElement('p');
   destinationInfo.className = 'destination-info';
