@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
  
 .route-container{
-  width: 1750px;
-  padding: 0 15px 0px 15px;
+  width: 1900px;
+  /*padding: 0 15px 0px 15px;*/
   margin: 0px auto 0 auto;
   margin-right:auto;
   margin-left:auto;

@@ -92,3 +92,12 @@
   height: 40vw;
   width: 40vw;
 }
+
+.tips{
+   width: 1000px;
+   margin: 0 auto 30px auto; 
+}
+
+.space{
+  height: 300px;
+}

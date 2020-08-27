@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <title>Select Destinations</title>
-    <link rel="stylesheet" href= "base.css">
-    <link rel="stylesheet" href="destinations.css">
+   
     <script src="base.js"></script>
     <script src="utils.js"></script>
     <script src="destinations.js"></script>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href= "base.css">
+    <link rel="stylesheet" href="destinations.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&libraries=places&directions&v=weekly"
@@ -31,11 +33,17 @@
       </ul>
     </div>
     
+   <div class="alert alert-primary tips" role="alert">
+      <h5 class="alert-heading">Tips:</h6>
+      <p>To get started, add your starting location and some cities you want to visit on your road trip!</p>
+      <hr>
+    </div>
+
     <div id="map-search-container">
       <div id="map"></div>
       <div id= "destination-input-form">
         <form action="/api/destinations" method="POST" id="user-input-form">
-          <p class="location-label"> Start Location</p>
+          <div class="location-label"> Start Location</div>
           <div class="input-and-button"> 
             <input
               id="start-search-box"
@@ -63,7 +71,8 @@
         
         <div id="destinations-container"> </div>
       </div>
-      <a id='next-button' >Next</a>
+      <a id='next-button'>Next</a>
     </div>
   </body>
 </html>
+
