@@ -70,6 +70,7 @@ function initMap() {
 }
 
 function useDirectionsService(){
+  console.log("use dir service");
   const request = {
     origin:  start.name,
     destination: end.name,
@@ -78,8 +79,9 @@ function useDirectionsService(){
     optimizeWaypoints: true
   };
   const result = new Promise((resolve, reject) => {
-    placesService.getDetails(request, (result, status) => {
+    directionsService.route(request, (result, status) => {
       if(status == "OK") {
+        directionsRenderer.setDirections(result);
         resolve(result);
       } else {
         alert("Status: " + status);
@@ -92,25 +94,29 @@ function useDirectionsService(){
 
 // shared function calls
 async function test(){
+  console.log("test");
   let result = await useDirectionsService();
-  result.then((response) =>{
+  orderWaypoints(result);
+  updateDistanceTime(result);
+  /** result.then((response) =>{
+    directionsRenderer.setDirections(response);
     orderWaypoints(response);
     updateDistanceTime(response);
-  });
+  }); */
+  updateRoute();
 }
 
 // use shared function, add separate calls
 async function test2(){
   let result2 = await useDirectionsService();
-  result2.then((response) =>{
-    findRegions(result);
-  });
+  findRegions(result2);
   loadRecommendations();
-  test();
+  // test();
 }
 
 /** Displays route containing waypoints overtop the map. */
 function calcRouteWithRecs() {
+  /** 
   let request = {
     origin:  start.name,
     destination: end.name,
@@ -128,6 +134,10 @@ function calcRouteWithRecs() {
     }
     updateRoute();
   });
+  */
+  test();
+  // TODO: execute after everything
+  // updateRoute();
 }
 
 /** Add the start/end location back to the schedule panel
@@ -149,6 +159,7 @@ function generateRoute() {
  * @param {response} response response from the directions service object
  */
 function orderWaypoints(response){
+  console.log("order waypoints");
   let waypoint_order = response.routes[0].waypoint_order;
   let route_copy = [...route];
   for(let i = 0; i < route.length; i++){
@@ -164,6 +175,7 @@ function orderWaypoints(response){
  * hours estimated driving time in hours, minutes estimated driving time in minutes
  */
 function computeDistanceTime(response) {
+  console.log("in distance time");
   let totalDist = 0;
   let totalTime = 0;
   // full route
@@ -232,6 +244,7 @@ function getRouteOnload(){
         try{
           let waypointAsPlaceObj = await findPlace(waypointId, placesService);
           route.push(waypointAsPlaceObj);
+          
         } catch (error) {
           console.error("Could not retrieve route due to: ", error);
         }
@@ -259,12 +272,12 @@ function renderRouteList(){
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
   routeBtn.innerText = waypoint.name;
-  if(destinations.some(destination => destination.name === waypoint.name)){
+  if(destinations.some(destination => destination.place_id=== waypoint.place_id)){
     routeBtn.className =  "btn destination-btn";
   } else {
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
-      route = route.filter(stop => stop.name != waypoint.name);
+      route = route.filter(stop => stop.place_id != waypoint.place_id);
       calcRouteWithRecs();
     });
   }
@@ -274,6 +287,7 @@ function createRouteButton(waypoint){
  
 /** Display new route list and store it in the datastore */
 function updateRoute(){
+  console.log("update route");
   renderRouteList();
   fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
@@ -292,7 +306,10 @@ function renderRecsList(){
   clearRecs();
   const recsList = document.getElementById('rec-list');
   recs.forEach((rec)=>{
-    recsList.appendChild(createRecButton(rec));
+
+    
+     recsList.appendChild(createRecButton(rec));
+    
   });
 }
  
@@ -305,7 +322,7 @@ function createRecButton(rec){
   recBtn.innerText = rec.name;
   recBtn.className =  "btn rec-btn";
   recBtn.addEventListener("click", function() {
-    if(!route.some(waypoint => waypoint.name === rec.name)){
+    if(!route.some(waypoint => waypoint.place_id === rec.place_id)){
       route.push(rec);
       calcRouteWithRecs();
     }
@@ -360,7 +377,7 @@ function sendEmail(){
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList, sendEmail */
+    generateRoute, map, placesService, renderRecsList, sendEmail, test, test2*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
 
