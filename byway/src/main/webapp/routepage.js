@@ -334,7 +334,7 @@ function openInGMaps(){
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList, sendEmail */
+    generateRoute, map, placesService, renderRecsList, sendEmail, openInGMaps */
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
 
