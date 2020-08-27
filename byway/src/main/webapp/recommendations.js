@@ -185,17 +185,19 @@ function alertUser(statuses) {
 }
 
 /**
- * Places markers on the locations found from textSearch.
- * Save places found from interests around a location in sessionStorage.
+ * Loads recommendations from textSearch. If it is included
+ * in the trip's route, do not show a rec marker. If not included,
+ * place a marker.
  * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} placesFound places found with PlaceResult type.
  */
 function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
-    placeMarker(place);
     recs.push(place);
     placesLoaded.push(place);
+    const showMarker = (route.some(waypoint => waypoint.place_id === place.place_id)) ? false : true;
+    placeRecMarker(place, showMarker);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;
     }
@@ -217,8 +219,10 @@ function savePlacesFromInterests(request, placesLoaded) {
  * shows information about the place. When double clicked, adds as
  * a destination and calculates a new route.
  * @param {PlaceResult} place contains information about a place
+ * @param {Boolean} showMarker set on map or remove
  */
-function placeMarker(place) {
+function placeRecMarker(place, showMarker) {
+  const canvas = (showMarker) ? map : null;
   let infoWindow = new google.maps.InfoWindow({
     content: place.name
   });
@@ -228,7 +232,7 @@ function placeMarker(place) {
   };
   let marker = new google.maps.Marker({
     position: place.geometry.location,
-    map,
+    map: canvas,
     title: place.name,
     icon: image
   });
@@ -257,10 +261,12 @@ function placeMarker(place) {
  * pass in. Either set the marker canvas to null with false, or set
  * to the google.maps object with true.
  */
-function toggleMarker() {
+function toggleRecMarkers() {
   let canvas = (isNull) ? null : map;
   for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(canvas);
+    if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
+      markers[i].setMap(canvas);
+    }
   }
   isNull = !isNull;
 }
