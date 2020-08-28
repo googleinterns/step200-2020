@@ -142,7 +142,7 @@ function updateLocations(locationData){
     let destinationArray = locationData.destinations;
     destinationArray.forEach((destination) => {
       findPlace(destination, placesService).then((placeDetails) =>{
-        addLocationToDom(placeDetails, container, locationData, destination);
+        addLocationToDom(placeDetails, container);
       }); 
     });
 }
@@ -152,7 +152,7 @@ function updateLocations(locationData){
 * @param {Place object} place
 * @param {HTML element}  container
 */
-function addLocationToDom(place,container, locationData, destination){
+function addLocationToDom(place,container){
   let destinationToAdd = document.createElement('div');
   destinationToAdd.className = 'location';
   let destinationPhoto = document.createElement('img');
@@ -168,8 +168,6 @@ function addLocationToDom(place,container, locationData, destination){
   destinationName.innerText = place.name;
   let destinationAddress= document.createElement('p');
   destinationAddress.innerText = place.formatted_address;
-  let deleteDestination = document.createElement('a');
-  deleteDestination.onclick = deleteDestination(locationData, destination);
 
   destinationInfo.appendChild(destinationName);
   destinationInfo.appendChild(destinationAddress);
@@ -179,10 +177,6 @@ function addLocationToDom(place,container, locationData, destination){
   destinationToAdd.appendChild(destinationInfo);
 }
 
-function deleteDestination(){
-
-
-}
 
 /** 
 * fetches start destination from DestinationsServlet and 

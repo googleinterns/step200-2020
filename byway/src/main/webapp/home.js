@@ -107,7 +107,7 @@ async function showCompleteTrip(trip){
 async function constructTripTitle(trip, keyString){
   let title = document.getElementById('title-' + keyString);
   title.innerText = "";
-  for(let i = 0; i<20; i++){
+  for(let i = 0; i<10; i++){
       try{
         const promises = trip.destinations.map(async (destination) => {
             let placeInfo = await findPlace(destination, placesService);
