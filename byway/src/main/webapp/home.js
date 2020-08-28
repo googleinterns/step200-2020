@@ -57,7 +57,7 @@ function loadPastTrip(){
  * @param {boolean} isDestinationsMissing
  * @param {boolean} isInterestsMissing
  */
-async function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
+function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
   pastTrip.className = "past-trip";
