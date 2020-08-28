@@ -68,9 +68,10 @@ function initMap() {
   placesService = new google.maps.places.PlacesService(map);
   
 }
-
-function useDirectionsService(){
-  console.log("use dir service");
+/** Makes a request to the Directions API to return information about the route
+ *  @return {Promise} result Directions route object with fields route, legs, etc.
+ */
+function getRouteForTrip(){
   const request = {
     origin:  start.name,
     destination: end.name,
@@ -92,52 +93,19 @@ function useDirectionsService(){
   return result;
 }
 
-// shared function calls
-async function test(){
-  console.log("test");
-  let result = await useDirectionsService();
-  orderWaypoints(result);
-  updateDistanceTime(result);
-  /** result.then((response) =>{
-    directionsRenderer.setDirections(response);
-    orderWaypoints(response);
-    updateDistanceTime(response);
-  }); */
-  updateRoute();
-}
-
-// use shared function, add separate calls
-async function test2(){
-  let result2 = await useDirectionsService();
-  findRegions(result2);
-  loadRecommendations();
-  // test();
-}
-
-/** Displays route containing waypoints overtop the map. */
-function calcRouteWithRecs() {
-  /** 
-  let request = {
-    origin:  start.name,
-    destination: end.name,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
-    optimizeWaypoints: true
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == 'OK') {
-      directionsRenderer.setDirections(response);
-      orderWaypoints(response);
-      updateDistanceTime(response);
-    } else {
-      window.alert("Could not calculate route due to: " + status);
-    }
+/** Uses the route from the directionsService request to update 
+ *  ordering of stops on the route panel, and distance and time of roadtrip
+ */
+async function updatePageInfo(){
+  try{
+    let result = await getRouteForTrip();
+    orderWaypoints(result);
+    updateDistanceTime(result);
     updateRoute();
-  });
-  */
-  test();
-  // TODO: execute after everything
-  // updateRoute();
+  } catch (error) {
+      console.error(error);
+  }
+  
 }
 
 /** Add the start/end location back to the schedule panel
@@ -159,7 +127,6 @@ function generateRoute() {
  * @param {response} response response from the directions service object
  */
 function orderWaypoints(response){
-  console.log("order waypoints");
   let waypoint_order = response.routes[0].waypoint_order;
   let route_copy = [...route];
   for(let i = 0; i < route.length; i++){
@@ -175,7 +142,6 @@ function orderWaypoints(response){
  * hours estimated driving time in hours, minutes estimated driving time in minutes
  */
 function computeDistanceTime(response) {
-  console.log("in distance time");
   let totalDist = 0;
   let totalTime = 0;
   // full route
@@ -278,7 +244,7 @@ function createRouteButton(waypoint){
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
       route = route.filter(stop => stop.place_id != waypoint.place_id);
-      calcRouteWithRecs();
+      updatePageInfo();
     });
   }
   return routeBtn;
@@ -287,7 +253,6 @@ function createRouteButton(waypoint){
  
 /** Display new route list and store it in the datastore */
 function updateRoute(){
-  console.log("update route");
   renderRouteList();
   fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
@@ -306,7 +271,6 @@ function renderRecsList(){
   clearRecs();
   const recsList = document.getElementById('rec-list');
   recs.forEach((rec)=>{
-
     
      recsList.appendChild(createRecButton(rec));
     
@@ -324,7 +288,7 @@ function createRecButton(rec){
   recBtn.addEventListener("click", function() {
     if(!route.some(waypoint => waypoint.place_id === rec.place_id)){
       route.push(rec);
-      calcRouteWithRecs();
+      updatePageInfo();
     }
   });
   return recBtn;
@@ -376,8 +340,8 @@ function sendEmail(){
   }
 }
 
-/* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList, sendEmail, test, test2*/
+/* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
+    getRouteForTrip, updatePageInfo*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
 

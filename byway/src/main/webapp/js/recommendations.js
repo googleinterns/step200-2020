@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /* global destinations, directionsRenderer, directionsService, end, google,
-    interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
+    interests, map, orderWaypoints, placesService, renderRecsList, route, start, 
+    getRouteForTrip, updatePageInfo*/
 /* exported calcMainRoute, recs */
 
 // Holds recommendations as PlaceResult objects
@@ -29,6 +30,19 @@ const MAX_RECOMMENDATIONS = 1;
 // Holds regions google.maps.LatLng objects
 let regions = [];
 
+/** Uses the route from the directionsService request to find suitable recommendations
+ *  along each leg 
+ */
+async function getRecommendations(){
+  try{
+    let result = await getRouteForTrip();
+    findRegions(result);
+    loadRecommendations();
+  } catch (error) {
+      console.error(error);
+  }
+}
+
 /**
  * Creates round-trip route with waypoints that loads onto the map.
  * Partitions the route into regions, used to load recommendations
@@ -36,25 +50,9 @@ let regions = [];
  */
 function calcMainRoute() {
   resetUserAlerts();
-  const request = {
-    origin:  start.name,
-    destination: end.name,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
-    optimizeWaypoints: true
-  };
   addMainStopsToRegions();
-  directionsService.route(request, function(result, status) {
-    if (status == 'OK') {
-      directionsRenderer.setDirections(result);
-      findRegions(result);
-      loadRecommendations();
-      orderWaypoints(result);
-      updateDistanceTime(result);
-    } else {
-      alert("Could not calculate route due to: " + status);
-    }
-  });
+  getRecommendations();
+  updatePageInfo();
 }
 
 /* Saves the LatLng coords of the start point and destinations to regions array. */
@@ -185,7 +183,10 @@ function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
     placeMarker(place);
-    recs.push(place);
+    // prevents addition of same large place which may span various coordinates
+    if(!recs.some(rec => rec.place_id === place.place_id)){
+      recs.push(place);
+    }
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;
