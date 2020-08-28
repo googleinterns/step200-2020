@@ -104,6 +104,7 @@ function generateRoute() {
     routeList.appendChild(createRouteButton(waypoint));
   }
   routeList.appendChild(createRouteButton(end));
+  clearMarkers();
 }
 
 /**
@@ -336,6 +337,6 @@ function sendEmail(){
 
 /* exported calcRouteWithRecs, initMap, interests,
     generateRoute, map, placesService, renderRecsList, sendEmail */
-/* global calcMainRoute, configureTripKeyForPath, findPlace,
+/* global calcMainRoute, clearMarkers, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
 

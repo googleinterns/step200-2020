@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global destinations, directionsRenderer, directionsService, end, google,
-    interests, map, orderWaypoints, placesService, renderRecsList, route, start, updateDistanceTime */
-/* exported calcMainRoute, recs */
+/* global destinations, directionsRenderer, directionsService,
+    end, google, interests, map, orderWaypoints, placesService,
+    renderRecsList, route, start, updateDistanceTime */
+/* exported calcMainRoute, showMarkers, recs */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -29,13 +30,15 @@ const MAX_RECOMMENDATIONS = 1;
 // Holds regions google.maps.LatLng objects
 let regions = [];
 
+// holds markers as google.maps.Marker objects
+let markers = [];
+
 /**
  * Creates round-trip route with waypoints that loads onto the map.
  * Partitions the route into regions, used to load recommendations
  * around. Orders the waypoints for efficiency and updates trip logistics.
  */
 function calcMainRoute() {
-  resetUserAlerts();
   const request = {
     origin:  start.name,
     destination: end.name,
@@ -46,6 +49,7 @@ function calcMainRoute() {
   addMainStopsToRegions();
   directionsService.route(request, function(result, status) {
     if (status == 'OK') {
+      document.getElementById("loading").style.visibility = 'visible';
       directionsRenderer.setDirections(result);
       findRegions(result);
       loadRecommendations();
@@ -63,17 +67,6 @@ function addMainStopsToRegions() {
   for (let destination of destinations) {
     regions.push(destination.geometry.location);
   }
-}
-
-/* Resets the alerts found in a previous attempt to load recommendations and reveals loading bar. */
-function resetUserAlerts() {
-  document.getElementById("message-container").style.visibility = 'hidden';
-  document.getElementById("general-message").style.visibility = 'hidden';
-  let statusesContainer = document.getElementById("statuses");
-  while(statusesContainer.hasChildNodes()) {
-    statusesContainer.removeChild(statusesContainer.firstChild);
-  }
-  statusesContainer.style.visibility = 'hidden';
 }
 
 /**
@@ -134,6 +127,7 @@ async function loadRecommendations() {
   }
   if(statuses.size !== 0) alertUser(statuses);
   renderRecsList();
+  document.getElementById("loading").style.visibility = 'hidden';
 }
 
 /**
@@ -164,15 +158,10 @@ function findPlacesWithTextSearch(request, statuses) {
  * @param {Set} statuses String elements with status codes from placesService
  */
 function alertUser(statuses) {
-  document.getElementById("message-container").style.visibility = 'visible';
-  document.getElementById("general-message").style.visibility = 'visible';
-  let statusesContainer = document.getElementById("statuses");
-  statusesContainer.style.visibility = 'visible';
-  for(let status of statuses) {
-    let statusElement = document.createElement('ul');
-    statusElement.innerText = status;
-    statusesContainer.appendChild(statusElement);
-  }
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'visible';
+  const statusCodes = Array.from(statuses).join();
+  msgContainer.innerText = "Showing limited results due to: " + statusCodes + ".";
 }
 
 /**
@@ -224,4 +213,18 @@ function placeMarker(place) {
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
   });
+  markers.push(marker);
+}
+
+/**
+ * Iterate through all markers and hide or show based on the boolean
+ * pass in. Either set the marker canvas to null with false, or set
+ * to the google.maps object with true.
+ * @param {Boolean} isNull indicates to remove markers by setting their map to null.
+ */
+function showMarkers(isNull) {
+  let canvas = (isNull) ? null : map;
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(canvas);
+  }
 }
