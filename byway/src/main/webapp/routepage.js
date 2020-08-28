@@ -39,6 +39,9 @@ let tripKey;
 // map object used in the route page
 let map; 
 
+// link to the route that gets updated with new waypoint additions to route
+let routeLink = "";
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -197,6 +200,7 @@ function getRouteOnload(){
         }
       }
       calcMainRoute();
+      updateRouteLink();
       renderRouteList();
     } else{
       console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
@@ -237,6 +241,7 @@ function createRouteButton(waypoint){
  
 /** Display new route list and store it in the datastore */
 function updateRoute(){
+  updateRouteLink();
   renderRouteList();
   fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
@@ -283,7 +288,7 @@ function createRecButton(rec){
 /** Creates a URL link to Google Maps based on the start/end point and route
  *  @returns {String} routeLink url containing query params for the user’s route
  */
-function generateRouteLink(){
+function updateRouteLink(){
   let routeRoot = "https://www.google.com/maps/dir/?" 
   let routeParams = new URLSearchParams({
                       api : 1,
@@ -294,7 +299,8 @@ function generateRouteLink(){
                       waypoint_place_ids: route.map(waypoint => waypoint.place_id).join("|")
                     }).toString()
   
-  let routeLink = routeRoot + routeParams;
+  routeLink = routeRoot + routeParams;
+  document.getElementById("gmaps-btn").href = routeLink;
   return routeLink;
 }
 
@@ -316,7 +322,7 @@ function sendEmail(){
   let emailParams = new URLSearchParams({
                       subject: "Your roadtrip plan",
                       body:   "Your route is listed below. Click the link to see your roadtrip"
-                      + "map in Google Maps: " + generateRouteLink(),
+                      + "map in Google Maps: " + routeLink,
                     }).toString()
   let emailLink = emailRoot + emailParams;
   
@@ -325,16 +331,11 @@ function sendEmail(){
   } else{ // TO DO: Use alerts to notify user
     console.log("Please enter a valid email address.");
   }
-
 }
 
-/** Opens route on Google Maps */
-function openInGMaps(){
-  document.getElementById("gmaps-btn").href = generateRouteLink();
-}
 
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList, sendEmail, openInGMaps */
+    generateRoute, map, placesService, renderRecsList, sendEmail */
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
 
