@@ -155,9 +155,13 @@ function updateLocations(locationData){
 function addLocationToDom(place,container){
   let destinationToAdd = document.createElement('div');
   destinationToAdd.className = 'location';
-  
   let destinationPhoto = document.createElement('img');
-  destinationPhoto.src = place.photos[0].getUrl();
+  if(place.photos){
+    destinationPhoto.src = place.photos[0].getUrl();
+  }
+  else{
+      destinationPhoto.src = "images/nophoto.png";
+  }
   let destinationInfo = document.createElement('p');
   destinationInfo.className = 'destination-info';
   let destinationName = document.createElement('p');

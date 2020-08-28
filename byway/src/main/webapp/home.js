@@ -44,7 +44,7 @@ function loadPastTrip(){
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
-      (isDestinationsMissing|| isInterestsMissing) ? showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing) : showCompleteTrip(tripNum, trip);
+      (isDestinationsMissing|| isInterestsMissing) ? showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing) : showCompleteTrip(trip);
       tripNum++;
     });
   })
@@ -57,11 +57,12 @@ function loadPastTrip(){
  * @param {boolean} isDestinationsMissing
  * @param {boolean} isInterestsMissing
  */
-function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
+async function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
   pastTrip.className = "past-trip";
   let title = document.createElement('a');
+  title.id = "title-" + trip.keyString;
   pastTrip.append(title);
   title.innerText = "Trip #" + tripNum + ": In-Progress";
   let info =  document.createElement('p');
@@ -86,39 +87,43 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
  * @param {Number} tripNum 
  * @param {Trip} trip
  */
-async function showCompleteTrip(tripNum, trip){
+async function showCompleteTrip(trip){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
   pastTrip.className = "past-trip";
   let title = document.createElement('a');
+  title.id = "title-" + trip.keyString;
   pastTrip.append(title);
   let mapContainer = document.createElement('div');
   mapContainer.className = 'map';
-  mapContainer.id = "map-" + trip.keyString
+  mapContainer.id = "map-" + trip.keyString;
   pastTrip.append(mapContainer);
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
-  await setTripTitle(trip, title,tripNum);
+  await constructTripTitle(trip, trip.keyString);
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
-async function setTripTitle(trip, title, tripNum){
+async function constructTripTitle(trip, keyString){
+  let title = document.getElementById('title-' + keyString);
   title.innerText = "";
-  for (destination of trip.destinations){
-    for(let i = 0; i<2; i++){
+  for(let i = 0; i<20; i++){
       try{
-        let placeInfo = await findPlace(destination, placesService);
-        title.innerText += placeInfo.name;
-        return;
+        const promises = trip.destinations.map(async (destination) => {
+            let placeInfo = await findPlace(destination, placesService);
+            return placeInfo.name;
+        });
+        const tripStrings = await Promise.all(promises);
+        title.innerText = tripStrings.join();
+        break;
       }catch(error){
         if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
-          console.log(tripNum);
         await delayPromise(1000);    
         }
       }
     }
-  }
 }
+
 
 /**
  * Initializes a map 
