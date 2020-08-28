@@ -330,7 +330,7 @@ function sendEmail(){
 
 /** Opens route on Google Maps */
 function openInGMaps(){
-  window.open(generateRouteLink());
+  document.getElementById("gmaps-btn").href = generateRouteLink();
 }
 
 /* exported calcRouteWithRecs, initMap, interests,
