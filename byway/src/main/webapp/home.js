@@ -138,7 +138,7 @@ async function initMap(start, end, route, keyString) {
  * @param {Array} [waypoints] array of waypoint objects
  */
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-  for(let i = 0; i<10; i++){
+  for(let i = 0; i<20; i++){
     try{
       let result = await getDirections(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
@@ -148,7 +148,8 @@ async function setRoute(directionsService, directionsRenderer, start, end, waypo
         await delayPromise(1000);
       }
     }
-  }   
+  }
+ console.error("Could not retrieve Trip Route");
 }
 
 function delayPromise(delayMs) {
