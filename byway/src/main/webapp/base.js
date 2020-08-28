@@ -1,4 +1,4 @@
-/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace, MapStatusError */
 
 /** 
 * Sets Progress Bar to correct location based on the page number
@@ -63,4 +63,40 @@ function getTripKeyFromUrl() {
  */
 function configureTripKeyForPath(tripKey, path) {
   return path + "?" + new URLSearchParams({tripKey}).toString();
+}
+
+/**
+ * Class used to throw error with both message and status
+ */
+class MapStatusError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = 'MapStatusError';
+        this.status = status;
+    }
+}
+
+/**
+ * Uses placeId to retrieve details like coordinates, place name, etc.
+ * @param {String} placeId a textual identifier that uniquely identifies a place
+ * @param {Places Service Object} placesService object that communicates with the Places API service
+ * @return {Promise} result a Place Result object with fields name, geometry, id, etc.
+ */
+function findPlace(placeId, placesService) {
+  const request = {
+    placeId: placeId,
+    fields: ['name', 'geometry', 'place_id', 'photos', 'formatted_address']
+  }
+  const result = new Promise((resolve, reject) => {
+    placesService.getDetails(request, (result, status) => {
+      if(status == "OK") {
+        resolve(result);
+      } else {
+        alert("Status: " + status);
+        reject(new MapStatusError("Could not retrieve place result object from request.", status));
+      }
+    })
+  })
+
+  return result;
 }

@@ -1,4 +1,4 @@
-/* global google, configureTripKeyForPath, setupLogoutLink*/
+/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError*/
 /* exported placesService*/
 
 let placesService;
@@ -86,7 +86,7 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
  * @param {Number} tripNum 
  * @param {Trip} trip
  */
-function showCompleteTrip(tripNum, trip){
+async function showCompleteTrip(tripNum, trip){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
   pastTrip.className = "past-trip";
@@ -98,8 +98,26 @@ function showCompleteTrip(tripNum, trip){
   pastTrip.append(mapContainer);
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
-  title.innerText = "Trip #" + tripNum;
+  await setTripTitle(trip, title,tripNum);
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
+}
+
+async function setTripTitle(trip, title, tripNum){
+  title.innerText = "";
+  for (destination of trip.destinations){
+    for(let i = 0; i<2; i++){
+      try{
+        let placeInfo = await findPlace(destination, placesService);
+        title.innerText += placeInfo.name;
+        return;
+      }catch(error){
+        if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
+          console.log(tripNum);
+        await delayPromise(1000);    
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -159,13 +177,13 @@ function delayPromise(delayMs) {
 /**
  * Class used to throw error in getDirections() with both message and status
  */
-class MapStatusError extends Error {
+/*class MapStatusError extends Error {
     constructor(message, status) {
         super(message);
         this.name = 'MapStatusError';
         this.status = status;
     }
-}
+}*/
 
 /**
  * Get directions with given start, end and waypoints
