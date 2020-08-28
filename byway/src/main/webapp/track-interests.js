@@ -93,7 +93,7 @@ function createButtonForPlace(place) {
   return button;
 }
 
-/* Hide or display list of interests to match user input. */
+/* Hide or display list of interests to match user input as a zero-indexed substring. */
 function filterInterests() {
   const searchField = document.getElementById("search-interest");
   const searchValue = searchField.value.toLowerCase();
