@@ -13,6 +13,7 @@
 // limitations under the License.
 
 /* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink*/
+/* exported filterInterests */
 
 let interestsChosen = new Set();
 let tripKey;
