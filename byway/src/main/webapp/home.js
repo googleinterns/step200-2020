@@ -116,7 +116,7 @@ async function constructTripTitle(trip, keyString){
         const tripStrings = await Promise.all(promises);
         title.innerText = tripStrings.join();
         break;
-      }catch(error){
+      } catch(error){
         if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
         await delayPromise(1000);    
         }
@@ -178,17 +178,6 @@ async function setRoute(directionsService, directionsRenderer, start, end, waypo
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
 }
-
-/**
- * Class used to throw error in getDirections() with both message and status
- */
-/*class MapStatusError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.name = 'MapStatusError';
-        this.status = status;
-    }
-}*/
 
 /**
  * Get directions with given start, end and waypoints

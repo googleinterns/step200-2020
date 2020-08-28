@@ -142,7 +142,7 @@ function updateLocations(locationData){
     let destinationArray = locationData.destinations;
     destinationArray.forEach((destination) => {
       findPlace(destination, placesService).then((placeDetails) =>{
-        addLocationToDom(placeDetails, container);
+        addLocationToDom(placeDetails, container, locationData, destination);
       }); 
     });
 }
@@ -152,7 +152,7 @@ function updateLocations(locationData){
 * @param {Place object} place
 * @param {HTML element}  container
 */
-function addLocationToDom(place,container){
+function addLocationToDom(place,container, locationData, destination){
   let destinationToAdd = document.createElement('div');
   destinationToAdd.className = 'location';
   let destinationPhoto = document.createElement('img');
@@ -168,6 +168,8 @@ function addLocationToDom(place,container){
   destinationName.innerText = place.name;
   let destinationAddress= document.createElement('p');
   destinationAddress.innerText = place.formatted_address;
+  let deleteDestination = document.createElement('a');
+  deleteDestination.onclick = deleteDestination(locationData, destination);
 
   destinationInfo.appendChild(destinationName);
   destinationInfo.appendChild(destinationAddress);
@@ -175,6 +177,11 @@ function addLocationToDom(place,container){
   container.append(destinationToAdd);
   destinationToAdd.appendChild(destinationPhoto);
   destinationToAdd.appendChild(destinationInfo);
+}
+
+function deleteDestination(){
+
+
 }
 
 /** 
