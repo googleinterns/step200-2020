@@ -273,7 +273,54 @@ function createRecButton(rec){
   return recBtn;
 }
 
+/** Creates a URL link to Google Maps based on the start/end point and route
+ *  @returns {String} routeLink url containing query params for the user’s route
+ */
+function generateRouteLink(){
+  let routeRoot = "https://www.google.com/maps/dir/?" 
+  let routeParams = new URLSearchParams({
+                      api : 1,
+                      travelmode: "driving",
+                      origin: start.name,
+                      destination: end.name,
+                      waypoints: route.join("|")
+                    }).toString()
+  
+  let routeLink = routeRoot + routeParams;
+  return routeLink;
+}
+
+/** Determines if email address is valid using regex patterns
+ *  @param {String} email email address 
+ *  @returns {boolean} is the email a valid email address
+ */
+function validateEmail(email) {
+    const re = /^[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+    return re.test(String(email).toLowerCase());
+}
+
+/** Opens a new window of an email client with prefilled to, subject, and body field 
+ *  containing a Google Maps link of the user's route 
+ */
+function sendEmail(){
+  let emailAddress = document.getElementById("email-address").value;
+  let emailRoot = "mailto:" + emailAddress + "?";
+  let emailParams = new URLSearchParams({
+                      subject: "Your roadtrip plan",
+                      body:   "Your route is listed below. Click the link to see your roadtrip"
+                      + "map in Google Maps: " + generateRouteLink(),
+                    }).toString()
+  let emailLink = emailRoot + emailParams;
+  
+  if(validateEmail(emailAddress)){
+    window.open(emailLink);
+  } else{ // TO DO: Use alerts to notify user
+    console.log("Please enter a valid email address.");
+  }
+}
+
 /* exported calcRouteWithRecs, initMap, interests,
-    generateRoute, map, placesService, renderRecsList */
+    generateRoute, map, placesService, renderRecsList, sendEmail */
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
+
