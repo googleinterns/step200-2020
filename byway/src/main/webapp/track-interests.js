@@ -100,7 +100,7 @@ function filterInterests() {
   let interestBtns = interestBtnsElement.getElementsByClassName("interestBtn");
   for (let i = 0; i < interestBtns.length; i++) {
     const btnValue = interestBtns[i].innerText;
-    if (btnValue.toLowerCase().indexOf(searchValue) !== -1) {
+    if (btnValue.toLowerCase().indexOf(searchValue) === 0) {
       interestBtns[i].style.display = "";
     } else {
       interestBtns[i].style.display = "none";
