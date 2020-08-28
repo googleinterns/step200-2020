@@ -3,6 +3,7 @@
 
 let placesService;
 
+
 // Reloads page if naviated to via back button
 if(!!window.performance && window.performance.navigation.type == PerformanceNavigation.TYPE_BACK_FORWARD)
 {
@@ -16,19 +17,29 @@ else{
   initializeHomePage();
 }
 
+/**
+ * Initiliazes users past trips and sets up logout link
+ */
 function initializeHomePage(){
   setupLogoutLink();
   loadPastTrip();
   document.getElementById('create-trip').addEventListener('click', () => {
-    fetch('/api/createtrip', {method: 'POST'}).then((response) => response.json()).then((trip) =>{
+    fetch('/api/createtrip', {method: 'POST'})
+    .then((response) => response.json())
+    .then((trip) =>{
       let tripKey = trip.keyString;
       window.location.href = configureTripKeyForPath(tripKey, "/destinations.html");
     });
   });
 }
 
+/**
+ * For each of user's past trips, creates a div with either a complete trip or a trip missing some inputs
+ */
 function loadPastTrip(){
-  fetch('/api/gettrips').then((response) => response.json()).then((tripIds) => {
+  fetch('/api/gettrips')
+  .then((response) => response.json())
+  .then((tripIds) => {
     let tripNum = 1;
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
@@ -39,6 +50,13 @@ function loadPastTrip(){
   })
 }
 
+/**
+ * Creates div indicating which inputs are missing for specific trip
+ * @param {Number} tripNum
+ * @param {Trip} trip
+ * @param {boolean} isDestinationsMissing
+ * @param {boolean} isInterestsMissing
+ */
 function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
@@ -63,6 +81,11 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
   container.append(pastTrip);
 }
 
+/**
+ * Creates a div containing a map and title for complete trip
+ * @param {Number} tripNum 
+ * @param {Trip} trip
+ */
 function showCompleteTrip(tripNum, trip){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
@@ -79,7 +102,14 @@ function showCompleteTrip(tripNum, trip){
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
-function initMap(start, end, route, keyString) {
+/**
+ * Initializes a map 
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {ArrayList<String>} route arraylist of placeIds as strings
+ * @param {String} keyString key of trip as string
+ */
+async function initMap(start, end, route, keyString) {
   const directionsService = new google.maps.DirectionsService();
   const directionsRenderer = new google.maps.DirectionsRenderer();
   let waypoints = [];
@@ -96,23 +126,77 @@ function initMap(start, end, route, keyString) {
   const tripMap = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
   placesService = new google.maps.places.PlacesService(tripMap);
   directionsRenderer.setMap(tripMap);
-  calcRoute(directionsService, directionsRenderer, start, end, waypoints);
+  await setRoute(directionsService, directionsRenderer, start, end, waypoints);
 }
 
-function calcRoute(directionsService, directionsRenderer, start, end, waypoints) {
-  let request = {
+/**
+ * Sets directions on map
+ * @param {DirectionsService} directionsService
+ * @param {DirectionsRenderer} directionsRenderer
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {Array} [waypoints] array of waypoint objects
+ */
+async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
+  for(let i = 0; i<20; i++){
+    try{
+      let result = await getDirections(directionsService, start, end, waypoints)
+      directionsRenderer.setDirections(result);
+      return;
+    }catch(error){
+      if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
+        await delayPromise(1000);
+      }
+    }
+  }
+ console.error("Could not retrieve Trip Route");
+}
+
+function delayPromise(delayMs) {
+  return new Promise(resolve => setTimeout(resolve, delayMs));
+}
+
+/**
+ * Class used to throw error in getDirections() with both message and status
+ */
+class MapStatusError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = 'MapStatusError';
+        this.status = status;
+    }
+}
+
+/**
+ * Get directions with given start, end and waypoints
+ * @param {DirectionsService} directionsService
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {Array} [waypoints] array of waypoint objects
+ */
+function getDirections(directionsService, start, end, waypoints) {
+   let request = {
     origin:  {placeId : start},
     destination: {placeId : end},
     waypoints: waypoints,
     travelMode: 'DRIVING',
     optimizeWaypoints: true
   };
-  directionsService.route(request, function(response, status) {
-    if (status == 'OK') {
-      directionsRenderer.setDirections(response);
-    } else {
-      window.alert("Could not calculate route due to: " + status);
-    }
+  const result = new Promise((resolve,reject) => {
+    directionsService.route(request, (result, status) => {
+      if (status == 'OK') {
+        resolve(result);
+      }
+      else {
+        reject(new MapStatusError("Could not calculate route from request.", status));
+      }
   });
+});
+return result;
 }
+
+
+
+ 
+
 
