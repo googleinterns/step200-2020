@@ -29,10 +29,10 @@ if(document.readyState === 'loading') {
  * key of the user and the buttons with interests
  * they can select.
  */
-function loadContent() {
+async function loadContent() {
   let nextPage = document.getElementById("next-button");
   nextPage.href = configureTripKeyForPath(tripKey, "/routepage.html");
-  getTripInterests();
+  await getTripInterests();
   loadButtonsWithInterests();
   setupLogoutLink();
 }
@@ -58,11 +58,11 @@ function updateStatus(place, elem) {
  * Finds the list of interests that were set for the trip.
  * If it is a new trip, no interests are listed. If the trip
  * had previously-saved interests, return them.
- * @return fulfilled promise containing the list of interests
+ * @return promise containing the list of interests
  */
-async function getTripInterests() {
-  await fetchInterests(tripKey)
-  .then((interests) => {
+function getTripInterests() {
+  return fetchInterests(tripKey)
+    .then((interests) => {
     for (let interest of interests) {
       interestsSaved.add(interest);
     }
