@@ -143,7 +143,12 @@ input[type=text] {
   margin-left: 30px;
   font-family: 'Noto Sans JP', sans-serif;
 }
- 
+
+#message-container {
+  text-align: center;
+  visibility: hidden;
+}
+
 .icon{
   margin-left: 5px;
   color: orange;
@@ -155,4 +160,18 @@ input[type=text] {
   border-radius: 10px;
   background-color: #f7dbb0;
   color:white;
+}
+
+.loading {
+  height: 50px;
+  position: relative;
+  visibility: hidden;
+}
+
+.loading p {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
