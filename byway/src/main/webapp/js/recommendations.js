@@ -12,16 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-<<<<<<< HEAD:byway/src/main/webapp/js/recommendations.js
-/* global destinations, google, interests, map, placesService, renderRecsList, start, 
-    getRouteForTrip, updatePageInfo*/
-/* exported calcMainRoute, recs */
-=======
-/* global destinations, directionsRenderer, directionsService,
-    end, google, interests, map, orderWaypoints, placesService,
-    renderRecsList, route, start, updateDistanceTime */
+/* global destinations
+    google, interests, map, placesService,
+    renderRecsList,  start, getRouteForTrip, updatePageInfo */
 /* exported calcMainRoute, showMarkers, recs */
->>>>>>> master:byway/src/main/webapp/recommendations.js
+
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -57,7 +52,7 @@ async function getRecommendations(){
  * around. Orders the waypoints for efficiency and updates trip logistics.
  */
 function calcMainRoute() {
-  resetUserAlerts();
+  // TODO: add function resetUserAlerts();
   addMainStopsToRegions();
   getRecommendations();
   updatePageInfo();
