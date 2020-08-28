@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>Select Destinations</title>
-   
-    <script src="base.js"></script>
-    <script src="utils.js"></script>
-    <script src="destinations.js"></script>
-    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href= "base.css">
     <link rel="stylesheet" href="destinations.css">
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <script src="base.js"></script>
+    <script src="destinations.js"></script>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAljWlTjyagvHyZTN69Mvun2mH4Eq8j9yI&libraries=places&directions&v=weekly"
@@ -21,7 +20,7 @@
 
     <div class="header">
       <div id="logout-link"></div>
-      <img src="/images/logo.png" alt="logo" class="logo">
+      <a href="/home.html"> <img src="/images/logo.png" alt="logo" class="logo"></a>
       <div id="name">byway.</div>
     </div>
     
@@ -54,9 +53,9 @@
               placeholder="Enter roadtrip start location"
               required
             />
-          <button class="form-button" id="user-current-address-button" onclick= "getCurrentAddress()">Use current location</button>
+          <button class = "form-button" id="user-current-address-button" onclick= "getCurrentAddress()">use current location</button>
           </div>
-          <p class="location-label"> Your Stays</p>
+          <p class="location-label"> Your Main Stops</p>
           <div class="input-and-button">
             <input
               id="destinations-search-box"
