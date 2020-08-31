@@ -44,7 +44,12 @@ function loadPastTrip(){
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
-      (isDestinationsMissing|| isInterestsMissing) ? showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing) : showCompleteTrip(trip);
+      if (isDestinationsMissing|| isInterestsMissing){
+        showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing);
+      }
+      else{
+        showCompleteTrip(trip);
+      }
       tripNum++;
     });
   })
