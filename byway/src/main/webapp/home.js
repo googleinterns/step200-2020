@@ -140,7 +140,7 @@ async function initMap(start, end, route, keyString) {
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
   for(let i = 0; i < 20; i++){
     try{
-      let result = await computeRouteForTrip(directionsService, directionsRenderer, start, end, waypoints)
+      let result = await computeRouteForTrip(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
       return;
     } catch(error){

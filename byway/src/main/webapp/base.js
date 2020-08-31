@@ -104,6 +104,12 @@ class MapStatusError extends Error {
     }
 }
 
+/**
+ * Makes a request to Directions API to calculate the route and return information about it
+ * @param {DirectionsRequest} request object that contains input fields 
+ * @param {DirectionsService} directionsService object that communicates with the GMaps API service
+ * @return {Promise} result Directions route object with fields route, legs, etc.
+ */
 function computeRoute(request, directionsService){
   return new Promise((resolve,reject) => {
     directionsService.route(request, (result, status) => {
@@ -119,15 +125,14 @@ function computeRoute(request, directionsService){
 }
 
 /**
- * Makes a request to the Directions API to return information about the route
+ * Builds a request and calls computeRoute to return information about the route
  * @param {DirectionsService} directionsService object that communicates with the GMaps API service
- * @param {directionsRenderer} directionsRenderer object that renders display results on the map
  * @param {String} start placeId as string
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
  * @return {Promise} result Directions route object with fields route, legs, etc.
  */
-function computeRouteForTrip(directionsService, directionsRenderer, start, end, waypoints) {
+function computeRouteForTrip(directionsService, start, end, waypoints) {
    let request = {
     origin:  {placeId : start},
     destination: {placeId : end},
@@ -136,21 +141,6 @@ function computeRouteForTrip(directionsService, directionsRenderer, start, end, 
     optimizeWaypoints: true
   };
   return computeRoute(request, directionsService);
-
-  /** 
-  const result = new Promise((resolve,reject) => {
-    directionsService.route(request, (result, status) => {
-      if (status == 'OK') {
-        directionsRenderer.setDirections(result);
-        resolve(result);
-      }
-      else {
-        reject(new MapStatusError("Could not calculate route from request.", status));
-      }
-    });
-  });
-  return result;
-  */
 }
 
 /** Displays error message to the user if a request fails.*/

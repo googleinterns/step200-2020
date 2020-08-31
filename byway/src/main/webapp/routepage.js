@@ -84,7 +84,7 @@ function initMap() {
  */
 async function updatePageInfo(){
   try{
-    let result = await computeRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
+    let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
       directionsRenderer.setDirections(result);
     orderWaypoints(result);
@@ -100,7 +100,7 @@ async function updatePageInfo(){
  */
 async function getRecommendations(){
   try{
-    let result = await computeRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
+    let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
     directionsRenderer.setDirections(result);
     findRegions(result);
