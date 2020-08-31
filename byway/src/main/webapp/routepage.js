@@ -167,7 +167,7 @@ function clearRoute(){
 /** Get trip info from datastore onload */
 function getRouteOnload(){
   clearRoute();
-  fetch(configureTripKeyForPath(tripKey, "/api/stop"))
+  fetch(configureTripKeyForPath(tripKey, "/api/route"))
   .then(response => response.json())
   .then(async (trip) => {
     if(trip != null){
@@ -236,7 +236,7 @@ function createRouteButton(waypoint){
 /** Display new route list and store it in the datastore */
 function updateRoute(){
   renderRouteList();
-  fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
+  fetch(configureTripKeyForPath(tripKey, '/api/route'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
 
 /** Clear the recommendations panel in the html */

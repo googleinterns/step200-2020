@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that handles data for stops */
-@WebServlet("/api/stop")
-public final class StopsServlet extends HttpServlet {
+@WebServlet("/api/route")
+public final class RouteServlet extends HttpServlet {
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
