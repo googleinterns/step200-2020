@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global calcRouteWithRecs, destinations, directionsRenderer, directionsService,
-    end, google, interests, map, orderWaypoints, placesService, showErrorMessage,
-    renderRecsList, start, updateDistanceTime, updateRoute, getRecommendations */
+/* global calcRouteWithRecs, destinations, getRecommendations, google, interests, map,
+    placesService, showErrorMessage, renderRecsList, start, updatePageInfo */
 /* global route:writeable */
 /* exported calcMainRoute, recs, toggleRecMarkers, findRegions, areMarkersHidden, loadRecommendations */
 

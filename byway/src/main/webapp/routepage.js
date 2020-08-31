@@ -15,9 +15,9 @@
 
 /* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
    getRecommendations, updatePageInfo*/
-/* global calcMainRoute, configureTripKeyForPath, findPlace,
+/* global areMarkersHidden, calcMainRoute, calcRouteWithRecs, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
-    findRegions, loadRecommendations, showErrorMessage, clearMarkers*/
+    findRegions, loadRecommendations, showErrorMessage*/
 
 // holds stops and destinations
 let route = [];

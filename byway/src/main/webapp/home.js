@@ -1,4 +1,4 @@
-/* global google, configureTripKeyForPath, setupLogoutLink, computeRouteForTrip, MapStatusError, findPlace, showErrorMessage*/
+/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace, showErrorMessage*/
 /* exported placesService*/
 
 let placesService;
