@@ -196,7 +196,7 @@ function getRouteOnload(){
         start = end = res;
    
       } catch (error) {
-          showErrorMessage("Could not retrieve a start nor end point due to: ", error);
+          showErrorMessage("Could not retrieve a start nor end point. " +  error);
       }
       
       for(let destinationId of trip.destinations){
@@ -204,7 +204,7 @@ function getRouteOnload(){
           let destinationAsPlaceObj = await findPlace(destinationId, placesService);
           destinations.push(destinationAsPlaceObj);
         } catch (error) {
-            showErrorMessage("Could not retrieve destinations due to: ", error);
+            showErrorMessage("Could not retrieve destinations. " + error);
         }
       }
 
@@ -213,7 +213,7 @@ function getRouteOnload(){
           let waypointAsPlaceObj = await findPlace(waypointId, placesService);
           route.push(waypointAsPlaceObj);
         } catch (error) {
-            showErrorMessage("Could not retrieve route due to: ", error);
+            showErrorMessage("Could not retrieve route" + error);
         }
       }
       calcMainRoute();
