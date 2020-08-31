@@ -13,9 +13,9 @@
 // limitations under the License.
 
 /* global destinations
-    google, interests, map, placesService,
-    renderRecsList,  start, getRouteForTrip, updatePageInfo */
-/* exported calcMainRoute, showMarkers, recs */
+    google, interests, map, placesService, showErrorMessage
+    renderRecsList,  start, updatePageInfo, getRecommendations */
+/* exported calcMainRoute, showMarkers, recs, findRegions, loadRecommendations */
 
 
 // Holds recommendations as PlaceResult objects
@@ -33,18 +33,6 @@ let regions = [];
 
 let markers = [];
 
-/** Uses the route from the directionsService request to find suitable recommendations
- *  along each leg 
- */
-async function getRecommendations(){
-  try{
-    let result = await getRouteForTrip();
-    findRegions(result);
-    loadRecommendations();
-  } catch (error) {
-      console.error(error);
-  }
-}
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -122,7 +110,10 @@ async function loadRecommendations() {
       }
     }
   }
-  if(statuses.size !== 0) alertUser(statuses);
+
+  // String elements with status codes from placesService into an error message
+  let errorMessage =  "Showing limited results due to: " + Array.from(statuses).join() + ".";
+  if(statuses.size !== 0) showErrorMessage(errorMessage);
   renderRecsList();
   document.getElementById("loading").style.visibility = 'hidden';
 }
@@ -148,17 +139,6 @@ function findPlacesWithTextSearch(request, statuses) {
     statuses.add(err.message);
     return null;
   });
-}
-
-/**
- * Reveals status codes if there was an issue with a request.
- * @param {Set} statuses String elements with status codes from placesService
- */
-function alertUser(statuses) {
-  let msgContainer = document.getElementById("message-container");
-  msgContainer.style.visibility = 'visible';
-  const statusCodes = Array.from(statuses).join();
-  msgContainer.innerText = "Showing limited results due to: " + statusCodes + ".";
 }
 
 /**

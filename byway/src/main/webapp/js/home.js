@@ -121,7 +121,7 @@ async function initMap(start, end, route, keyString) {
   });
   let mapOptions = {
     zoom: 14,
-    center: start
+    center: new google.maps.LatLng(0,0)
   }
   const tripMap = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
   placesService = new google.maps.places.PlacesService(tripMap);
@@ -132,7 +132,7 @@ async function initMap(start, end, route, keyString) {
 /**
  * Sets directions on map
  * @param {DirectionsService} directionsService
- * @param {DirectionsRenderer} directionsRenderer
+ * @param {DirectionsRenderer} directionsRenderer 
  * @param {String} start placeId as string
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
@@ -140,63 +140,23 @@ async function initMap(start, end, route, keyString) {
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
   for(let i = 0; i<20; i++){
     try{
-      let result = await getDirections(directionsService, start, end, waypoints)
-      directionsRenderer.setDirections(result);
+      let result = await getRouteForTrip(directionsService, directionsRenderer, start, end, waypoints)
       return;
-    }catch(error){
+    } catch(error){
       if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
         await delayPromise(1000);
       }
     }
   }
- console.error("Could not retrieve Trip Route");
+  // TODO: Replace with showErrorMessage() when html is set up
+  console.error("Could not retrieve Trip Route");
 }
 
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
 }
 
-/**
- * Class used to throw error in getDirections() with both message and status
- */
-class MapStatusError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.name = 'MapStatusError';
-        this.status = status;
-    }
-}
-
-/**
- * Get directions with given start, end and waypoints
- * @param {DirectionsService} directionsService
- * @param {String} start placeId as string
- * @param {String} end placeId as string
- * @param {Array} [waypoints] array of waypoint objects
- */
-function getDirections(directionsService, start, end, waypoints) {
-   let request = {
-    origin:  {placeId : start},
-    destination: {placeId : end},
-    waypoints: waypoints,
-    travelMode: 'DRIVING',
-    optimizeWaypoints: true
-  };
-  const result = new Promise((resolve,reject) => {
-    directionsService.route(request, (result, status) => {
-      if (status == 'OK') {
-        resolve(result);
-      }
-      else {
-        reject(new MapStatusError("Could not calculate route from request.", status));
-      }
-  });
-});
-return result;
-}
 
 
 
  
-
-

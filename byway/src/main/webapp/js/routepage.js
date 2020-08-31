@@ -68,44 +68,36 @@ function initMap() {
   placesService = new google.maps.places.PlacesService(map);
   
 }
-/** Makes a request to the Directions API to return information about the route
- *  @return {Promise} result Directions route object with fields route, legs, etc.
- */
-function getRouteForTrip(){
-  const request = {
-    origin:  start.name,
-    destination: end.name,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
-    optimizeWaypoints: true
-  };
-  const result = new Promise((resolve, reject) => {
-    directionsService.route(request, (result, status) => {
-      if(status == "OK") {
-        directionsRenderer.setDirections(result);
-        resolve(result);
-      } else {
-        alert("Status: " + status);
-        reject(new Error("Could not calculate route due to: " + status));
-      }
-    })
-  })
-  return result;
-}
 
 /** Uses the route from the directionsService request to update 
  *  ordering of stops on the route panel, and distance and time of roadtrip
  */
 async function updatePageInfo(){
   try{
-    let result = await getRouteForTrip();
+    let result = await getRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
+      route.map(waypoint => ({location: waypoint.geometry.location})));
     orderWaypoints(result);
     updateDistanceTime(result);
     updateRoute();
   } catch (error) {
-      console.error(error);
+      showErrorMessage(error);
   }
   
+}
+
+/** Uses the route from the directionsService request to find suitable recommendations
+ *  along each leg 
+ */
+async function getRecommendations(){
+  try{
+    let result = await getRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
+      route.map(waypoint => ({location: waypoint.geometry.location})));
+    findRegions(result);
+    loadRecommendations();
+  } catch (error) {
+      showErrorMessage(error);
+      
+  }
 }
 
 /** Add the start/end location back to the schedule panel
@@ -194,7 +186,7 @@ function getRouteOnload(){
         start = end = res;
    
       } catch (error) {
-        console.error("Could not retrieve a start nor end point due to: ", error);
+        showErrorMessage("Could not retrieve a start nor end point due to: ", error);
       }
       
       for(let destinationId of trip.destinations){
@@ -202,7 +194,7 @@ function getRouteOnload(){
           let destinationAsPlaceObj = await findPlace(destinationId, placesService);
           destinations.push(destinationAsPlaceObj);
         } catch (error) {
-          console.error("Could not retrieve destinations due to: ", error);
+          showErrorMessage("Could not retrieve destinations due to: ", error);
         }
       }
 
@@ -212,12 +204,12 @@ function getRouteOnload(){
           route.push(waypointAsPlaceObj);
           
         } catch (error) {
-          console.error("Could not retrieve route due to: ", error);
+          showErrorMessage("Could not retrieve route due to: ", error);
         }
       }
       calcMainRoute();
     } else{
-      console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
+        showErrorMessage("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
   });
 }
@@ -335,13 +327,14 @@ function sendEmail(){
   
   if(validateEmail(emailAddress)){
     window.open(emailLink);
-  } else{ // TO DO: Use alerts to notify user
-    console.log("Please enter a valid email address.");
+  } else{ 
+    showErrorMessage("Please enter a valid email address.");
   }
 }
 
 /* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
-    getRouteForTrip, updatePageInfo*/
+    updatePageInfo*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
-    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
+    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, getRouteForTrip,
+    load, findRegions, loadRecommendations, showErrorMessage*/
 
