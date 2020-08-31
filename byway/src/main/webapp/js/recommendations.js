@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global google, interests, map, placesService, showErrorMessage
+/* global destinations, google, interests, map, placesService, showErrorMessage
     renderRecsList,  start, updatePageInfo, getRecommendations */
 /* exported calcMainRoute, showMarkers, recs, findRegions, loadRecommendations */
 
