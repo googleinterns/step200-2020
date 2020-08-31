@@ -93,6 +93,7 @@ async function showCompleteTrip(trip){
   pastTrip.className = "past-trip";
   let title = document.createElement('a');
   title.id = "title-" + trip.keyString;
+  title.innerText = "Your Trip To:"
   pastTrip.append(title);
   let mapContainer = document.createElement('div');
   mapContainer.className = 'map';
@@ -100,30 +101,24 @@ async function showCompleteTrip(trip){
   pastTrip.append(mapContainer);
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
-  let titleString = await constructTripTitle(trip);
-  title.innerText = titleString;
+  await constructTripTitle(trip, trip.keyString);
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
-async function constructTripTitle(trip){
-  //let title = document.getElementById('title-' + keyString);
-  //title.innerText = "";
-  for(let i = 0; i<30; i++){
+async function constructTripTitle(trip, keyString){
+  trip.destinations.forEach(async (destination) => {
+     for(let i = 0; i<5; i++){
       try{
-        const promises = trip.destinations.map(async (destination) => {
-            let placeInfo = await findPlace(destination, placesService);
-            return placeInfo.name;
-        });
-        const tripStrings = await Promise.all(promises);
-        ///title.innerText = tripStrings.join();
-        //break;
-        return tripStrings.join();
+        let placeInfo = await findPlace(destination, placesService);
+        document.getElementById('title-'+ keyString).innerText += placeInfo.name + "|";
+        break;
       } catch(error){
         if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
-          await delayPromise(1000);    
+          await delayPromise(1000);  
         }
       }
     }
+  });
 }
 
 
@@ -163,8 +158,9 @@ async function initMap(start, end, route, keyString) {
  * @param {Array} [waypoints] array of waypoint objects
  */
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-  for(let i = 0; i<30; i++){
+  for(let i = 0; i<5; i++){
     try{
+      await delayPromise(1000);
       let result = await getDirections(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
       return;
@@ -174,7 +170,7 @@ async function setRoute(directionsService, directionsRenderer, start, end, waypo
       }
     }
   }
- console.error("Could not retrieve Trip Route");
+ showErrorMessage("Could not construct route");
 }
 
 function delayPromise(delayMs) {

@@ -101,3 +101,9 @@ function findPlace(placeId, placesService) {
 
   return result;
 }
+
+function showErrorMessage(message){
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'visible';
+  msgContainer.innerText = message;
+}
