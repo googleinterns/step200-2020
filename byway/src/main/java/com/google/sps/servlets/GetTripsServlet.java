@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that retrieves all of the user's trips  */
+/** Servlet that retrieves all of the user's trips */
 @WebServlet("/api/gettrips")
 public class GetTripsServlet extends HttpServlet {
   private static final FluentLogger logger = FluentLogger.forEnclosingClass();
