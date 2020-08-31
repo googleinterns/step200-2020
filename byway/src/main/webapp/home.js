@@ -123,7 +123,7 @@ async function constructTripTitle(trip, keyString){
           await delayPromise(1000);  
         }
       }
-      showErrorMessage("Could not constuct title for trip " +keyString);
+      showErrorMessage("Could not construct title for trip " +keyString);
     }
   });
 }
