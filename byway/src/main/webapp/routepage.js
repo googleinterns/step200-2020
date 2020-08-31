@@ -122,7 +122,6 @@ function generateRoute() {
     routeList.appendChild(createRouteButton(waypoint));
   }
   routeList.appendChild(createRouteButton(end));
-  clearMarkers();
 }
 
 /**
@@ -248,9 +247,14 @@ function createRouteButton(waypoint){
   } else {
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
-      route = route.filter(stop => stop.place_id != waypoint.place_id);
-      document.getElementById(waypoint.place_id).className = "btn rec-btn";
-     updatePageInfo();
+      if (areMarkersHidden) {
+        // TODO: update with Justine's base alert implementation.
+        alert('Toggle markers to edit route');
+      } else {
+        route = route.filter(stop => stop.place_id != waypoint.place_id);
+        document.getElementById(waypoint.place_id).className = "btn rec-btn";
+        calcRouteWithRecs();
+      }
     });
 
   }
@@ -294,9 +298,14 @@ function createRecButton(rec){
   if(!route.some(waypoint => waypoint.place_id  === rec.place_id )){
     recBtn.className =  "btn rec-btn";
     recBtn.addEventListener("click", function() {
-      route.push(rec);
-      recBtn.className =  "hidden-rec-btn";
-      updatePageInfo();
+      if (areMarkersHidden) {
+        // TODO: update with Justine's base alert implementation.
+        alert('Toggle markers to edit route')
+      } else {
+        route.push(rec);
+        recBtn.className =  "hidden-rec-btn";
+        calcRouteWithRecs();
+      }
     });
   } else{
     recBtn.className =  "hidden-rec-btn";
@@ -351,4 +360,3 @@ function sendEmail(){
       showErrorMessage("Please enter a valid email address.");
   }
 }
-
