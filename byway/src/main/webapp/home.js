@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/* global google, configureTripKeyForPath, setupLogoutLink, computeRouteForTrip */
-=======
-/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace, showErrorMessage*/
->>>>>>> d48e0f57665fba389994ca71bdaabd4a1bccbd89
+/* global google, configureTripKeyForPath, setupLogoutLink, computeRouteForTrip, MapStatusError, findPlace, showErrorMessage*/
 /* exported placesService*/
 
 let placesService;
@@ -175,16 +171,10 @@ async function initMap(start, end, route, keyString) {
  * @param {Array} [waypoints] array of waypoint objects
  */
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-<<<<<<< HEAD
-  for(let i = 0; i < 20; i++){
-    try{
-      let result = await computeRouteForTrip(directionsService, start, end, waypoints)
-=======
   for(let i = 0; i<5; i++){
     try{
       await delayPromise(1000);
       let result = await getDirections(directionsService, start, end, waypoints)
->>>>>>> d48e0f57665fba389994ca71bdaabd4a1bccbd89
       directionsRenderer.setDirections(result);
       return;
     } catch(error){
@@ -193,12 +183,7 @@ async function setRoute(directionsService, directionsRenderer, start, end, waypo
       }
     }
   }
-<<<<<<< HEAD
-  // TODO: Replace with showErrorMessage() when html is set up for this page
-  console.error("Could not retrieve Trip Route");
-=======
  showErrorMessage("Could not construct route");
->>>>>>> d48e0f57665fba389994ca71bdaabd4a1bccbd89
 }
 
 /** Function to stagger loading of past trips to prevent over query limit */
@@ -206,8 +191,6 @@ function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
 }
 
-<<<<<<< HEAD
-=======
 /**
  * Get directions with given start, end and waypoints
  * @param {DirectionsService} directionsService
@@ -236,7 +219,6 @@ function getDirections(directionsService, start, end, waypoints) {
 return result;
 }
 
->>>>>>> d48e0f57665fba389994ca71bdaabd4a1bccbd89
 
 
  

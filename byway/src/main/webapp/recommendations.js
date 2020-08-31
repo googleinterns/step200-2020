@@ -152,7 +152,6 @@ function findPlacesWithTextSearch(request, statuses) {
 function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
-    placeMarker(place);
     // prevents addition of same large place which may span various coordinates
     if(!recs.some(rec => rec.place_id === place.place_id)){
       recs.push(place);
