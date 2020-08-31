@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that creates new trip entity in datastore and adds to users list of tripKeys  */
 @WebServlet("/api/createtrip")
 public class CreateTripServlet extends HttpServlet {
   private final Gson gson = new Gson();
