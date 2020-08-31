@@ -39,6 +39,9 @@ let tripKey;
 // map object used in the route page
 let map; 
 
+// link to the route that gets updated with new waypoint additions to route
+let routeLink = "";
+
 if (document.readyState === 'loading') {  // Loading hasn't finished yet
   document.addEventListener('DOMContentLoaded', loadData);
 } else {  // `DOMContentLoaded` has already fired
@@ -197,6 +200,8 @@ function getRouteOnload(){
         }
       }
       calcMainRoute();
+      updateRouteLink();
+      renderRouteList();
     } else{
       console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
@@ -224,9 +229,11 @@ function createRouteButton(waypoint){
   } else {
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
-      route = route.filter(stop => stop.name != waypoint.name);
+      route = route.filter(stop => stop.place_id != waypoint.place_id);
+      document.getElementById(waypoint.place_id).className = "btn rec-btn";
       calcRouteWithRecs();
     });
+
   }
   return routeBtn;
 }
@@ -234,6 +241,7 @@ function createRouteButton(waypoint){
  
 /** Display new route list and store it in the datastore */
 function updateRoute(){
+  updateRouteLink();
   renderRouteList();
   fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
@@ -263,30 +271,36 @@ function renderRecsList(){
 function createRecButton(rec){
   const recBtn = document.createElement('button');
   recBtn.innerText = rec.name;
-  recBtn.className =  "btn rec-btn";
-  recBtn.addEventListener("click", function() {
-    if(!route.some(waypoint => waypoint.name === rec.name)){
+  recBtn.id = rec.place_id;
+  if(!route.some(waypoint => waypoint.name === rec.name)){
+    recBtn.className =  "btn rec-btn";
+    recBtn.addEventListener("click", function() {
       route.push(rec);
+      recBtn.className =  "hidden-rec-btn";
       calcRouteWithRecs();
-    }
-  });
+    });
+  } else{
+    recBtn.className =  "hidden-rec-btn";
+  }
   return recBtn;
 }
 
 /** Creates a URL link to Google Maps based on the start/end point and route
  *  @returns {String} routeLink url containing query params for the user’s route
  */
-function generateRouteLink(){
+function updateRouteLink(){
   let routeRoot = "https://www.google.com/maps/dir/?" 
   let routeParams = new URLSearchParams({
                       api : 1,
                       travelmode: "driving",
                       origin: start.name,
                       destination: end.name,
-                      waypoints: route.join("|")
+                      waypoints: route.map(waypoint => waypoint.name).join("|"),
+                      waypoint_place_ids: route.map(waypoint => waypoint.place_id).join("|")
                     }).toString()
   
-  let routeLink = routeRoot + routeParams;
+  routeLink = routeRoot + routeParams;
+  document.getElementById("gmaps-btn").href = routeLink;
   return routeLink;
 }
 
@@ -308,7 +322,7 @@ function sendEmail(){
   let emailParams = new URLSearchParams({
                       subject: "Your roadtrip plan",
                       body:   "Your route is listed below. Click the link to see your roadtrip"
-                      + "map in Google Maps: " + generateRouteLink(),
+                      + "map in Google Maps: " + routeLink,
                     }).toString()
   let emailLink = emailRoot + emailParams;
   

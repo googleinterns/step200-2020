@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Select Interests</title>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="base.css">
     <link rel="stylesheet" href="interests.css">
     <link rel="icon" type="image/png" href="/images/logo.png">
@@ -13,7 +14,7 @@
   <body>
     <div class="header">
       <div id="logout-link"></div>
-      <a href="/home.html"> <img src="/images/logo.png" alt="logo" class="logo"></a>
+      <a href="/home.html"> <img src="images/logo.png" alt="logo" class="logo"></a>
       <div id="name">byway.</div>
     </div>
     <div id="progressbar-container">
@@ -23,9 +24,17 @@
         <li><a id="view-route-progress-bar">View route</a></li>
       </ul>
     </div>
+    <div class="alert alert-primary tips" role="alert">
+      <h5 class="alert-heading">Tips:</h5>
+      <p>To get started, select some of your interests or places you want to visit.</p>
+      <hr>
+    </div>
     <div id="interests-section">
+      <input id="search-interest" type="text" onkeyup="filterInterests()" placeholder="Search for an interest..." title="Type in an interest">
       <div id="interests-buttons"></div>
       <a id="next-button">Next</a>
     </div>
+    <div class = "space"></div>
   </body>
+  
 </html>

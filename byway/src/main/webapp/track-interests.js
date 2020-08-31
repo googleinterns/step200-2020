@@ -13,6 +13,7 @@
 // limitations under the License.
 
 /* global configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink*/
+/* exported filterInterests */
 
 let newInterests = new Set();
 let interestsSaved = new Set();
@@ -103,6 +104,22 @@ function createButtonForPlace(place) {
   button.className = "interestBtn";
   if (interestsSaved.has(place)) updateStatus(place, button);
   return button;
+}
+
+/* Hide or display list of interests to match user input as a zero-indexed substring. */
+function filterInterests() {
+  const searchField = document.getElementById("search-interest");
+  const searchValue = searchField.value.toLowerCase();
+  const interestBtnsElement = document.getElementById("interests-buttons");
+  let interestBtns = interestBtnsElement.getElementsByClassName("interestBtn");
+  for (let i = 0; i < interestBtns.length; i++) {
+    const btnValue = interestBtns[i].innerText;
+    if (btnValue.toLowerCase().indexOf(searchValue) > -1) {
+      interestBtns[i].style.display = "inline";
+    } else {
+      interestBtns[i].style.display = "none";
+    }
+  }
 }
 
 /**

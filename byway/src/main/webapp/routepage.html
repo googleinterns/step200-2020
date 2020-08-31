@@ -34,6 +34,15 @@
       <div class = "spinner-border mr-4" role="status"></div>
       <p class = "ml-5">Loading...</p>
     </div>
+    <div class="alert alert-primary tips" role="alert">
+      <h5 class="alert-heading">Tips:</h5>
+      <p>Click map marker to get information on the stop. Double-click to add stop to your
+        route or click the buttons in the recommendations list.</p>
+      <hr>
+      <p class="mb-0">To remove a stop from your route, just 
+        click on the button in the your route list.</p>
+    </div>
+
     <div class = "route-container">
       <div class = "map-style">
         <div id= "map"></div>
@@ -52,7 +61,6 @@
          <div class = "time-distance-field">
            <p id = "distance"></p>
          </div>
-
          <div class = "time-distance-title">
            <p>Estimated Travel Time:</p>
          </div>
@@ -73,7 +81,6 @@
         <div class= "finish-section"> 
           <button class = "btn finish-btn" onclick = "toggleRecMarkers()">Toggle recommendation markers</button>
         </div>
-        
       </div>
       <div class = "row">
         <div class= "finish-section"> 
@@ -83,8 +90,13 @@
           <button class="icon fa fa-envelope fa-4x email-btn" onclick = "sendEmail()"></button> 
         </div>
       </div>
+      <div class = "row">
+        <div class= "finish-section"> 
+          <a href= " " class = "btn finish-btn"  id = "gmaps-btn">Open in Google Maps</a>
+        </div>
+      </div>
     </div>
   </div>
-  
+  <div class = "space"></div>
   </body>
 </html>
