@@ -1,4 +1,4 @@
-/* global google, configureTripKeyForPath, setupLogoutLink, getRouteForTrip**/
+/* global google, configureTripKeyForPath, setupLogoutLink, getRouteForTrip */
 /* exported placesService*/
 
 let placesService;
