@@ -62,7 +62,7 @@ function initMap() {
     zoom: 14,
     // arbitrary center as it will get recentered to the route 
     center: new google.maps.LatLng(0,0)
-  }
+  };
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   placesService = new google.maps.places.PlacesService(map);
