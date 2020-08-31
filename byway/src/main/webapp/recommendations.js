@@ -201,7 +201,7 @@ function placeMarker(place) {
     content: place.name
   });
   const image = {
-    url: 'images/stopsMarker.png',
+    url: '/images/stopsMarker.png',
     scaledSize: new google.maps.Size(40,40)
   };
   let marker = new google.maps.Marker({
