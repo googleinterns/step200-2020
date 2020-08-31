@@ -1,4 +1,4 @@
-/* global google, configureTripKeyForPath, setupLogoutLink*/
+/* global google, configureTripKeyForPath, setupLogoutLink, getRouteForTrip*/
 /* exported placesService*/
 
 let placesService;
@@ -140,7 +140,7 @@ async function initMap(start, end, route, keyString) {
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
   for(let i = 0; i<20; i++){
     try{
-      let result = await getRouteForTrip(directionsService, directionsRenderer, start, end, waypoints)
+      await getRouteForTrip(directionsService, directionsRenderer, start, end, waypoints)
       return;
     } catch(error){
       if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){

@@ -333,8 +333,8 @@ function sendEmail(){
 }
 
 /* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
-    updatePageInfo*/
+   getRecommendations, updatePageInfo*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, getRouteForTrip,
-    load, findRegions, loadRecommendations, showErrorMessage*/
+    findRegions, loadRecommendations, showErrorMessage*/
 
