@@ -1,7 +1,7 @@
 /** Script that contains functions shared and used across all pages */
 
 /* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar,
-   setupLogoutLink, findPlace, getRouteForTrip, showErrorMessage */
+   setupLogoutLink, findPlace, computeRouteForTrip, showErrorMessage */
 
 /** 
 * Sets Progress Bar to correct location based on the page number
@@ -104,6 +104,20 @@ class MapStatusError extends Error {
     }
 }
 
+function computeRoute(request, directionsService){
+  return new Promise((resolve,reject) => {
+    directionsService.route(request, (result, status) => {
+      if (status == 'OK') {
+        resolve(result);
+      }
+      else {
+        reject(new MapStatusError("Could not calculate route from request.", status));
+      }
+    });
+  });
+
+}
+
 /**
  * Makes a request to the Directions API to return information about the route
  * @param {DirectionsService} directionsService object that communicates with the GMaps API service
@@ -113,7 +127,7 @@ class MapStatusError extends Error {
  * @param {Array} [waypoints] array of waypoint objects
  * @return {Promise} result Directions route object with fields route, legs, etc.
  */
-function getRouteForTrip(directionsService, directionsRenderer, start, end, waypoints) {
+function computeRouteForTrip(directionsService, directionsRenderer, start, end, waypoints) {
    let request = {
     origin:  {placeId : start},
     destination: {placeId : end},
@@ -121,6 +135,9 @@ function getRouteForTrip(directionsService, directionsRenderer, start, end, wayp
     travelMode: 'DRIVING',
     optimizeWaypoints: true
   };
+  return computeRoute(request, directionsService);
+
+  /** 
   const result = new Promise((resolve,reject) => {
     directionsService.route(request, (result, status) => {
       if (status == 'OK') {
@@ -133,6 +150,7 @@ function getRouteForTrip(directionsService, directionsRenderer, start, end, wayp
     });
   });
   return result;
+  */
 }
 
 /** Displays error message to the user if a request fails.*/

@@ -16,7 +16,7 @@
 /* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
    getRecommendations, updatePageInfo*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
-    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, getRouteForTrip,
+    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
     findRegions, loadRecommendations, showErrorMessage, clearMarkers*/
 
 // holds stops and destinations
@@ -84,8 +84,9 @@ function initMap() {
  */
 async function updatePageInfo(){
   try{
-    let result = await getRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
+    let result = await computeRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
+      directionsRenderer.setDirections(result);
     orderWaypoints(result);
     updateDistanceTime(result);
     updateRoute();
@@ -99,8 +100,9 @@ async function updatePageInfo(){
  */
 async function getRecommendations(){
   try{
-    let result = await getRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
+    let result = await computeRouteForTrip(directionsService, directionsRenderer, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
+    directionsRenderer.setDirections(result);
     findRegions(result);
     loadRecommendations();
   } catch (error) {

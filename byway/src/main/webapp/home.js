@@ -1,4 +1,4 @@
-/* global google, configureTripKeyForPath, setupLogoutLink, getRouteForTrip */
+/* global google, configureTripKeyForPath, setupLogoutLink, computeRouteForTrip */
 /* exported placesService*/
 
 let placesService;
@@ -138,11 +138,12 @@ async function initMap(start, end, route, keyString) {
  * @param {Array} [waypoints] array of waypoint objects
  */
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-  for(let i = 0; i<20; i++){
+  for(let i = 0; i < 20; i++){
     try{
-      await getRouteForTrip(directionsService, directionsRenderer, start, end, waypoints)
+      let result = await computeRouteForTrip(directionsService, directionsRenderer, start, end, waypoints)
+      directionsRenderer.setDirections(result);
       return;
-    }catch(error){
+    } catch(error){
       if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
         await delayPromise(1000);
       }

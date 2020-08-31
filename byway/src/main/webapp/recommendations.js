@@ -107,9 +107,10 @@ async function loadRecommendations() {
       }
     }
   }
+  
    // String elements with status codes from placesService into an error message
   let errorMessage =  "Showing limited results due to: " + Array.from(statuses).join() + ".";
- if(statuses.size !== 0) showErrorMessage(errorMessage);
+  if(statuses.size !== 0) showErrorMessage(errorMessage);
   renderRecsList();
   document.getElementById("loading").style.visibility = 'hidden';
 }
