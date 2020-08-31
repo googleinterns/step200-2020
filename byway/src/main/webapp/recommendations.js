@@ -35,7 +35,7 @@ const MAX_RECOMMENDATIONS = 1;
 let regions = [];
 
 // Boolean to determine when to toggle markers
-let isHiding = true;
+let areMarkersHidden = false;
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -235,14 +235,17 @@ function placeRecMarker(place, showMarker) {
 /**
  * Iterate through all markers and hide or show based on the 
  * boolean tracking the toggle state. Only affect rec markers,
- * not ones added to the route.
+ * not ones added through directionsService. When hiding, set markers'
+ * maps to null to remove. Else, set markers' map to the map object.
+ * Update boolean tracking marker visibility.
  */
 function toggleRecMarkers() {
-  let canvas = (isHiding) ? null : map;
+  // If currently shown, then hide with null. Else, reveal on map object.
+  let canvas = (areMarkersHidden) ? map : null;
   for (let i = 0; i < markers.length; i++) {
     if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
       markers[i].setMap(canvas);
     }
   }
-  isHiding = !isHiding;
+  areMarkersHidden = !areMarkersHidden;
 }
