@@ -110,6 +110,12 @@ async function showCompleteTrip(trip){
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
+
+/**
+ * Updates the title of specifice trip
+ * @param {Trip} trip
+ * @param {String} keyString trip's key as a string
+ */
 async function constructTripTitle(trip, keyString){
   trip.destinations.forEach(async (destination) => {
      for(let i = 0; i<5; i++){
