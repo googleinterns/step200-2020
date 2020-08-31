@@ -122,7 +122,7 @@ async function loadRecommendations() {
       if(recommendationsSaved !== null) {
         addRecommendations(request, JSON.parse(recommendationsSaved));
       } else{
-        await delayPromise(250);
+        await delayPromise(100);
         const placesFound = await findPlacesWithTextSearch(request, statuses);
         if(placesFound !== null) {
           addRecommendations(request, placesFound);
