@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that handles data for stops */
+/** Servlet that handles data for the route */
 @WebServlet("/api/route")
 public final class RouteServlet extends HttpServlet {
   private static final Type ARRAYLIST_STRING = new TypeToken<ArrayList<String>>() {}.getType();
