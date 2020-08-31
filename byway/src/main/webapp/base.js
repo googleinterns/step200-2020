@@ -14,11 +14,11 @@ function setProgressBar(pageNumber){
   }
   let tripKey = getTripKeyFromUrl();
   document.getElementById('choose-destinations-progress-bar').href = 
-  configureTripKeyForPath(tripKey, '/destinations.html');
+configureTripKeyForPath(tripKey, '/destinations.html');
   document.getElementById('choose-interests-progress-bar').href = 
-  configureTripKeyForPath(tripKey, '/interests.html');
+configureTripKeyForPath(tripKey, '/interests.html');
   document.getElementById('view-route-progress-bar').href = 
-  configureTripKeyForPath(tripKey, '/routepage.html');
+configureTripKeyForPath(tripKey, '/routepage.html');
 }
 
 /** 
