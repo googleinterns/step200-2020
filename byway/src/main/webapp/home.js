@@ -100,25 +100,27 @@ async function showCompleteTrip(trip){
   pastTrip.append(mapContainer);
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
-  await constructTripTitle(trip, trip.keyString);
+  let titleString = await constructTripTitle(trip);
+  title.innerText = titleString;
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
-async function constructTripTitle(trip, keyString){
-  let title = document.getElementById('title-' + keyString);
-  title.innerText = "";
-  for(let i = 0; i<10; i++){
+async function constructTripTitle(trip){
+  //let title = document.getElementById('title-' + keyString);
+  //title.innerText = "";
+  for(let i = 0; i<30; i++){
       try{
         const promises = trip.destinations.map(async (destination) => {
             let placeInfo = await findPlace(destination, placesService);
             return placeInfo.name;
         });
         const tripStrings = await Promise.all(promises);
-        title.innerText = tripStrings.join();
-        break;
+        ///title.innerText = tripStrings.join();
+        //break;
+        return tripStrings.join();
       } catch(error){
         if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
-        await delayPromise(1000);    
+          await delayPromise(1000);    
         }
       }
     }
@@ -161,7 +163,7 @@ async function initMap(start, end, route, keyString) {
  * @param {Array} [waypoints] array of waypoint objects
  */
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-  for(let i = 0; i<20; i++){
+  for(let i = 0; i<30; i++){
     try{
       let result = await getDirections(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
