@@ -16,7 +16,7 @@
     end, google, interests, map, orderWaypoints, placesService,
     renderRecsList, start, updateDistanceTime, updateRoute */
 /* global route:writeable */
-/* exported calcMainRoute, recs, toggleRecMarkers */
+/* exported calcMainRoute, recs, toggleRecMarkers, areMarkersHidden */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -241,11 +241,13 @@ function placeRecMarker(place, showMarker) {
  */
 function toggleRecMarkers() {
   // If currently shown, then hide with null. Else, reveal on map object.
-  let canvas = (areMarkersHidden) ? map : null;
+  const canvas = (areMarkersHidden) ? map : null;
+  const visibleStatus = (areMarkersHidden) ? 'visible' : 'hidden';
   for (let i = 0; i < markers.length; i++) {
     if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
       markers[i].setMap(canvas);
     }
   }
   areMarkersHidden = !areMarkersHidden;
+  document.getElementById("gmaps-btn").style.visibility = visibleStatus;
 }

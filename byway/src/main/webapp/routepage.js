@@ -229,9 +229,14 @@ function createRouteButton(waypoint){
   } else {
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
-      route = route.filter(stop => stop.place_id != waypoint.place_id);
-      document.getElementById(waypoint.place_id).className = "btn rec-btn";
-      calcRouteWithRecs();
+      if (areMarkersHidden) {
+        // TODO: update with Justine's base alert implementation.
+        alert('Toggle markers to edit route');
+      } else {
+        route = route.filter(stop => stop.place_id != waypoint.place_id);
+        document.getElementById(waypoint.place_id).className = "btn rec-btn";
+        calcRouteWithRecs();
+      }
     });
 
   }
@@ -275,9 +280,14 @@ function createRecButton(rec){
   if(!route.some(waypoint => waypoint.name === rec.name)){
     recBtn.className =  "btn rec-btn";
     recBtn.addEventListener("click", function() {
-      route.push(rec);
-      recBtn.className =  "hidden-rec-btn";
-      calcRouteWithRecs();
+      if (areMarkersHidden) {
+        // TODO: update with Justine's base alert implementation.
+        alert('Toggle markers to edit route')
+      } else {
+        route.push(rec);
+        recBtn.className =  "hidden-rec-btn";
+        calcRouteWithRecs();
+      }
     });
   } else{
     recBtn.className =  "hidden-rec-btn";
@@ -335,5 +345,5 @@ function sendEmail(){
 
 /* exported calcRouteWithRecs, initMap, interests, generateRoute,
     map, placesService, renderRecsList, updateRoute, sendEmail */
-/* global calcMainRoute, configureTripKeyForPath, findPlace,
+/* global areMarkersHidden, calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
