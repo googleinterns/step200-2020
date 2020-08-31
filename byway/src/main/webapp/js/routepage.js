@@ -68,13 +68,17 @@ function initMap() {
   placesService = new google.maps.places.PlacesService(map);
   
 }
+
 /** Makes a request to the Directions API to return information about the route
  *  @return {Promise} result Directions route object with fields route, legs, etc.
- */
+ 
 function getRouteForTrip(){
   const request = {
-    origin:  start.name,
-    destination: end.name,
+    // {placeId : start} use this 
+    //console.log("dir");
+    // console.log({placeId : start}); start.name
+    origin:  {placeId : start.place_id},
+    destination: {placeId : end.place_id},
     travelMode: 'DRIVING',
     waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
     optimizeWaypoints: true
@@ -92,20 +96,45 @@ function getRouteForTrip(){
   })
   return result;
 }
+*/
 
 /** Uses the route from the directionsService request to update 
  *  ordering of stops on the route panel, and distance and time of roadtrip
  */
 async function updatePageInfo(){
   try{
-    let result = await getRouteForTrip();
+    let result = await getRouteForTrip(directionsService, start.place_id, end.place_id, 
+      route.map(waypoint => ({location: waypoint.geometry.location})));
+    directionsRenderer.setDirections(result);
     orderWaypoints(result);
     updateDistanceTime(result);
     updateRoute();
   } catch (error) {
-      console.error(error);
+      showErrorMessage(error);
   }
   
+}
+
+/** Uses the route from the directionsService request to find suitable recommendations
+ *  along each leg 
+ */
+async function getRecommendations(){
+  try{
+    let result = await getRouteForTrip(directionsService, start.place_id, end.place_id, 
+      route.map(waypoint => ({location: waypoint.geometry.location})));
+     directionsRenderer.setDirections(result);
+    findRegions(result);
+    loadRecommendations();
+  } catch (error) {
+      showErrorMessage(error);
+      
+  }
+}
+
+function showErrorMessage(error){
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'visible';
+  msgContainer.innerText = "Showing limited results." + error;
 }
 
 /** Add the start/end location back to the schedule panel
@@ -341,7 +370,8 @@ function sendEmail(){
 }
 
 /* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
-    getRouteForTrip, updatePageInfo*/
+    updatePageInfo*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
-    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */
+    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, getRouteForTrip,
+    load, findRegions, loadRecommendations*/
 

@@ -3,14 +3,6 @@
 
 let placesService;
 
-let start;
-let end;
-let route = [];
-let keyString = "";
-let waypoints = [];
-
-let directionsService;
-let directionsRenderer;
 
 // Reloads page if naviated to via back button
 if(!!window.performance && window.performance.navigation.type == PerformanceNavigation.TYPE_BACK_FORWARD)
@@ -105,13 +97,7 @@ function showCompleteTrip(tripNum, trip){
   mapContainer.id = "map-" + trip.keyString
   pastTrip.append(mapContainer);
   container.append(pastTrip);
-  start = trip.start;
-  end = trip.start;
-  console.log("start " + start);
-  route = trip.route;
-  keyString = trip.keyString;
-  // initMap(trip.start, trip.start, trip.route, trip.keyString);
-  initMap();
+  initMap(trip.start, trip.start, trip.route, trip.keyString);
   title.innerText = "Trip #" + tripNum;
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
@@ -123,11 +109,10 @@ function showCompleteTrip(tripNum, trip){
  * @param {ArrayList<String>} route arraylist of placeIds as strings
  * @param {String} keyString key of trip as string
  */
-// async function initMap(start, end, route, keyString) {
-async function initMap() {
-  directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer();
-  
+async function initMap(start, end, route, keyString) {
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+  let waypoints = [];
   route.forEach(destination => {
     waypoints.push({
         location: {placeId: destination },
@@ -136,13 +121,12 @@ async function initMap() {
   });
   let mapOptions = {
     zoom: 14,
-    center:  new google.maps.LatLng(0,0)// start
+    center: new google.maps.LatLng(0,0)
   }
   const tripMap = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
   placesService = new google.maps.places.PlacesService(tripMap);
   directionsRenderer.setMap(tripMap);
-  // await setRoute(directionsService, directionsRenderer, start, end, waypoints);
-  await setRoute();
+  await setRoute(directionsService, directionsRenderer, start, end, waypoints);
 }
 
 /**
@@ -153,12 +137,10 @@ async function initMap() {
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
  */
-// async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-async function setRoute(){
+async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
   for(let i = 0; i<20; i++){
     try{
-      // let result = await getDirections(directionsService, start, end, waypoints)
-      let result = await getDirections()
+      let result = await getRouteForTrip(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
       return;
     }catch(error){
@@ -176,7 +158,7 @@ function delayPromise(delayMs) {
 
 /**
  * Class used to throw error in getDirections() with both message and status
- */
+ 
 class MapStatusError extends Error {
     constructor(message, status) {
         super(message);
@@ -184,7 +166,7 @@ class MapStatusError extends Error {
         this.status = status;
     }
 }
-
+*/ 
 /**
  * Get directions with given start, end and waypoints
  * @param {DirectionsService} directionsService
@@ -192,12 +174,11 @@ class MapStatusError extends Error {
  * @param {String} end placeId as string
  * @param {Array} [waypoints] array of waypoint objects
  */
-// function getDirections(directionsService, start, end, waypoints) {
- function getDirections() {
+function getDirections(directionsService, start, end, waypoints) {
    let request = {
     origin:  {placeId : start},
     destination: {placeId : end},
-    waypoints, 
+    waypoints: waypoints,
     travelMode: 'DRIVING',
     optimizeWaypoints: true
   };
@@ -217,5 +198,3 @@ return result;
 
 
  
-
-

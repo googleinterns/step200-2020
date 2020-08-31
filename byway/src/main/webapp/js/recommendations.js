@@ -14,8 +14,8 @@
 
 /* global destinations
     google, interests, map, placesService,
-    renderRecsList,  start, getRouteForTrip, updatePageInfo */
-/* exported calcMainRoute, showMarkers, recs */
+    renderRecsList,  start, updatePageInfo, getRecommendations */
+/* exported calcMainRoute, showMarkers, recs, findRegions, loadRecommendations */
 
 
 // Holds recommendations as PlaceResult objects
@@ -33,18 +33,6 @@ let regions = [];
 
 let markers = [];
 
-/** Uses the route from the directionsService request to find suitable recommendations
- *  along each leg 
- */
-async function getRecommendations(){
-  try{
-    let result = await getRouteForTrip();
-    findRegions(result);
-    loadRecommendations();
-  } catch (error) {
-      console.error(error);
-  }
-}
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.

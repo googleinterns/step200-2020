@@ -1,6 +1,7 @@
 /** Script that contains functions shared and used across all pages */
 
-/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, 
+     setupLogoutLink, findPlace, getRouteForTrip*/
 
 /** 
 * Sets Progress Bar to correct location based on the page number
@@ -89,6 +90,49 @@ function findPlace(placeId, placesService) {
     })
   })
 
+  return result;
+}
+
+
+/**
+ * Class used to throw error in getDirections() with both message and status
+ */
+class MapStatusError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = 'MapStatusError';
+        this.status = status;
+    }
+}
+
+/**
+ * Get directions with given start, end and waypoints
+ * @param {DirectionsService} directionsService
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {Array} [waypoints] array of waypoint objects
+ * @return {Promise} result Directions route object with fields route, legs, etc.
+ */
+ 
+function getRouteForTrip(directionsService, start, end, waypoints) {
+   let request = {
+    origin:  {placeId : start},
+    destination: {placeId : end},
+    waypoints, 
+    travelMode: 'DRIVING',
+    optimizeWaypoints: true
+  };
+  const result = new Promise((resolve,reject) => {
+    directionsService.route(request, (result, status) => {
+      if (status == 'OK') {
+        // directionsRenderer.setDirections(result);
+        resolve(result);
+      }
+      else {
+        reject(new MapStatusError("Could not calculate route from request.", status));
+      }
+    });
+  });
   return result;
 }
 
