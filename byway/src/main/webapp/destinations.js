@@ -282,6 +282,10 @@ function savePlaceIds(){
   });
 }
 
+/**
+ * searches for place from a request and returns a promise
+ * @param {request object} request contains query paramater as string and fields parameter as array
+ */
 function findPlaceFromQuery(request) {
   return new Promise(resolve => {
     placesService.findPlaceFromQuery(request, (result, status) => resolve({result, status}));

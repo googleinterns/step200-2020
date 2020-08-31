@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that returns users login state */
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
   private final Gson gson = new Gson();
