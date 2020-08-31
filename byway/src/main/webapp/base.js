@@ -1,4 +1,4 @@
-/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace, MapStatusError */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace, MapStatusError, showErrorMessage */
 /** Script that contains functions shared and used across all pages */
 
 

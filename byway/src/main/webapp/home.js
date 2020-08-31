@@ -1,4 +1,4 @@
-/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace*/
+/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace, showErrorMessage*/
 /* exported placesService*/
 
 let placesService;
@@ -109,6 +109,7 @@ async function constructTripTitle(trip, keyString){
   trip.destinations.forEach(async (destination) => {
      for(let i = 0; i<5; i++){
       try{
+        await delayPromise(1000);
         let placeInfo = await findPlace(destination, placesService);
         document.getElementById('title-'+ keyString).innerText += placeInfo.name + "|";
         break;
@@ -117,6 +118,7 @@ async function constructTripTitle(trip, keyString){
           await delayPromise(1000);  
         }
       }
+      showErrorMessage("Could not constuct route for trip " +keyString);
     }
   });
 }
