@@ -106,7 +106,8 @@ async function showCompleteTrip(trip){
   pastTrip.append(mapContainer);
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
-  await constructTripTitle(trip, trip.keyString);
+  let titleString = await constructTripTitle(trip, trip.keyString);
+  title.innerText += titleString;
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
 
@@ -117,21 +118,26 @@ async function showCompleteTrip(trip){
  * @param {String} keyString trip's key as a string
  */
 async function constructTripTitle(trip, keyString){
-  trip.destinations.forEach(async (destination) => {
+  let title ="";
+  for(let destination of trip.destinations) {
      for(let i = 0; i<5; i++){
       try{
-        await delayPromise(1000);
         let placeInfo = await findPlace(destination, placesService);
-        document.getElementById('title-'+ keyString).innerText += placeInfo.name + "|";
+        title += placeInfo.name + "|";
         break;
       } catch(error){
         if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
           await delayPromise(1000);  
         }
       }
-      showErrorMessage("Could not construct title for trip " +keyString);
     }
-  });
+  }
+  if (title == ""){
+    showErrorMessage("Could not construct title of Trip" +keyString);
+  }
+  else{
+    return title;
+  }
 }
 
 
@@ -173,7 +179,6 @@ async function initMap(start, end, route, keyString) {
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
   for(let i = 0; i<5; i++){
     try{
-      await delayPromise(1000);
       let result = await getDirections(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
       return;
