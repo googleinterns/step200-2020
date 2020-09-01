@@ -119,7 +119,7 @@ async function showCompleteTrip(trip){
  */
 async function constructTripTitle(trip, keyString){
   let title ="";
-  for(destination of trip.destinations) {
+  for(let destination of trip.destinations) {
      for(let i = 0; i<5; i++){
       try{
         let placeInfo = await findPlace(destination, placesService);
@@ -132,7 +132,12 @@ async function constructTripTitle(trip, keyString){
       }
     }
   }
-  return title;
+  if (title == ""){
+    showErrorMessage("Could not construct title of Trip" +keyString);
+  }
+  else{
+    return title;
+  }
 }
 
 
