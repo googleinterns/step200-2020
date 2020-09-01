@@ -1,6 +1,7 @@
 /** Script that contains functions shared and used across all pages */
 
-/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace */
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar,
+   setupLogoutLink, findPlace, computeRouteForTrip, showErrorMessage */
 
 /** 
 * Sets Progress Bar to correct location based on the page number
@@ -92,3 +93,59 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
+/**
+ * Class used to throw error in getDirections() with both message and status
+ */
+class MapStatusError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = 'MapStatusError';
+        this.status = status;
+    }
+}
+
+/**
+ * Makes a request to Directions API to calculate the route and return information about it
+ * @param {DirectionsRequest} request object that contains input fields 
+ * @param {DirectionsService} directionsService object that communicates with the GMaps API service
+ * @return {Promise} result Directions route object with fields route, legs, etc.
+ */
+function computeRoute(request, directionsService){
+  return new Promise((resolve,reject) => {
+    directionsService.route(request, (result, status) => {
+      if (status == 'OK') {
+        resolve(result);
+      }
+      else {
+        reject(new MapStatusError("Could not calculate route from request.", status));
+      }
+    });
+  });
+
+}
+
+/**
+ * Builds a request and calls computeRoute to return information about the route
+ * @param {DirectionsService} directionsService object that communicates with the GMaps API service
+ * @param {String} start placeId as string
+ * @param {String} end placeId as string
+ * @param {Array} [waypoints] array of waypoint objects
+ * @return {Promise} result Directions route object with fields route, legs, etc.
+ */
+function computeRouteForTrip(directionsService, start, end, waypoints) {
+   let request = {
+    origin:  {placeId : start},
+    destination: {placeId : end},
+    waypoints, 
+    travelMode: 'DRIVING',
+    optimizeWaypoints: true
+  };
+  return computeRoute(request, directionsService);
+}
+
+/** Displays error message to the user if a request fails.*/
+function showErrorMessage(errorMessage){
+  let msgContainer = document.getElementById("message-container");
+  msgContainer.style.visibility = 'visible';
+  msgContainer.innerText = errorMessage;
+} 

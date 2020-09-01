@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+/* exported initMap, interests, map, placesService, renderRecsList, sendEmail,
+   getRecommendations, updatePageInfo*/
+/* global areMarkersHidden, calcMainRoute, configureTripKeyForPath, findPlace,
+    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
+    findRegions, loadRecommendations, showErrorMessage */
+
 // holds stops and destinations
 let route = [];
 
@@ -72,38 +79,36 @@ function initMap() {
   
 }
 
-/** Displays route containing waypoints overtop the map. */
-function calcRouteWithRecs() {
-  let request = {
-    origin:  start.name,
-    destination: end.name,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
-    optimizeWaypoints: true
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == 'OK') {
-      directionsRenderer.setDirections(response);
-      orderWaypoints(response);
-      updateDistanceTime(response);
-    } else {
-      window.alert("Could not calculate route due to: " + status);
-    }
+/** Uses the route from the directionsService request to update 
+ *  ordering of stops on the route panel, and distance and time of roadtrip
+ */
+async function updatePageInfo(){
+  try{
+    let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
+      route.map(waypoint => ({location: waypoint.geometry.location})));
+    directionsRenderer.setDirections(result);
+    orderWaypoints(result);
+    updateDistanceTime(result);
     updateRoute();
-  });
+  } catch (error) {
+      showErrorMessage(error);
+  }
 }
 
-/** Add the start/end location back to the schedule panel
- *  TODO: Disable usage after? Don't want to keep adding to list. 
+/** Uses the route from the directionsService request to find suitable recommendations
+ *  along each leg 
  */
-function generateRoute() {
-  clearRoute();
-  const routeList = document.getElementById('route-list');
-  routeList.appendChild(createRouteButton(start));
-  for(let waypoint of route){
-    routeList.appendChild(createRouteButton(waypoint));
+async function getRecommendations(){
+  try{
+    let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
+      route.map(waypoint => ({location: waypoint.geometry.location})));
+    directionsRenderer.setDirections(result);
+    findRegions(result);
+    loadRecommendations();
+  } catch (error) {
+      showErrorMessage(error);
+      
   }
-  routeList.appendChild(createRouteButton(end));
 }
 
 /**
@@ -179,7 +184,7 @@ function getRouteOnload(){
         start = end = res;
    
       } catch (error) {
-        console.error("Could not retrieve a start nor end point due to: ", error);
+          showErrorMessage("Could not retrieve a start nor end point. " +  error);
       }
       
       for(let destinationId of trip.destinations){
@@ -187,7 +192,7 @@ function getRouteOnload(){
           let destinationAsPlaceObj = await findPlace(destinationId, placesService);
           destinations.push(destinationAsPlaceObj);
         } catch (error) {
-          console.error("Could not retrieve destinations due to: ", error);
+            showErrorMessage("Could not retrieve destinations. " + error);
         }
       }
 
@@ -196,14 +201,14 @@ function getRouteOnload(){
           let waypointAsPlaceObj = await findPlace(waypointId, placesService);
           route.push(waypointAsPlaceObj);
         } catch (error) {
-          console.error("Could not retrieve route due to: ", error);
+            showErrorMessage("Could not retrieve route" + error);
         }
       }
       calcMainRoute();
       updateRouteLink();
       renderRouteList();
     } else{
-      console.log("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
+        showErrorMessage("Could not retrieve any routes nor destinations associated with this trip. Please reload page and try again.");
     }
   });
 }
@@ -212,9 +217,12 @@ function getRouteOnload(){
 function renderRouteList(){
   clearRoute();
   const routeList = document.getElementById('route-list');
+  routeList.appendChild(createRouteButton(start));
   route.forEach((waypoint)=>{
     routeList.appendChild(createRouteButton(waypoint));
   })
+  routeList.appendChild(createRouteButton(end));
+
 }
 
 /** Creates a button in the schedule panel in the html
@@ -224,7 +232,7 @@ function renderRouteList(){
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
   routeBtn.innerText = waypoint.name;
-  if(destinations.some(destination => destination.name === waypoint.name)){
+  if(destinations.some(destination => destination.place_id === waypoint.place_id)){
     routeBtn.className =  "btn destination-btn";
   } else {
     routeBtn.className =  "btn stop-btn";
@@ -235,7 +243,7 @@ function createRouteButton(waypoint){
       } else {
         route = route.filter(stop => stop.place_id != waypoint.place_id);
         document.getElementById(waypoint.place_id).className = "btn rec-btn";
-        calcRouteWithRecs();
+        updatePageInfo();
       }
     });
 
@@ -277,7 +285,7 @@ function createRecButton(rec){
   const recBtn = document.createElement('button');
   recBtn.innerText = rec.name;
   recBtn.id = rec.place_id;
-  if(!route.some(waypoint => waypoint.name === rec.name)){
+  if(!route.some(waypoint => waypoint.place_id  === rec.place_id )){
     recBtn.className =  "btn rec-btn";
     recBtn.addEventListener("click", function() {
       if (areMarkersHidden) {
@@ -286,7 +294,7 @@ function createRecButton(rec){
       } else {
         route.push(rec);
         recBtn.className =  "hidden-rec-btn";
-        calcRouteWithRecs();
+        updatePageInfo();
       }
     });
   } else{
@@ -338,12 +346,7 @@ function sendEmail(){
   
   if(validateEmail(emailAddress)){
     window.open(emailLink);
-  } else{ // TO DO: Use alerts to notify user
-    console.log("Please enter a valid email address.");
+  } else{ 
+      showErrorMessage("Please enter a valid email address.");
   }
 }
-
-/* exported calcRouteWithRecs, initMap, interests, generateRoute,
-    map, placesService, renderRecsList, updateRoute, sendEmail */
-/* global areMarkersHidden, calcMainRoute, configureTripKeyForPath, findPlace,
-    getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink */

@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global calcRouteWithRecs, destinations, directionsRenderer, directionsService,
-    end, google, interests, map, orderWaypoints, placesService,
-    renderRecsList, start, updateDistanceTime, updateRoute */
+/* global destinations, google, interests, map, placesService, showErrorMessage
+    renderRecsList,  start, updatePageInfo, getRecommendations */
 /* global route:writeable */
-/* exported calcMainRoute, recs, toggleRecMarkers, areMarkersHidden */
+/* exported areMarkersHidden, calcMainRoute, findRegions, recs, toggleRecMarkers, loadRecommendations */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -43,27 +42,9 @@ let areMarkersHidden = false;
  * around. Orders the waypoints for efficiency and updates trip logistics.
  */
 function calcMainRoute() {
-  const request = {
-    origin:  start.name,
-    destination: end.name,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
-    optimizeWaypoints: true
-  };
   addMainStopsToRegions();
-  directionsService.route(request, function(result, status) {
-    if (status == 'OK') {
-      document.getElementById("loading").style.visibility = 'visible';
-      directionsRenderer.setDirections(result);
-      findRegions(result);
-      loadRecommendations();
-      orderWaypoints(result);
-      updateDistanceTime(result);
-    } else {
-      alert("Could not calculate route due to: " + status);
-    }
-    updateRoute();
-  });
+  getRecommendations();
+  updatePageInfo();
 }
 
 /* Saves the LatLng coords of the start point and destinations to regions array. */
@@ -130,7 +111,10 @@ async function loadRecommendations() {
       }
     }
   }
-  if(statuses.size !== 0) alertUser(statuses);
+  
+   // String elements with status codes from placesService into an error message
+  let errorMessage =  "Showing limited results due to: " + Array.from(statuses).join() + ".";
+  if(statuses.size !== 0) showErrorMessage(errorMessage);
   renderRecsList();
   document.getElementById("loading").style.visibility = 'hidden';
 }
@@ -159,27 +143,18 @@ function findPlacesWithTextSearch(request, statuses) {
 }
 
 /**
- * Reveals status codes if there was an issue with a request.
- * @param {Set} statuses String elements with status codes from placesService
- */
-function alertUser(statuses) {
-  let msgContainer = document.getElementById("message-container");
-  msgContainer.style.visibility = 'visible';
-  const statusCodes = Array.from(statuses).join();
-  msgContainer.innerText = "Showing limited results due to: " + statusCodes + ".";
-}
-
-/**
- * Loads recommendations from textSearch. If it is included
- * in the trip's route, do not show a rec marker. If not included,
- * place a marker.
+ * Places markers on the locations found from textSearch.
+ * Save places found from interests around a location in sessionStorage.
  * @param {TextSearchRequest} request with unique location and interest
  * @param {PlaceResults[]} placesFound places found with PlaceResult type.
  */
 function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
-    recs.push(place);
+    // prevents addition of same large place which may span various coordinates
+    if(!recs.some(rec => rec.place_id === place.place_id)){
+      recs.push(place);
+    }
     placesLoaded.push(place);
     const showMarker = (route.some(waypoint => waypoint.place_id === place.place_id)) ? false : true;
     placeRecMarker(place, showMarker);
@@ -227,7 +202,7 @@ function placeRecMarker(place, showMarker) {
   marker.addListener("dblclick", () => {
     route.push(place);
     marker.setMap(null);
-    calcRouteWithRecs();
+    updatePageInfo();
   });
   markers.push(marker);
 }
