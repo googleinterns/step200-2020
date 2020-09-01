@@ -15,7 +15,7 @@
 
 /* exported initMap, interests, map, placesService, renderRecsList, sendEmail,
    getRecommendations, updatePageInfo*/
-/* global areMarkersHidden, calcMainRoute, calcRouteWithRecs, configureTripKeyForPath, findPlace,
+/* global areMarkersHidden, calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
     findRegions, loadRecommendations, showErrorMessage */
 
@@ -243,7 +243,7 @@ function createRouteButton(waypoint){
       } else {
         route = route.filter(stop => stop.place_id != waypoint.place_id);
         document.getElementById(waypoint.place_id).className = "btn rec-btn";
-        calcRouteWithRecs();
+        updatePageInfo();
       }
     });
 
@@ -294,7 +294,7 @@ function createRecButton(rec){
       } else {
         route.push(rec);
         recBtn.className =  "hidden-rec-btn";
-        calcRouteWithRecs();
+        updatePageInfo();
       }
     });
   } else{

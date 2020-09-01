@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global calcRouteWithRecs, destinations, getRecommendations, google, interests, map,
+/* global destinations, getRecommendations, google, interests, map,
     placesService, showErrorMessage, renderRecsList, start, updatePageInfo */
 /* global route:writeable */
 /* exported calcMainRoute, recs, toggleRecMarkers, findRegions, areMarkersHidden, loadRecommendations */
@@ -202,7 +202,7 @@ function placeRecMarker(place, showMarker) {
   marker.addListener("dblclick", () => {
     route.push(place);
     marker.setMap(null);
-    calcRouteWithRecs();
+    updatePageInfo();
   });
   markers.push(marker);
 }
