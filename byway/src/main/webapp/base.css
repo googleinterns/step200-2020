@@ -108,3 +108,8 @@ body {
 .space{
   height: 300px;
 }
+
+#map {
+  width: 40vw;
+  height: 40vw;
+}

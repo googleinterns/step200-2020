@@ -177,8 +177,3 @@ input[type=text] {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
-
-.map-style #map {
-  height: 740px;
-  width: 700px;
-}
