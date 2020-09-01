@@ -13,11 +13,11 @@
 // limitations under the License.
 
 
-/* exported initMap, interests, generateRoute, map, placesService, renderRecsList, sendEmail,
+/* exported initMap, interests, map, placesService, renderRecsList, sendEmail,
    getRecommendations, updatePageInfo*/
 /* global areMarkersHidden, calcMainRoute, calcRouteWithRecs, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
-    findRegions, loadRecommendations, showErrorMessage*/
+    findRegions, loadRecommendations, showErrorMessage */
 
 // holds stops and destinations
 let route = [];
@@ -86,7 +86,7 @@ async function updatePageInfo(){
   try{
     let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
-      directionsRenderer.setDirections(result);
+    directionsRenderer.setDirections(result);
     orderWaypoints(result);
     updateDistanceTime(result);
     updateRoute();
@@ -109,19 +109,6 @@ async function getRecommendations(){
       showErrorMessage(error);
       
   }
-}
-
-/** Add the start/end location back to the schedule panel
- *  TODO: Disable usage after? Don't want to keep adding to list. 
- */
-function generateRoute() {
-  clearRoute();
-  const routeList = document.getElementById('route-list');
-  routeList.appendChild(createRouteButton(start));
-  for(let waypoint of route){
-    routeList.appendChild(createRouteButton(waypoint));
-  }
-  routeList.appendChild(createRouteButton(end));
 }
 
 /**
@@ -230,9 +217,12 @@ function getRouteOnload(){
 function renderRouteList(){
   clearRoute();
   const routeList = document.getElementById('route-list');
+  routeList.appendChild(createRouteButton(start));
   route.forEach((waypoint)=>{
     routeList.appendChild(createRouteButton(waypoint));
   })
+  routeList.appendChild(createRouteButton(end));
+
 }
 
 /** Creates a button in the schedule panel in the html
