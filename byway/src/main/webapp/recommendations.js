@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* global destinations, directionsRenderer, directionsService,
-    end, google, interests, map, orderWaypoints, placesService,
-    renderRecsList, route, start, updateDistanceTime */
-/* exported calcMainRoute, showMarkers, recs */
+/* global destinations, google, interests, map, placesService, showErrorMessage
+    renderRecsList,  start, updatePageInfo, getRecommendations */
+/* exported calcMainRoute, showMarkers, recs, findRegions, loadRecommendations */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
@@ -39,26 +38,9 @@ let markers = [];
  * around. Orders the waypoints for efficiency and updates trip logistics.
  */
 function calcMainRoute() {
-  const request = {
-    origin:  start.name,
-    destination: end.name,
-    travelMode: 'DRIVING',
-    waypoints:  route.map(waypoint => ({location: waypoint.geometry.location})),
-    optimizeWaypoints: true
-  };
   addMainStopsToRegions();
-  directionsService.route(request, function(result, status) {
-    if (status == 'OK') {
-      document.getElementById("loading").style.visibility = 'visible';
-      directionsRenderer.setDirections(result);
-      findRegions(result);
-      loadRecommendations();
-      orderWaypoints(result);
-      updateDistanceTime(result);
-    } else {
-      alert("Could not calculate route due to: " + status);
-    }
-  });
+  getRecommendations();
+  updatePageInfo();
 }
 
 /* Saves the LatLng coords of the start point and destinations to regions array. */
@@ -125,7 +107,10 @@ async function loadRecommendations() {
       }
     }
   }
-  if(statuses.size !== 0) alertUser(statuses);
+  
+   // String elements with status codes from placesService into an error message
+  let errorMessage =  "Showing limited results due to: " + Array.from(statuses).join() + ".";
+  if(statuses.size !== 0) showErrorMessage(errorMessage);
   renderRecsList();
   document.getElementById("loading").style.visibility = 'hidden';
 }
@@ -154,17 +139,6 @@ function findPlacesWithTextSearch(request, statuses) {
 }
 
 /**
- * Reveals status codes if there was an issue with a request.
- * @param {Set} statuses String elements with status codes from placesService
- */
-function alertUser(statuses) {
-  let msgContainer = document.getElementById("message-container");
-  msgContainer.style.visibility = 'visible';
-  const statusCodes = Array.from(statuses).join();
-  msgContainer.innerText = "Showing limited results due to: " + statusCodes + ".";
-}
-
-/**
  * Places markers on the locations found from textSearch.
  * Save places found from interests around a location in sessionStorage.
  * @param {TextSearchRequest} request with unique location and interest
@@ -174,7 +148,10 @@ function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
     placeMarker(place);
-    recs.push(place);
+    // prevents addition of same large place which may span various coordinates
+    if(!recs.some(rec => rec.place_id === place.place_id)){
+      recs.push(place);
+    }
     placesLoaded.push(place);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;
