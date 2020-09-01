@@ -17,7 +17,7 @@
    getRecommendations, updatePageInfo*/
 /* global calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
-    findRegions, loadRecommendations, showErrorMessage, clearMarkers*/
+    findRegions, loadRecommendations, showErrorMessage */
 
 // holds stops and destinations
 let route = [];
