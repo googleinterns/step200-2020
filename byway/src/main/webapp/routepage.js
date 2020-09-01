@@ -86,7 +86,7 @@ async function updatePageInfo(){
   try{
     let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
-      directionsRenderer.setDirections(result);
+    directionsRenderer.setDirections(result);
     orderWaypoints(result);
     updateDistanceTime(result);
     updateRoute();
