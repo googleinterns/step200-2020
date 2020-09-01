@@ -233,7 +233,7 @@ function renderRouteList(){
 function createRouteButton(waypoint){
   const routeBtn = document.createElement('button');
   routeBtn.innerText = waypoint.name;
-  if(destinations.some(destination => destination.place_id === waypoint.place_id)){
+  if(destinations.some(destination => destination.place_id === waypoint.place_id) || waypoint.place_id === start.place_id){
     routeBtn.className =  "btn destination-btn";
   } else {
     routeBtn.className =  "btn stop-btn";
@@ -320,6 +320,7 @@ function updateRouteLink(){
   
   routeLink = routeRoot + routeParams;
   document.getElementById("gmaps-btn").href = routeLink;
+  document.getElementById("gmaps-btn").style.display = 'none';
   return routeLink;
 }
 

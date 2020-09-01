@@ -217,12 +217,12 @@ function placeRecMarker(place, showMarker) {
 function toggleRecMarkers() {
   // If currently shown, then hide with null. Else, reveal on map object.
   const canvas = (areMarkersHidden) ? map : null;
-  const visibleStatus = (areMarkersHidden) ? 'hidden' : 'visible';
+  const displayStatus = (areMarkersHidden) ? 'none' : 'inline-block';
   for (let i = 0; i < markers.length; i++) {
     if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
       markers[i].setMap(canvas);
     }
   }
   areMarkersHidden = !areMarkersHidden;
-  document.getElementById("gmaps-btn").style.visibility = visibleStatus;
+  document.getElementById("gmaps-btn").style.display = displayStatus;
 }
