@@ -10,7 +10,7 @@
 
  #destinations-page #map-search-container{
   position: relative;
-  padding: 0 5vw 5vw 5vw;
+  padding: 0 5vw 0 5vw;
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: 80% 20%;
