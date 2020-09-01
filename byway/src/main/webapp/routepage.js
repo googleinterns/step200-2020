@@ -221,7 +221,7 @@ function renderRouteList(){
   route.forEach((waypoint)=>{
     routeList.appendChild(createRouteButton(waypoint));
   })
-  routeList.appendChild(createRouteButton(start));
+  routeList.appendChild(createRouteButton(end));
 
 }
 
