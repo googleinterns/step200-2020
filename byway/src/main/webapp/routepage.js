@@ -99,6 +99,7 @@ async function updatePageInfo(){
  *  along each leg 
  */
 async function getRecommendations(){
+  document.getElementById("loading").style.visibility = 'visible';
   try{
     let result = await computeRouteForTrip(directionsService, start.place_id, end.place_id, 
       route.map(waypoint => ({location: waypoint.geometry.location})));
