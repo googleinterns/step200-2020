@@ -1,4 +1,5 @@
-/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace, showErrorMessage*/
+
+/* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace, showErrorMessage, computeRouteForTrip*/
 /* exported placesService*/
 
 let placesService;
@@ -160,7 +161,7 @@ async function initMap(start, end, route, keyString) {
   });
   let mapOptions = {
     zoom: 14,
-    center: start
+    center: new google.maps.LatLng(0,0)
   }
   const tripMap = new google.maps.Map(document.getElementById('map-' + keyString), mapOptions);
   placesService = new google.maps.places.PlacesService(tripMap);
@@ -179,10 +180,10 @@ async function initMap(start, end, route, keyString) {
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
   for(let i = 0; i<5; i++){
     try{
-      let result = await getDirections(directionsService, start, end, waypoints)
+      let result = await computeRouteForTrip(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
       return;
-    }catch(error){
+    } catch(error){
       if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
         await delayPromise(1000);
       }
@@ -191,36 +192,9 @@ async function setRoute(directionsService, directionsRenderer, start, end, waypo
  showErrorMessage("Could not construct route");
 }
 
+/** Function to stagger loading of past trips to prevent over query limit */
 function delayPromise(delayMs) {
   return new Promise(resolve => setTimeout(resolve, delayMs));
-}
-
-/**
- * Get directions with given start, end and waypoints
- * @param {DirectionsService} directionsService
- * @param {String} start placeId as string
- * @param {String} end placeId as string
- * @param {Array} [waypoints] array of waypoint objects
- */
-function getDirections(directionsService, start, end, waypoints) {
-   let request = {
-    origin:  {placeId : start},
-    destination: {placeId : end},
-    waypoints: waypoints,
-    travelMode: 'DRIVING',
-    optimizeWaypoints: true
-  };
-  const result = new Promise((resolve,reject) => {
-    directionsService.route(request, (result, status) => {
-      if (status == 'OK') {
-        resolve(result);
-      }
-      else {
-        reject(new MapStatusError("Could not calculate route from request.", status));
-      }
-  });
-});
-return result;
 }
 
 

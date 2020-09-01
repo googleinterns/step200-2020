@@ -3,12 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <title>Route Generator</title>
-    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
     <link rel="icon" type="image/png" href="/images/logo.png">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="base.js"></script>
-    <script src="routepage.js"></script>
     <script src="recommendations.js"></script>
+    <script src="routepage.js"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBg6D1U0U2L7VlbKH7Bkh-ds6wdUaLzroM&callback=initMap&libraries=places,geometry"
       defer></script>
@@ -30,10 +29,20 @@
         <li><a id="view-route-progress-bar">View route</a></li>
       </ul>
     </div>
-    <div id="message-container">
-      <p id="general-message">Showing limited results due to: </p>
-      <p id="statuses"></p>
+    <div id = "message-container" class = "alert alert-warning"></div>
+    <div id = "loading" class = "loading d-flex justify-content-center">
+      <div class = "spinner-border mr-4" role="status"></div>
+      <p class = "ml-5">Loading...</p>
     </div>
+    <div class="alert alert-primary tips" role="alert">
+      <h5 class="alert-heading">Tips:</h5>
+      <p>Click map marker to get information on the stop. Double-click to add stop to your
+        route or click the buttons in the recommendations list.</p>
+      <hr>
+      <p class="mb-0">To remove a stop from your route, just 
+        click on the button in the your route list.</p>
+    </div>
+
     <div class = "route-container">
       <div class = "map-style">
         <div id= "map"></div>
@@ -52,7 +61,6 @@
          <div class = "time-distance-field">
            <p id = "distance"></p>
          </div>
-
          <div class = "time-distance-title">
            <p>Estimated Travel Time:</p>
          </div>
@@ -71,9 +79,8 @@
       </div>
       <div class = "row">
         <div class= "finish-section"> 
-          <button class = "btn finish-btn" onclick = "generateRoute()">Finish Adding Stops</button>
+          <button class = "btn finish-btn">Finish Adding Stops</button>
         </div>
-        
       </div>
       <div class = "row">
         <div class= "finish-section"> 
@@ -83,8 +90,13 @@
           <button class="icon fa fa-envelope fa-4x email-btn" onclick = "sendEmail()"></button> 
         </div>
       </div>
+      <div class = "row">
+        <div class= "finish-section"> 
+          <a href= " " class = "btn finish-btn"  id = "gmaps-btn" target="_blank">Open in Google Maps</a>
+        </div>
+      </div>
     </div>
   </div>
-  
+  <div class = "space"></div>
   </body>
 </html>

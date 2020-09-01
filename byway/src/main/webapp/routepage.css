@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap');
  
 .route-container{
-  width: 1750px;
-  padding: 0 15px 0 15px;
-  margin: 100px auto 0 auto;
+  width: 1900px;
+  /*padding: 0 15px 0px 15px;*/
+  margin: 0px auto 0 auto;
   margin-right:auto;
   margin-left:auto;
   display:flex;
@@ -83,7 +83,7 @@ h3.box-outline{
 }
  
 .btn{
-  display:block;
+  display: block;
   border-radius: 10px;
   background-color: white;
   height: 75px;
@@ -94,8 +94,13 @@ h3.box-outline{
  
 .rec-btn{
   border: solid 5px #ffc05f;
+  display: block;
 }
- 
+
+.hidden-rec-btn{
+  display: none;
+}
+
 .stop-btn{
   border: solid 5px #ff826c;
 }
@@ -143,7 +148,12 @@ input[type=text] {
   margin-left: 30px;
   font-family: 'Noto Sans JP', sans-serif;
 }
- 
+
+#message-container {
+  text-align: center;
+  visibility: hidden;
+}
+
 .icon{
   margin-left: 5px;
   color: orange;
@@ -155,4 +165,19 @@ input[type=text] {
   border-radius: 10px;
   background-color: #f7dbb0;
   color:white;
+}
+
+
+.loading {
+  height: 50px;
+  position: relative;
+  visibility: hidden;
+}
+
+.loading p {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
