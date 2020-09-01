@@ -319,6 +319,7 @@ function updateRouteLink(){
   
   routeLink = routeRoot + routeParams;
   document.getElementById("gmaps-btn").href = routeLink;
+  document.getElementById("gmaps-btn").style.display = 'none';
   return routeLink;
 }
 
