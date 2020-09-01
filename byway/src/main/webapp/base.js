@@ -106,16 +106,6 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
-/**
- * Class used to throw error in getDirections() with both message and status
- */
-class MapStatusError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.name = 'MapStatusError';
-        this.status = status;
-    }
-}
 
 /**
  * Makes a request to Directions API to calculate the route and return information about it
