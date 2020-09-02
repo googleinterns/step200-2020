@@ -1,4 +1,5 @@
-/* global google, configureTripKeyForPath, setupLogoutLink, computeRouteForTrip */
+
+/* global google, configureTripKeyForPath, setupLogoutLink, findPlace, showErrorMessage, computeRouteForTrip*/
 /* exported placesService*/
 
 let placesService;
@@ -44,7 +45,12 @@ function loadPastTrip(){
     tripIds.forEach(trip => {
       let isDestinationsMissing = trip.destinations.length == 0;
       let isInterestsMissing = trip.interests.length == 0;
-      (isDestinationsMissing|| isInterestsMissing) ? showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing) : showCompleteTrip(tripNum, trip);
+      if (isDestinationsMissing|| isInterestsMissing){
+        showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMissing);
+      }
+      else{
+        showCompleteTrip(trip);
+      }
       tripNum++;
     });
   })
@@ -62,6 +68,7 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
   let pastTrip = document.createElement('div');
   pastTrip.className = "past-trip";
   let title = document.createElement('a');
+  title.id = "title-" + trip.keyString;
   pastTrip.append(title);
   title.innerText = "Trip #" + tripNum + ": In-Progress";
   let info =  document.createElement('p');
@@ -86,21 +93,54 @@ function showIncompleteTrip(tripNum, trip, isDestinationsMissing, isInterestsMis
  * @param {Number} tripNum 
  * @param {Trip} trip
  */
-function showCompleteTrip(tripNum, trip){
+async function showCompleteTrip(trip){
   let container = document.getElementById("past-trips-container");
   let pastTrip = document.createElement('div');
   pastTrip.className = "past-trip";
   let title = document.createElement('a');
+  title.id = "title-" + trip.keyString;
+  title.innerText = "Your Trip To:"
   pastTrip.append(title);
   let mapContainer = document.createElement('div');
   mapContainer.className = 'map';
-  mapContainer.id = "map-" + trip.keyString
+  mapContainer.id = "map-" + trip.keyString;
   pastTrip.append(mapContainer);
   container.append(pastTrip);
   initMap(trip.start, trip.start, trip.route, trip.keyString);
-  title.innerText = "Trip #" + tripNum;
+  let titleString = await constructTripTitle(trip, trip.keyString);
+  title.innerText += titleString;
   title.href = configureTripKeyForPath(trip.keyString, "/routepage.html");
 }
+
+
+/**
+ * Updates the title of specifice trip
+ * @param {Trip} trip
+ * @param {String} keyString trip's key as a string
+ */
+async function constructTripTitle(trip, keyString){
+  let title ="";
+  for(let destination of trip.destinations) {
+     for(let i = 0; i<5; i++){
+      try{
+        let placeInfo = await findPlace(destination, placesService);
+        title += placeInfo.name + "|";
+        break;
+      } catch(error){
+        if (error.status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT){
+          await delayPromise(1000);  
+        }
+      }
+    }
+  }
+  if (title == ""){
+    showErrorMessage("Could not construct title of Trip" +keyString);
+  }
+  else{
+    return title;
+  }
+}
+
 
 /**
  * Initializes a map 
@@ -138,7 +178,7 @@ async function initMap(start, end, route, keyString) {
  * @param {Array} [waypoints] array of waypoint objects
  */
 async function setRoute(directionsService, directionsRenderer, start, end, waypoints){
-  for(let i = 0; i < 20; i++){
+  for(let i = 0; i<5; i++){
     try{
       let result = await computeRouteForTrip(directionsService, start, end, waypoints)
       directionsRenderer.setDirections(result);
@@ -149,8 +189,7 @@ async function setRoute(directionsService, directionsRenderer, start, end, waypo
       }
     }
   }
-  // TODO: Replace with showErrorMessage() when html is set up for this page
-  console.error("Could not retrieve Trip Route");
+ showErrorMessage("Could not construct route");
 }
 
 /** Function to stagger loading of past trips to prevent over query limit */

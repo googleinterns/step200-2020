@@ -1,7 +1,10 @@
+/* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar, setupLogoutLink, findPlace, MapStatusError, showErrorMessage */
 /** Script that contains functions shared and used across all pages */
+
 
 /* exported configureTripKeyForPath, getTripKeyFromUrl, setProgressBar,
    setupLogoutLink, findPlace, computeRouteForTrip, showErrorMessage */
+
 
 /** 
 * Sets Progress Bar to correct location based on the page number
@@ -69,6 +72,17 @@ function configureTripKeyForPath(tripKey, path) {
 }
 
 /**
+ * Class used to throw error with both message and status
+ */
+class MapStatusError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.name = 'MapStatusError';
+        this.status = status;
+    }
+}
+
+/**
  * Uses placeId to send a request to the placesService to retrieve details like coordinates and place name
  * @param {String} placeId a textual identifier that uniquely identifies a place
  * @param {Places Service Object} placesService object that communicates with the Places API service
@@ -84,8 +98,7 @@ function findPlace(placeId, placesService) {
       if(status == "OK") {
         resolve(result);
       } else {
-        alert("Status: " + status);
-        reject(new Error("Could not retrieve place result object from request."));
+        reject(new MapStatusError("Could not retrieve place result object from request.", status));
       }
     })
   })
@@ -93,16 +106,6 @@ function findPlace(placeId, placesService) {
   return result;
 }
 
-/**
- * Class used to throw error in getDirections() with both message and status
- */
-class MapStatusError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.name = 'MapStatusError';
-        this.status = status;
-    }
-}
 
 /**
  * Makes a request to Directions API to calculate the route and return information about it
@@ -149,3 +152,4 @@ function showErrorMessage(errorMessage){
   msgContainer.style.visibility = 'visible';
   msgContainer.innerText = errorMessage;
 } 
+

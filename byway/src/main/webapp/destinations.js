@@ -177,6 +177,7 @@ function addLocationToDom(place,container){
   destinationToAdd.appendChild(destinationInfo);
 }
 
+
 /** 
 * fetches start destination from DestinationsServlet and 
 * fills start-search-box with users previouslt input start
