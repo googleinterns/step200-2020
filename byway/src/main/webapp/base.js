@@ -17,9 +17,12 @@ function setProgressBar(pageNumber){
     items[i].className = 'active';
   }
   let tripKey = getTripKeyFromUrl();
-  document.getElementById('choose-destinations-progress-bar').href = configureTripKeyForPath(tripKey, '/destinations.html');
-  document.getElementById('choose-interests-progress-bar').href = configureTripKeyForPath(tripKey, '/interests.html');
-  document.getElementById('view-route-progress-bar').href = configureTripKeyForPath(tripKey, '/routepage.html');
+  document.getElementById('choose-destinations-progress-bar').href = 
+    configureTripKeyForPath(tripKey, '/destinations.html');
+  document.getElementById('choose-interests-progress-bar').href = 
+    configureTripKeyForPath(tripKey, '/interests.html');
+  document.getElementById('view-route-progress-bar').href = 
+    configureTripKeyForPath(tripKey, '/routepage.html');
 }
 
 /** 
@@ -27,19 +30,20 @@ function setProgressBar(pageNumber){
  * Sends alert and redirects to login page if user is not logged in
  */
 function setupLogoutLink(){
-    fetch("/api/login").then(response => response.json()).then((loginStatus) =>{
-    if (loginStatus.isLoggedIn) {
-      let logoutLink = document.createElement("a");
-      logoutLink.id = "logout-button";
-      logoutLink.href = loginStatus.url;
-      logoutLink.innerText = "LOGOUT";
-      let container = document.getElementById("logout-link");
-      container.append(logoutLink);
-    }
-    else{
+    fetch("/api/login").then(response => response.json())
+    .then((loginStatus) =>{
+      if (loginStatus.isLoggedIn) {
+        let logoutLink = document.createElement("a");
+        logoutLink.id = "logout-button";
+        logoutLink.href = loginStatus.url;
+        logoutLink.innerText = "LOGOUT";
+        let container = document.getElementById("logout-link");
+        container.append(logoutLink);
+      }
+      else{
         alert("User not logged in! Please login.");
         window.location.href = '/index.html';    
-    }
+      }
   });
 }
 

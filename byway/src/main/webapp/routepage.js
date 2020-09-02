@@ -72,7 +72,7 @@ function initMap() {
     zoom: 14,
     // arbitrary center as it will get recentered to the route 
     center: new google.maps.LatLng(0,0)
-  }
+  };
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   directionsRenderer.setMap(map);
   placesService = new google.maps.places.PlacesService(map);
@@ -174,7 +174,7 @@ function clearRoute(){
 /** Get trip info from datastore onload */
 function getRouteOnload(){
   clearRoute();
-  fetch(configureTripKeyForPath(tripKey, "/api/stop"))
+  fetch(configureTripKeyForPath(tripKey, "/api/route"))
   .then(response => response.json())
   .then(async (trip) => {
     if(trip != null){
@@ -251,7 +251,7 @@ function createRouteButton(waypoint){
 function updateRoute(){
   updateRouteLink();
   renderRouteList();
-  fetch(configureTripKeyForPath(tripKey, '/api/stop'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
+  fetch(configureTripKeyForPath(tripKey, '/api/route'), {method: "POST", body: JSON.stringify(route.map(waypoint => waypoint.place_id))});
 }
 
 /** Clear the recommendations panel in the html */
