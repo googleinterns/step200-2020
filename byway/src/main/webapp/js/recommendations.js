@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 /* global calcRouteWithRecs, destinations, getRecommendations, google, interests, map,
     placesService, showErrorMessage, renderRecsList, start, updatePageInfo */
 /* global route:writeable */
@@ -202,7 +203,7 @@ function placeRecMarker(place, showMarker) {
   marker.addListener("dblclick", () => {
     route.push(place);
     marker.setMap(null);
-    calcRouteWithRecs();
+    updatePageInfo();
   });
   markers.push(marker);
 }
@@ -217,12 +218,12 @@ function placeRecMarker(place, showMarker) {
 function toggleRecMarkers() {
   // If currently shown, then hide with null. Else, reveal on map object.
   const canvas = (areMarkersHidden) ? map : null;
-  const visibleStatus = (areMarkersHidden) ? 'visible' : 'hidden';
+  const displayStatus = (areMarkersHidden) ? 'none' : 'inline-block';
   for (let i = 0; i < markers.length; i++) {
     if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
       markers[i].setMap(canvas);
     }
   }
   areMarkersHidden = !areMarkersHidden;
-  document.getElementById("gmaps-btn").style.visibility = visibleStatus;
+  document.getElementById("gmaps-btn").style.display = displayStatus;
 }

@@ -1,3 +1,4 @@
+
 /* global google, configureTripKeyForPath, setupLogoutLink, MapStatusError, findPlace, showErrorMessage*/
 /* exported placesService*/
 
@@ -223,7 +224,6 @@ function getDirections(directionsService, start, end, waypoints) {
 });
 return result;
 }
-
 
 
  
