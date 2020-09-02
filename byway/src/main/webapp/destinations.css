@@ -10,7 +10,7 @@
 
  #destinations-page #map-search-container{
   position: relative;
-  padding: 5vw;
+  padding: 0 5vw 0 5vw;
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: 80% 20%;
@@ -34,11 +34,11 @@
 }
 
 #destinations-page .input-and-button{
-  width: 100%;
+  width: inherit;
   position: relative;
   text-align: center;
+  padding: 25px;
 }
-
 
 #destinations-page .location-label{
   text-align: center;
@@ -98,8 +98,3 @@
 #destinations-page #next-button:hover{
   opacity: 0.5;
 }
-
-
-
-  
-  
