@@ -14,10 +14,14 @@
 
 /* global destinations, google, interests, map, placesService, showErrorMessage
     renderRecsList,  start, updatePageInfo, getRecommendations */
-/* exported calcMainRoute, showMarkers, recs, findRegions, loadRecommendations */
+/* global route:writeable */
+/* exported areMarkersHidden, calcMainRoute, findRegions, recs, toggleRecMarkers, loadRecommendations */
 
 // Holds recommendations as PlaceResult objects
 let recs = [];
+
+// holds markers as google.maps.Marker objects
+let markers = [];
 
 // Measured in meters
 const RADIUS_TO_SEARCH_AROUND = 1000;
@@ -29,8 +33,8 @@ const MAX_RECOMMENDATIONS = 1;
 // Holds regions google.maps.LatLng objects
 let regions = [];
 
-// holds markers as google.maps.Marker objects
-let markers = [];
+// Boolean to determine when to toggle markers
+let areMarkersHidden = false;
 
 /**
  * Creates round-trip route with waypoints that loads onto the map.
@@ -99,7 +103,7 @@ async function loadRecommendations() {
       if(recommendationsSaved !== null) {
         addRecommendations(request, JSON.parse(recommendationsSaved));
       } else{
-        await delayPromise(250);
+        await delayPromise(100);
         const placesFound = await findPlacesWithTextSearch(request, statuses);
         if(placesFound !== null) {
           addRecommendations(request, placesFound);
@@ -147,12 +151,13 @@ function findPlacesWithTextSearch(request, statuses) {
 function addRecommendations(request, placesFound) {
   let placesLoaded = [];
   for(let place of placesFound) {
-    placeMarker(place);
     // prevents addition of same large place which may span various coordinates
     if(!recs.some(rec => rec.place_id === place.place_id)){
       recs.push(place);
     }
     placesLoaded.push(place);
+    const showMarker = (route.some(waypoint => waypoint.place_id === place.place_id)) ? false : true;
+    placeRecMarker(place, showMarker);
     if(placesLoaded.length == MAX_RECOMMENDATIONS) {
       break;
     }
@@ -170,10 +175,14 @@ function savePlacesFromInterests(request, placesLoaded) {
 }
 
 /**
- * Places a marker onto the map at the specified location.
+ * Places a marker onto the map at the specified location. When clicked,
+ * shows information about the place. When double clicked, adds as
+ * a destination and calculates a new route.
  * @param {PlaceResult} place contains information about a place
+ * @param {Boolean} showMarker set on map or remove
  */
-function placeMarker(place) {
+function placeRecMarker(place, showMarker) {
+  const canvas = (showMarker) ? map : null;
   let infoWindow = new google.maps.InfoWindow({
     content: place.name
   });
@@ -183,25 +192,37 @@ function placeMarker(place) {
   };
   let marker = new google.maps.Marker({
     position: place.geometry.location,
-    map,
+    map: canvas,
     title: place.name,
     icon: image
   });
   marker.addListener("click", () => {
     infoWindow.open(map, marker);
   });
+  marker.addListener("dblclick", () => {
+    route.push(place);
+    marker.setMap(null);
+    updatePageInfo();
+  });
   markers.push(marker);
 }
 
 /**
- * Iterate through all markers and hide or show based on the boolean
- * pass in. Either set the marker canvas to null with false, or set
- * to the google.maps object with true.
- * @param {Boolean} isNull indicates to remove markers by setting their map to null.
+ * Iterate through all markers and hide or show based on the 
+ * boolean tracking the toggle state. Only affect rec markers,
+ * not ones added through directionsService. When hiding, set markers'
+ * maps to null to remove. Else, set markers' map to the map object.
+ * Update boolean tracking marker visibility.
  */
-function showMarkers(isNull) {
-  let canvas = (isNull) ? null : map;
+function toggleRecMarkers() {
+  // If currently shown, then hide with null. Else, reveal on map object.
+  const canvas = (areMarkersHidden) ? map : null;
+  const displayStatus = (areMarkersHidden) ? 'none' : 'inline-block';
   for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(canvas);
+    if (!route.some(waypoint => waypoint.geometry.location === markers[i].position)) {
+      markers[i].setMap(canvas);
+    }
   }
+  areMarkersHidden = !areMarkersHidden;
+  document.getElementById("gmaps-btn").style.display = displayStatus;
 }

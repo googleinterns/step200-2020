@@ -15,7 +15,7 @@
 
 /* exported initMap, interests, map, placesService, renderRecsList, sendEmail,
    getRecommendations, updatePageInfo*/
-/* global calcMainRoute, configureTripKeyForPath, findPlace,
+/* global areMarkersHidden, calcMainRoute, configureTripKeyForPath, findPlace,
     getTripKeyFromUrl, google, recs, setProgressBar, setupLogoutLink, computeRouteForTrip,
     findRegions, loadRecommendations, showErrorMessage */
 
@@ -237,9 +237,14 @@ function createRouteButton(waypoint){
   } else {
     routeBtn.className =  "btn stop-btn";
     routeBtn.addEventListener("click", function() {
-      route = route.filter(stop => stop.place_id != waypoint.place_id);
-      document.getElementById(waypoint.place_id).className = "btn rec-btn";
-     updatePageInfo();
+      if (areMarkersHidden) {
+        // TODO: update with Justine's base alert implementation.
+        alert('Toggle markers to edit route');
+      } else {
+        route = route.filter(stop => stop.place_id != waypoint.place_id);
+        document.getElementById(waypoint.place_id).className = "btn rec-btn";
+        updatePageInfo();
+      }
     });
 
   }
@@ -283,9 +288,14 @@ function createRecButton(rec){
   if(!route.some(waypoint => waypoint.place_id  === rec.place_id )){
     recBtn.className =  "btn rec-btn";
     recBtn.addEventListener("click", function() {
-      route.push(rec);
-      recBtn.className =  "hidden-rec-btn";
-      updatePageInfo();
+      if (areMarkersHidden) {
+        // TODO: update with Justine's base alert implementation.
+        alert('Toggle markers to edit route')
+      } else {
+        route.push(rec);
+        recBtn.className =  "hidden-rec-btn";
+        updatePageInfo();
+      }
     });
   } else{
     recBtn.className =  "hidden-rec-btn";
@@ -309,6 +319,7 @@ function updateRouteLink(){
   
   routeLink = routeRoot + routeParams;
   document.getElementById("gmaps-btn").href = routeLink;
+  document.getElementById("gmaps-btn").style.display = 'none';
   return routeLink;
 }
 
@@ -340,4 +351,3 @@ function sendEmail(){
       showErrorMessage("Please enter a valid email address.");
   }
 }
-
